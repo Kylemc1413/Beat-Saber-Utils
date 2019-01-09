@@ -13,19 +13,19 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch("ProcessScore", MethodType.Normal)]
     class SoloFreePlayFlowCoordinatorProcessScore
     {
-        public static bool disabled = false;
-        public static bool prolongedDisable = false;
+
         static void Prefix(LevelCompletionResults levelCompletionResults, ref bool practice)
         {
-            if(disabled || prolongedDisable)
-            practice = true;
+            if(ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            {
+  //              Utilities.Logger.Log("Score Submission Disabled");
+                practice = true;
+            }
+
         }
 
         static void Postfix(LevelCompletionResults levelCompletionResults, ref bool practice)
         {
-            if(disabled)
-            disabled = false;
-
         }
     }
 }

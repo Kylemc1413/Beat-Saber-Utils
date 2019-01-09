@@ -15,8 +15,12 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         {
             ____clearedDifficultyText.overflowMode = TextOverflowModes.Overflow;
             ____clearedDifficultyText.richText = true;
+            if(ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             ____clearedDifficultyText.text += "  \r\n<color=#ff0000ff><size=35%><b>Score Submission Disabled by: " + ScoreSubmission.ModString + " | " + ScoreSubmission.ProlongedModString;
-            ScoreSubmission.ModString = "";
+
+            ScoreSubmission.ModList.Clear();
+            ScoreSubmission.disabled = false;
+
         }
     }
 }

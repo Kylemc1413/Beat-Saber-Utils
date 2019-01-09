@@ -9,40 +9,42 @@ namespace BS_Utils.Gameplay
 {
     public class ScoreSubmission
     {
-        internal static List<String> ModList { get;  set; }
+        internal static bool disabled = false;
+        internal static bool prolongedDisable = false;
+        internal static List<String> ModList { get;  set; } = new List<String>(0);
         internal static string ModString
         {
             get
             {
-                ModString = "";
+                string value = "";
                 for(int i = 0; i < ModList.Count; i++)
                 {
                     if (i == 0)
-                        ModString += ModList[i];
+                        value += ModList[i];
                     else
-                        ModString += ", " + ModList[i];
+                        value += ", " + ModList[i];
                 }
-                return ModString;
+                return value;
             }
             set
             {
             }
 
         }
-        internal static List<String> ProlongedModList { get;  set; }
+        internal static List<String> ProlongedModList { get;  set; } = new List<String>(0);
         internal static string ProlongedModString
         {
             get
             {
-                ProlongedModString = "";
+                string value = "";
                 for (int i = 0; i < ProlongedModList.Count; i++)
                 {
                     if (i == 0)
-                        ProlongedModString += ProlongedModList[i];
+                        value += ProlongedModList[i];
                     else
-                        ProlongedModString += ", " + ProlongedModList[i];
+                        value += ", " + ProlongedModList[i];
                 }
-                return ProlongedModString;
+                return value;
             }
             set
             {
@@ -52,10 +54,10 @@ namespace BS_Utils.Gameplay
 
         public static void DisableSubmission(string mod)
         {
-            if (SoloFreePlayFlowCoordinatorProcessScore.disabled == false)
+            if (disabled == false)
             {
                 Plugin.ApplyHarmonyPatches();
-              SoloFreePlayFlowCoordinatorProcessScore.disabled = true;
+                disabled = true;
             }
 
             if(!ModList.Contains(mod))
@@ -65,10 +67,10 @@ namespace BS_Utils.Gameplay
 
         public static void ProlongedDisableSubmission(string mod)
         {
-            if (SoloFreePlayFlowCoordinatorProcessScore.prolongedDisable == false)
+            if (prolongedDisable == false)
             {
                 Plugin.ApplyHarmonyPatches();
-                SoloFreePlayFlowCoordinatorProcessScore.prolongedDisable = true;
+                prolongedDisable = true;
             }
             if (!ProlongedModList.Contains(mod))
                 ProlongedModList.Add(mod);
@@ -78,7 +80,7 @@ namespace BS_Utils.Gameplay
         {
             ProlongedModList.Remove(mod);
             if (ProlongedModList.Count == 0)
-                SoloFreePlayFlowCoordinatorProcessScore.prolongedDisable = false;
+                prolongedDisable = false;
         }
 
     }
