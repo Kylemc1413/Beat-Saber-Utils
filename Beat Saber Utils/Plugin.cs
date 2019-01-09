@@ -8,53 +8,35 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using IllusionPlugin;
+using Harmony;
 
-
-namespace Beat_Saber_Utils
+namespace BS_Utils
 {
     public class Plugin : IPlugin
     {
-        public string Name => "Plugin Name";
+        public string Name => "Beat Saber Utils";
         public string Version => "0.0.1";
-
-        bool doesPluginExist;
-
+        internal static bool patched = false;
+        internal static HarmonyInstance harmony;
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
-            //Checks if a IPlugin with the name in quotes exists, in case you want to verify a plugin exists before trying to reference it, or change how you do things based on if a plugin is present
-            doesPluginExist = IllusionInjector.PluginManager.Plugins.Any(x => x.Name == "Saber Mod");
-
+            //Create Harmony Instance
+            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
 
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene oldScene, Scene newScene)
         {
 
-            if (newScene.name == "Menu")
-            {
-                //Code to execute when entering The Menu
-
-
-            }
-
-            if (newScene.name == "GameCore")
-            {
-                //Code to execute when entering actual gameplay
-
-
-            }
 
 
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
         {
-            //Create GameplayOptions/SettingsUI if using either
-            if (scene.name == "Menu")
-                UI.BasicUI.CreateUI();
 
         }
 
@@ -81,6 +63,24 @@ namespace Beat_Saber_Utils
 
         public void OnFixedUpdate()
         {
+        }
+
+
+        internal static void ApplyHarmonyPatches()
+        {
+            if (patched) return;
+            try
+            {
+                harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+                patched = true;
+            }
+            catch (Exception ex)
+            {
+                Utilities.Logger.Log("BS-Utils", "Exception Trying to Apply Harmony Patches");
+                Utilities.Logger.Log("BS-Utils", ex.ToString());
+            }
+
+
         }
     }
 }

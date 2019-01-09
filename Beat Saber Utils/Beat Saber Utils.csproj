@@ -7,8 +7,8 @@
     <ProjectGuid>{F90A0F89-D132-4473-AA4C-E5984F4B4458}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Beat_Saber_Utils</RootNamespace>
-    <AssemblyName>NewPlugin</AssemblyName>
+    <RootNamespace>BS_Utils</RootNamespace>
+    <AssemblyName>BS_Utils</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,8 +33,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="BeatSaberCustomUI">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberCustomUI.dll</HintPath>
@@ -74,9 +80,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\HarmonyPatches\ResultsViewControllerSetDataToUI.cs" />
+    <Compile Include="Gameplay\HarmonyPatches\SoloFreePlayFlowCoordinatorProcessScore.cs" />
+    <Compile Include="Gameplay\ScoreSubmission.cs" />
+    <Compile Include="Gameplay\UserInfo.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\BasicUI.cs" />
+    <Compile Include="Utilities\Logger.cs" />
+    <Compile Include="Utilities\ReflectionUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
