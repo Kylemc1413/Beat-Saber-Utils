@@ -15,7 +15,7 @@ namespace BS_Utils
     public class Plugin : IPlugin
     {
         public string Name => "Beat Saber Utils";
-        public string Version => "1.0.0";
+        public string Version => "1.1.0";
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
         public void OnApplicationStart()
