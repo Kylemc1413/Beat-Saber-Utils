@@ -24,12 +24,12 @@ namespace BS_Utils.Gameplay
             {
                 if (SteamVR.instance != null || Environment.CommandLine.Contains("-vrmode oculus"))
                 {
-                    Logger.Log("BS-Utils", "Attempting to Grab Steam User");
+                    Logger.Log("Attempting to Grab Steam User");
                     GetSteamUser();
                 }
                 else
                 {
-                    Logger.Log("BS-Utils","Attempting to Grab Oculus User");
+                    Logger.Log("Attempting to Grab Oculus User");
                     GetOculusUser();
                 }
             }

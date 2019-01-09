@@ -76,8 +76,8 @@ namespace BS_Utils
             }
             catch (Exception ex)
             {
-                Utilities.Logger.Log("BS-Utils", "Exception Trying to Apply Harmony Patches");
-                Utilities.Logger.Log("BS-Utils", ex.ToString());
+                Utilities.Logger.Log("Exception Trying to Apply Harmony Patches");
+                Utilities.Logger.Log(ex.ToString());
             }
 
 

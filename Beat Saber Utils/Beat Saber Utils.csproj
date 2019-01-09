@@ -80,6 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\Gamemode.cs" />
     <Compile Include="Gameplay\HarmonyPatches\ResultsViewControllerSetDataToUI.cs" />
     <Compile Include="Gameplay\HarmonyPatches\SoloFreePlayFlowCoordinatorProcessScore.cs" />
     <Compile Include="Gameplay\ScoreSubmission.cs" />

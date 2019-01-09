@@ -30,19 +30,19 @@ namespace BS_Utils.Gameplay
 
         }
         internal static List<String> ProlongedModList { get;  set; }
-        internal static string prolongedModString
+        internal static string ProlongedModString
         {
             get
             {
-                prolongedModString = "";
+                ProlongedModString = "";
                 for (int i = 0; i < ProlongedModList.Count; i++)
                 {
                     if (i == 0)
-                        prolongedModString += ProlongedModList[i];
+                        ProlongedModString += ProlongedModList[i];
                     else
-                        prolongedModString += ", " + ProlongedModList[i];
+                        ProlongedModString += ", " + ProlongedModList[i];
                 }
-                return prolongedModString;
+                return ProlongedModString;
             }
             set
             {

@@ -14,7 +14,10 @@ namespace BS_Utils.Utilities
             Console.WriteLine("[{0}] {1}", modName, message);
         }
 
-
+        internal static void Log( string message)
+        {
+            Console.WriteLine("[{0}] {1}", "BS-Utils", message);
+        }
 
     }
 }
