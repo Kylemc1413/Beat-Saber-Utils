@@ -14,6 +14,8 @@ namespace BS_Utils.Gameplay
         internal static MainMenuViewController MainMenuViewController;
         public static bool IsPartyActive { get; private set; } = false;
         public static string GameMode { get; private set; } = "Standard";
+        public static bool IsIsolatedLevel { get; internal set; } = false;
+        public static string IsolatingMod { get; internal set; } = "";
 
         public static void Init()
         {
@@ -50,7 +52,14 @@ namespace BS_Utils.Gameplay
             GameMode = arg2.characteristicName;
         }
 
+        public static void NextLevelIsIsolated(string modName)
+        {
+            Plugin.ApplyHarmonyPatches();
 
+            IsIsolatedLevel = true;
+            Utilities.Logger.Log($"Isolated level being started by {modName}");
+            IsolatingMod = modName;
+        }
 
     }
 }

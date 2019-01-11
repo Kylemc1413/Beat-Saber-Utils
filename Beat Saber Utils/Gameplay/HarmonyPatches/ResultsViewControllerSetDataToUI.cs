@@ -20,7 +20,8 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
             ScoreSubmission.ModList.Clear();
             ScoreSubmission.disabled = false;
-
+            Gamemode.IsIsolatedLevel = false;
+            Gamemode.IsolatingMod = "";
         }
     }
 }
