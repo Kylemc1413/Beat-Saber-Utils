@@ -5,19 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using BS_Utils.Gameplay.HarmonyPatches;
 using Harmony;
+using UnityEngine;
 namespace BS_Utils.Gameplay
 {
     public class ScoreSubmission
     {
         internal static bool disabled = false;
         internal static bool prolongedDisable = false;
-        internal static List<String> ModList { get;  set; } = new List<String>(0);
+        internal static List<String> ModList { get; set; } = new List<String>(0);
         internal static string ModString
         {
             get
             {
                 string value = "";
-                for(int i = 0; i < ModList.Count; i++)
+                for (int i = 0; i < ModList.Count; i++)
                 {
                     if (i == 0)
                         value += ModList[i];
@@ -31,7 +32,7 @@ namespace BS_Utils.Gameplay
             }
 
         }
-        internal static List<String> ProlongedModList { get;  set; } = new List<String>(0);
+        internal static List<String> ProlongedModList { get; set; } = new List<String>(0);
         internal static string ProlongedModString
         {
             get
@@ -58,10 +59,40 @@ namespace BS_Utils.Gameplay
             {
                 Plugin.ApplyHarmonyPatches();
                 disabled = true;
+                ModList.Clear();
+
+                if (Plugin.LevelData == null)
+                {
+                    Plugin.LevelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>()?.FirstOrDefault();
+                    if (Plugin.LevelData != null)
+                        Plugin.LevelData.didFinishEvent += LevelData_didFinishEvent;
+                }
+
             }
 
-            if(!ModList.Contains(mod))
-            ModList.Add(mod);
+            if (!ModList.Contains(mod))
+                ModList.Add(mod);
+
+        }
+
+        private static void LevelData_didFinishEvent(StandardLevelSceneSetupDataSO arg1, LevelCompletionResults arg2)
+        {
+            switch (arg2.levelEndStateType)
+            {
+                case LevelCompletionResults.LevelEndStateType.Quit:
+                    disabled = false;
+                    ModList.Clear();
+                    break;
+                case LevelCompletionResults.LevelEndStateType.Failed:
+                    disabled = false;
+                    ModList.Clear();
+                    break;
+                case LevelCompletionResults.LevelEndStateType.None:
+                    disabled = false;
+                    ModList.Clear();
+                    break;
+            }
+
 
         }
 
