@@ -27,7 +27,7 @@ namespace BS_Utils.Gameplay
                     Logger.Log("Attempting to Grab Steam User");
                     GetSteamUser();
                 }
-                else
+                else if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
                 {
                     Logger.Log("Attempting to Grab Oculus User");
                     GetOculusUser();
