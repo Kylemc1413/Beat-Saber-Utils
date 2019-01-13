@@ -22,7 +22,7 @@ namespace BS_Utils.Gameplay
         {
             if (userID == 0 || userName == null)
             {
-                if (SteamVR.instance != null || Environment.CommandLine.Contains("-vrmode oculus"))
+                if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
                 {
                     Logger.Log("Attempting to Grab Steam User");
                     GetSteamUser();
