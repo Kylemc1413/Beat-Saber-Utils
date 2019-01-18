@@ -4,33 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-
+using IniParser;
+using IniParser.Model;
+using IniParser.Parser;
 namespace BS_Utils.Utilities
 {
     internal class IniFile
     {
-        [DllImport("KERNEL32.DLL", EntryPoint = "GetPrivateProfileStringW",
-        SetLastError = true,
-        CharSet = CharSet.Unicode, ExactSpelling = true,
-        CallingConvention = CallingConvention.StdCall)]
-        private static extern int GetPrivateProfileString(
-          string lpSection,
-          string lpKey,
-          string lpDefault,
-          StringBuilder lpReturnString,
-          int nSize,
-          string lpFileName);
-
-        [DllImport("KERNEL32.DLL", EntryPoint = "WritePrivateProfileStringW",
-          SetLastError = true,
-          CharSet = CharSet.Unicode, ExactSpelling = true,
-          CallingConvention = CallingConvention.StdCall)]
-        private static extern int WritePrivateProfileString(
-          string lpSection,
-          string lpKey,
-          string lpValue,
-          string lpFileName);
-
         private string _path = "";
         public string Path
         {
@@ -45,6 +25,13 @@ namespace BS_Utils.Utilities
                 _path = value;
             }
         }
+        internal IniParser.Model.Configuration.IniParserConfiguration config = new IniParser.Model.Configuration.IniParserConfiguration();
+        internal FileIniDataParser parser;
+        internal IniDataParser dataParser;
+        internal IniData data;
+
+
+
 
         /// <summary>
         /// INIFile Constructor.
@@ -53,35 +40,44 @@ namespace BS_Utils.Utilities
         public IniFile(string INIPath)
         {
             this.Path = INIPath;
+            config.AllowCreateSectionsOnFly = true;
+            config.AllowDuplicateKeys = true;
+            config.AllowDuplicateSections = true;
+            config.OverrideDuplicateKeys = true;
+            config.SkipInvalidLines = true;
+            config.ThrowExceptionsOnError = true;
+            config.AllowKeysWithoutSection = true;
+            dataParser = new IniDataParser(config);
+            parser = new FileIniDataParser(dataParser);
+            data = parser.ReadFile(Path);
         }
 
-        /// <summary>
-        /// Write Data to the INI File
-        /// </summary>
-        /// <PARAM name="Section"></PARAM>
-        /// Section name
-        /// <PARAM name="Key"></PARAM>
-        /// Key Name
-        /// <PARAM name="Value"></PARAM>
-        /// Value Name
         public void IniWriteValue(string Section, string Key, string Value)
         {
-            WritePrivateProfileString(Section, Key, Value, this.Path);
+            data[Section][Key] = Value;
+            parser.WriteFile(Path, data);
         }
 
-        /// <summary>
-        /// Read Data Value From the Ini File
-        /// </summary>
-        /// <PARAM name="Section"></PARAM>
-        /// <PARAM name="Key"></PARAM>
-        /// <PARAM name="Path"></PARAM>
-        /// <returns></returns>
         public string IniReadValue(string Section, string Key)
         {
-            const int MAX_CHARS = 1023;
-            StringBuilder result = new StringBuilder(MAX_CHARS);
-            GetPrivateProfileString(Section, Key, "", result, MAX_CHARS, this.Path);
-            return result.ToString();
+            string result;
+            if (!data[Section].ContainsKey(Key))
+            {
+                return "";
+            }
+            else
+            {
+                result = data[Section].GetKeyData(Key).Value;
+                return result;
+            }
+
         }
+
+
+
+
+
     }
+
+
 }

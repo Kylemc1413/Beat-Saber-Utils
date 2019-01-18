@@ -11,7 +11,7 @@ namespace BS_Utils.Utilities
         private IniFile _instance;
 
         #region Bool Alternatives
-        
+
         public enum BoolSavingMode
         {
             TrueFalse,
@@ -22,7 +22,7 @@ namespace BS_Utils.Utilities
         };
 
         private List<string> yesAlts = new List<string>() { "True", "1", "Yes", "Enabled", "On" };
-        private List<string> noAlts = new List<string>() { "False", "0", "No", "Disabled", "Off"};
+        private List<string> noAlts = new List<string>() { "False", "0", "No", "Disabled", "Off" };
         #endregion
 
         public Config(string name)
@@ -59,8 +59,7 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public int GetInt(string section, string name, int defaultValue = 0, bool autoSave = false)
         {
-            int value;
-            if (int.TryParse(_instance.IniReadValue(section, name), out value))
+            if (int.TryParse(_instance.IniReadValue(section, name), out int value))
                 return value;
             else if (autoSave)
                 SetInt(section, name, defaultValue);
@@ -79,8 +78,7 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public float GetFloat(string section, string name, float defaultValue = 0f, bool autoSave = false)
         {
-            float value;
-            if (float.TryParse(_instance.IniReadValue(section, name), out value))
+            if (float.TryParse(_instance.IniReadValue(section, name), out float value))
                 return value;
             else if (autoSave)
                 SetFloat(section, name, defaultValue);
@@ -127,9 +125,13 @@ namespace BS_Utils.Utilities
         /// <param name="section">Section of the key.</param>
         /// <param name="name">Name of the key.</param>
         /// <returns></returns>
+
         public bool HasKey(string section, string name)
         {
-            return _instance.IniReadValue(section, name) != null;
+            if (_instance.data.Sections.ContainsSection(section))
+                return _instance.data[section].ContainsKey(name);
+            else
+                return false;
         }
 
         /// <summary>
