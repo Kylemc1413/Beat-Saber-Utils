@@ -87,6 +87,8 @@
     <Compile Include="Gameplay\UserInfo.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Config.cs" />
+    <Compile Include="Utilities\IniFile.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\ReflectionUtil.cs" />
   </ItemGroup>
