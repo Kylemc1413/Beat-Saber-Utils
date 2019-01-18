@@ -112,7 +112,7 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public bool GetBool(string section, string name, BoolSavingMode mode, bool defaultValue = false, bool autoSave = false)
         {
-            string sVal = GetString(section, name, null);
+            string sVal = GetString(section, name);
             int yesIndex = yesAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
             int noIndex = noAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
             if (yesIndex != -1 && yesIndex == (int)mode) return true;
