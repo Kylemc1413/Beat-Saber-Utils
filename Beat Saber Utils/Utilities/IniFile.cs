@@ -60,6 +60,7 @@ namespace BS_Utils.Utilities
 
         public string IniReadValue(string Section, string Key)
         {
+            data = parser.ReadFile(Path);
             string result;
             if (!data[Section].ContainsKey(Key))
             {
