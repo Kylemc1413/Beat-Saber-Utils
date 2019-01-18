@@ -25,7 +25,7 @@ namespace BS_Utils
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
             //Create Harmony Instance
-            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
 
         }
 
