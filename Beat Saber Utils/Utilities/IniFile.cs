@@ -20,6 +20,7 @@ namespace BS_Utils.Utilities
             }
             set
             {
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(value));
                 if (!File.Exists(value))
                     File.WriteAllText(value, "", Encoding.Unicode);
                 _path = value;
