@@ -31,6 +31,10 @@ namespace BS_Utils.Gameplay
                 {
                     Logger.Log("Attempting to Grab Oculus User");
                     GetOculusUser();
+                }else if (Environment.CommandLine.Contains("fpfc") && VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Unknown)
+                {
+                    Logger.Log("Attempting to Grab Steam User");
+                    GetSteamUser();
                 }
             }
         }
