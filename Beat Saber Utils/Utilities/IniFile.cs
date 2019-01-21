@@ -55,24 +55,27 @@ namespace BS_Utils.Utilities
 
         public void IniWriteValue(string Section, string Key, string Value)
         {
-            data[Section][Key] = Value;
-            parser.WriteFile(Path, data);
+            try{
+                data[Section][Key] = Value;
+                parser.WriteFile(Path, data);
+            }catch{Logger.Log("IniWriteValue doesnt want to write the stuffs");}
         }
 
         public string IniReadValue(string Section, string Key)
         {
-            data = parser.ReadFile(Path);
-            string result;
-            if (!data[Section].ContainsKey(Key))
-            {
-                return "";
-            }
-            else
-            {
-                result = data[Section].GetKeyData(Key).Value;
-                return result;
-            }
-
+            try{
+                data = parser.ReadFile(Path);
+                string result;
+                if (!data[Section].ContainsKey(Key))
+                {
+                    return "";
+                }
+                else
+                {
+                    result = data[Section].GetKeyData(Key).Value;
+                    return result;
+                }
+            }catch{Logger.Log("IniReadValue doesn't want to read the stuffs");}
         }
 
 
