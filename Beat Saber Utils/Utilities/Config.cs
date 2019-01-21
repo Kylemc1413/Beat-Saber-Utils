@@ -111,11 +111,13 @@ namespace BS_Utils.Utilities
         public bool GetBool(string section, string name, BoolSavingMode mode, bool defaultValue = false, bool autoSave = false)
         {
             string sVal = GetString(section, name);
-            int yesIndex = yesAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
-            int noIndex = noAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
-            if (yesIndex != -1 && yesIndex == (int)mode) return true;
-            else if (noIndex != -1 && noIndex == (int)mode) return false;
-            else if (autoSave) SetBool(section, name, defaultValue);
+            try{
+                int yesIndex = yesAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
+                int noIndex = noAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
+                if (yesIndex != -1 && yesIndex == (int)mode) return true;
+                else if (noIndex != -1 && noIndex == (int)mode) return false;
+                else if (autoSave) SetBool(section, name, defaultValue);
+            }catch{SetBool(section, name, defaultValue);}
             return defaultValue;
         }
 
