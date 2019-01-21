@@ -10,10 +10,9 @@ namespace BS_Utils.Gameplay
 {
     public class ScoreSubmission
     {
-        internal static bool disabled = false;
-        internal static bool prolongedDisable = false;
-        internal static List<String> ModList { get; set; } = new List<String>(0);
-        internal static string ModString
+        public static bool Disabled { get { return disabled; } }
+        public static bool ProlongedDisabled { get { return prolongedDisable; } }
+        public static string ModString
         {
             get
             {
@@ -27,13 +26,9 @@ namespace BS_Utils.Gameplay
                 }
                 return value;
             }
-            set
-            {
-            }
 
         }
-        internal static List<String> ProlongedModList { get; set; } = new List<String>(0);
-        internal static string ProlongedModString
+        public static string ProlongedModString
         {
             get
             {
@@ -47,11 +42,14 @@ namespace BS_Utils.Gameplay
                 }
                 return value;
             }
-            set
-            {
-            }
 
         }
+
+        internal static bool disabled = false;
+        internal static bool prolongedDisable = false;
+        internal static List<String> ModList { get; set; } = new List<String>(0);
+        internal static List<String> ProlongedModList { get; set; } = new List<String>(0);
+        
 
         public static void DisableSubmission(string mod)
         {

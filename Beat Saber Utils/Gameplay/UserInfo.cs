@@ -22,15 +22,26 @@ namespace BS_Utils.Gameplay
         {
             if (userID == 0 || userName == null)
             {
-                if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
+                try
                 {
-                    Logger.Log("Attempting to Grab Steam User");
-                    GetSteamUser();
-                }
-                else if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
+                    if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
+                    {
+                        Logger.Log("Attempting to Grab Steam User");
+                        GetSteamUser();
+                    }
+                    else if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
+                    {
+                        Logger.Log("Attempting to Grab Oculus User");
+                        GetOculusUser();
+                    }
+                    else if (Environment.CommandLine.Contains("fpfc") && VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Unknown)
+                    {
+                        Logger.Log("Attempting to Grab Steam User");
+                        GetSteamUser();
+                    }
+                }catch(Exception e)
                 {
-                    Logger.Log("Attempting to Grab Oculus User");
-                    GetOculusUser();
+                    Logger.Log("Unable to grab user! Exception: "+e);
                 }
             }
         }
@@ -38,8 +49,15 @@ namespace BS_Utils.Gameplay
 
         internal static void GetSteamUser()
         {
-            userName = SteamFriends.GetPersonaName();
-            userID = SteamUser.GetSteamID().m_SteamID;
+            if (SteamManager.Initialized)
+            {
+                userName = SteamFriends.GetPersonaName();
+                userID = SteamUser.GetSteamID().m_SteamID;
+            }
+            else
+            {
+                Logger.Log("Steam is not initialized!");
+            }
         }
 
         internal static void GetOculusUser()
