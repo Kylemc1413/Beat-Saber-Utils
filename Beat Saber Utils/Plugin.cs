@@ -15,7 +15,7 @@ namespace BS_Utils
     public class Plugin : IPlugin
     {
         public string Name => "Beat Saber Utils";
-        public string Version => "1.1.6";
+        public string Version => "1.1.7";
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
         internal static StandardLevelSceneSetupDataSO LevelData;
@@ -31,9 +31,12 @@ namespace BS_Utils
 
         private void SceneManagerOnActiveSceneChanged(Scene oldScene, Scene newScene)
         {
-
-
-
+            if (newScene.name == "Menu")
+            {
+                Utilities.Logger.Log("Removing Isolated Level");
+                Gameplay.Gamemode.IsIsolatedLevel = false;
+                Gameplay.Gamemode.IsolatingMod = "";
+            }
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)

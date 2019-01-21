@@ -16,24 +16,23 @@ namespace BS_Utils.Gameplay
         public static string GameMode { get; private set; } = "Standard";
         public static bool IsIsolatedLevel { get; internal set; } = false;
         public static string IsolatingMod { get; internal set; } = "";
-
         public static void Init()
         {
             if (CharacteristicSelectionViewController != null)
             {
-            CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSelectionViewController>().FirstOrDefault();
-            if (CharacteristicSelectionViewController == null)
-            {
-                Utilities.Logger.Log("Characteristic View Controller null");
-                return;
-            }
-            CharacteristicSelectionViewController.didSelectBeatmapCharacteristicEvent += CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent;
+                CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSelectionViewController>().FirstOrDefault();
+                if (CharacteristicSelectionViewController == null)
+                {
+                    Utilities.Logger.Log("Characteristic View Controller null");
+                    return;
+                }
+                CharacteristicSelectionViewController.didSelectBeatmapCharacteristicEvent += CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent;
             }
             if (MainMenuViewController == null)
             {
                 SoloFreePlayFlowCoordinator = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().FirstOrDefault();
-            PartyFreePlayFlowCoordinator = Resources.FindObjectsOfTypeAll<PartyFreePlayFlowCoordinator>().FirstOrDefault();
-            MainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().FirstOrDefault();
+                PartyFreePlayFlowCoordinator = Resources.FindObjectsOfTypeAll<PartyFreePlayFlowCoordinator>().FirstOrDefault();
+                MainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().FirstOrDefault();
                 if (MainMenuViewController == null) return;
                 MainMenuViewController.didFinishEvent += MainMenuViewController_didFinishEvent;
             }
@@ -59,7 +58,12 @@ namespace BS_Utils.Gameplay
             IsIsolatedLevel = true;
             Utilities.Logger.Log($"Isolated level being started by {modName}");
             IsolatingMod = modName;
+
         }
 
+        private static void SceneManager_activeSceneChanged(UnityEngine.SceneManagement.Scene oldScene, UnityEngine.SceneManagement.Scene newScene)
+        {
+
+        }
     }
 }
