@@ -55,15 +55,18 @@ namespace BS_Utils.Utilities
 
         public void IniWriteValue(string Section, string Key, string Value)
         {
-            try{
+            try
+            {
                 data[Section][Key] = Value;
                 parser.WriteFile(Path, data);
-            }catch{Logger.Log("IniWriteValue doesnt want to write the stuffs");}
+            }
+            catch { Logger.Log("IniWriteValue doesnt want to write the stuffs"); }
         }
 
         public string IniReadValue(string Section, string Key)
         {
-            try{
+            try
+            {
                 data = parser.ReadFile(Path);
                 string result;
                 if (!data[Section].ContainsKey(Key))
@@ -75,7 +78,12 @@ namespace BS_Utils.Utilities
                     result = data[Section].GetKeyData(Key).Value;
                     return result;
                 }
-            }catch{Logger.Log("IniReadValue doesn't want to read the stuffs");}
+            }
+            catch
+            {
+                Logger.Log("IniReadValue doesn't want to read the stuffs");
+                return "";
+            }
         }
 
 

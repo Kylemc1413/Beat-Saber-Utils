@@ -18,7 +18,7 @@ namespace BS_Utils.Gameplay
         public static string IsolatingMod { get; internal set; } = "";
         public static void Init()
         {
-            if (CharacteristicSelectionViewController != null)
+            if (CharacteristicSelectionViewController == null)
             {
                 CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSelectionViewController>().FirstOrDefault();
                 if (CharacteristicSelectionViewController == null)
