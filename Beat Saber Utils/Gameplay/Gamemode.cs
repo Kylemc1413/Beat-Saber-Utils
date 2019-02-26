@@ -51,6 +51,10 @@ namespace BS_Utils.Gameplay
             GameMode = arg2.characteristicName;
         }
 
+        internal static void ResetGameMode()
+        {
+            GameMode = "Standard";
+        }
         public static void NextLevelIsIsolated(string modName)
         {
             Plugin.ApplyHarmonyPatches();
