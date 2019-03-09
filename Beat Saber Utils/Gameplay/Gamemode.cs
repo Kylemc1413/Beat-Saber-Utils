@@ -18,6 +18,7 @@ namespace BS_Utils.Gameplay
         public static string IsolatingMod { get; internal set; } = "";
         public static void Init()
         {
+            Plugin.ApplyHarmonyPatches();
             if (CharacteristicSelectionViewController == null)
             {
                 CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSelectionViewController>().FirstOrDefault();
