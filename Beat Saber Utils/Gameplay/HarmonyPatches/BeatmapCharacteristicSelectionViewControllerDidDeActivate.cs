@@ -16,10 +16,11 @@ namespace BS_Utils.Gameplay.Harmony_Patches
 
     class BeatmapCharacteristicSelectionViewControllerDidDeactivate
     {
-        static void Postfix(VRUI.VRUIViewController.DeactivationType deactivationType)
+        static void Postfix(BeatmapCharacteristicSelectionViewController __instance, VRUI.VRUIViewController.DeactivationType deactivationType)
         {
             if (deactivationType == VRUI.VRUIViewController.DeactivationType.RemovedFromHierarchy)
                 Gamemode.ResetGameMode();      
+
         }
     }
 }

@@ -19,16 +19,6 @@ namespace BS_Utils.Gameplay
         public static void Init()
         {
             Plugin.ApplyHarmonyPatches();
-            if (CharacteristicSelectionViewController == null)
-            {
-                CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSelectionViewController>().FirstOrDefault();
-                if (CharacteristicSelectionViewController == null)
-                {
-                    Utilities.Logger.Log("Characteristic View Controller null");
-                    return;
-                }
-                CharacteristicSelectionViewController.didSelectBeatmapCharacteristicEvent += CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent;
-            }
             if (MainMenuViewController == null)
             {
                 SoloFreePlayFlowCoordinator = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().FirstOrDefault();
@@ -47,8 +37,9 @@ namespace BS_Utils.Gameplay
                 IsPartyActive = false;
         }
 
-        private static void CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(BeatmapCharacteristicSelectionViewController arg1, BeatmapCharacteristicSO arg2)
+        internal static void CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(BeatmapCharacteristicSelectionViewController arg1, BeatmapCharacteristicSO arg2)
         {
+            Utilities.Logger.Log(arg2.characteristicName);
             GameMode = arg2.characteristicName;
         }
 
