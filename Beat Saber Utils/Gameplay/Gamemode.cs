@@ -8,7 +8,7 @@ namespace BS_Utils.Gameplay
 {
     public class Gamemode
     {
-        internal static BeatmapCharacteristicSelectionViewController CharacteristicSelectionViewController;
+        internal static BeatmapCharacteristicSegmentedControlController CharacteristicSelectionViewController;
         internal static SoloFreePlayFlowCoordinator SoloFreePlayFlowCoordinator;
         internal static PartyFreePlayFlowCoordinator PartyFreePlayFlowCoordinator;
         internal static MainMenuViewController MainMenuViewController;
@@ -26,6 +26,14 @@ namespace BS_Utils.Gameplay
                 MainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().FirstOrDefault();
                 if (MainMenuViewController == null) return;
                 MainMenuViewController.didFinishEvent += MainMenuViewController_didFinishEvent;
+                
+                if (CharacteristicSelectionViewController == null)
+                {
+                    CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().FirstOrDefault();
+                    if (CharacteristicSelectionViewController != null)
+                        CharacteristicSelectionViewController.didSelectBeatmapCharacteristicEvent += CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent;
+                }
+                
             }
         }
 
@@ -37,9 +45,9 @@ namespace BS_Utils.Gameplay
                 IsPartyActive = false;
         }
 
-        internal static void CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(BeatmapCharacteristicSelectionViewController arg1, BeatmapCharacteristicSO arg2)
+        internal static void CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2)
         {
-            Utilities.Logger.Log(arg2.characteristicName);
+        //    Utilities.Logger.Log("Prev: " + GameMode + "    New: " + arg2.characteristicName);
             GameMode = arg2.characteristicName;
         }
 

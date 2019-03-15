@@ -10,17 +10,19 @@ using UnityEngine.UI;
 using CustomUI.BeatSaber;
 namespace BS_Utils.Gameplay.Harmony_Patches
 {
-    [HarmonyPatch(typeof(BeatmapCharacteristicSelectionViewController),
-          new Type[] {   typeof(VRUI.VRUIViewController.DeactivationType) })]
-    [HarmonyPatch("DidDeactivate", MethodType.Normal)]
+    [HarmonyPatch(typeof(BeatmapCharacteristicSegmentedControlController),
+            new Type[] {
+            typeof(IDifficultyBeatmapSet[]),
+                        typeof(BeatmapCharacteristicSO)
+                                    })]
+        
+    [HarmonyPatch("SetData", MethodType.Normal)]
 
     class BeatmapCharacteristicSelectionViewControllerDidDeactivate
     {
-        static void Postfix(BeatmapCharacteristicSelectionViewController __instance, VRUI.VRUIViewController.DeactivationType deactivationType)
+        static void Postfix(BeatmapCharacteristicSegmentedControlController __instance, IDifficultyBeatmapSet[] difficultyBeatmapSets, BeatmapCharacteristicSO selectedBeatmapCharacteristic)
         {
-            if (deactivationType == VRUI.VRUIViewController.DeactivationType.RemovedFromHierarchy)
-                Gamemode.ResetGameMode();      
-
+            Gamemode.CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(__instance, __instance.selectedBeatmapCharacteristic);
         }
     }
 }

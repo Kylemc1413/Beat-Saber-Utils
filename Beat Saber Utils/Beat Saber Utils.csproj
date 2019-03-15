@@ -85,7 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gameplay\Gamemode.cs" />
-    <Compile Include="Gameplay\HarmonyPatches\BeatmapCharacteristicSelectionViewControllerDidActivate.cs" />
     <Compile Include="Gameplay\HarmonyPatches\BeatmapCharacteristicSelectionViewControllerDidDeActivate.cs" />
     <Compile Include="Gameplay\HarmonyPatches\BlahBlahGrabTheLevelData.cs" />
     <Compile Include="Gameplay\HarmonyPatches\ResultsViewControllerSetDataToUI.cs" />
