@@ -2,10 +2,8 @@
 using Oculus.Platform.Models;
 using Steamworks;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BS_Utils.Utilities;
+
 namespace BS_Utils.Gameplay
 {
     public static class GetUserInfo
@@ -39,13 +37,13 @@ namespace BS_Utils.Gameplay
                         Logger.Log("Attempting to Grab Steam User");
                         GetSteamUser();
                     }
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
-                    Logger.Log("Unable to grab user! Exception: "+e);
+                    Logger.Log("Unable to grab user! Exception: " + e);
                 }
             }
         }
-
 
         internal static void GetSteamUser()
         {
@@ -71,6 +69,7 @@ namespace BS_Utils.Gameplay
                 }
             });
         }
+
         public static string GetUserName()
         {
             return userName;
@@ -80,6 +79,5 @@ namespace BS_Utils.Gameplay
         {
             return userID;
         }
-
     }
 }

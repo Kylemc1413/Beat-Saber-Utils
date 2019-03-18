@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 
@@ -67,7 +66,6 @@ namespace BS_Utils.Utilities
             return defaultValue;
         }
 
-
         /// <summary>
         /// Gets a float from the ini.
         /// </summary>
@@ -111,13 +109,15 @@ namespace BS_Utils.Utilities
         public bool GetBool(string section, string name, BoolSavingMode mode, bool defaultValue = false, bool autoSave = false)
         {
             string sVal = GetString(section, name);
-            try{
+            try
+            {
                 int yesIndex = yesAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
                 int noIndex = noAlts.IndexOf(CultureInfo.CurrentCulture.TextInfo.ToTitleCase(sVal));
                 if (yesIndex != -1 && yesIndex == (int)mode) return true;
                 else if (noIndex != -1 && noIndex == (int)mode) return false;
                 else if (autoSave) SetBool(section, name, defaultValue);
-            }catch{SetBool(section, name, defaultValue);}
+            }
+            catch { SetBool(section, name, defaultValue); }
             return defaultValue;
         }
 
@@ -127,7 +127,6 @@ namespace BS_Utils.Utilities
         /// <param name="section">Section of the key.</param>
         /// <param name="name">Name of the key.</param>
         /// <returns></returns>
-
         public bool HasKey(string section, string name)
         {
             if (_instance.data.Sections.ContainsSection(section))
@@ -190,9 +189,6 @@ namespace BS_Utils.Utilities
         public void SetBool(string section, string name, BoolSavingMode mode, bool value)
         {
             _instance.IniWriteValue(section, name, value ? yesAlts[(int)mode] : noAlts[(int)mode]);
-
         }
-
-
     }
 }

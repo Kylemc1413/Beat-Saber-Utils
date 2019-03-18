@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Media;
-using TMPro;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using IllusionPlugin;
 using Harmony;
@@ -16,11 +9,15 @@ namespace BS_Utils
     {
         public string Name => "Beat Saber Utils";
         public string Version => "1.2.1";
+
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
+
         public static Gameplay.LevelData LevelData = new Gameplay.LevelData();
+
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
         public static event LevelDidFinish LevelDidFinishEvent;
+
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -28,7 +25,6 @@ namespace BS_Utils
 
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
-
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene oldScene, Scene newScene)
@@ -42,10 +38,7 @@ namespace BS_Utils
             }
         }
 
-        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
-        {
-
-        }
+        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1) { }
 
         public void OnApplicationQuit()
         {
@@ -53,29 +46,19 @@ namespace BS_Utils
             SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
         }
 
-        public void OnLevelWasLoaded(int level)
-        {
+        public void OnLevelWasLoaded(int level) { }
 
-        }
+        public void OnLevelWasInitialized(int level) { }
 
-        public void OnLevelWasInitialized(int level)
-        {
-        }
+        public void OnUpdate() { }
 
-        public void OnUpdate()
-        {
-
-
-        }
-
-        public void OnFixedUpdate()
-        {
-        }
+        public void OnFixedUpdate() { }
 
         internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
         {
             LevelDidFinishEvent?.Invoke(levelScenesTransitionSetupDataSO, levelCompletionResults);
         }
+
         internal static void ApplyHarmonyPatches()
         {
             if (patched) return;
@@ -90,8 +73,6 @@ namespace BS_Utils
                 Utilities.Logger.Log("Exception Trying to Apply Harmony Patches");
                 Utilities.Logger.Log(ex.ToString());
             }
-
-
         }
     }
 }

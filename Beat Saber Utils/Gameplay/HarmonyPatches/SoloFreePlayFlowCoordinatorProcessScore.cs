@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Harmony;
+
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
     [HarmonyPatch(typeof(SoloFreePlayFlowCoordinator),
@@ -13,19 +10,15 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch("ProcessScore", MethodType.Normal)]
     class SoloFreePlayFlowCoordinatorProcessScore
     {
-
         static void Prefix(LevelCompletionResults levelCompletionResults, ref bool practice)
         {
-            if(ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
-  //              Utilities.Logger.Log("Score Submission Disabled");
+                //Utilities.Logger.Log("Score Submission Disabled");
                 practice = true;
             }
-
         }
 
-        static void Postfix(LevelCompletionResults levelCompletionResults, ref bool practice)
-        {
-        }
+        static void Postfix(LevelCompletionResults levelCompletionResults, ref bool practice) { }
     }
 }
