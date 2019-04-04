@@ -26,22 +26,22 @@ namespace BS_Utils.Gameplay
                 {
                     if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
                     {
-                        Logger.Log("Attempting to Grab Steam User");
+                        Logger.log.Debug("Attempting to Grab Steam User");
                         GetSteamUser();
                     }
                     else if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
                     {
-                        Logger.Log("Attempting to Grab Oculus User");
+                        Logger.log.Debug("Attempting to Grab Oculus User");
                         GetOculusUser();
                     }
                     else if (Environment.CommandLine.Contains("fpfc") && VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Unknown)
                     {
-                        Logger.Log("Attempting to Grab Steam User");
+                        Logger.log.Debug("Attempting to Grab Steam User");
                         GetSteamUser();
                     }
                 }catch(Exception e)
                 {
-                    Logger.Log("Unable to grab user! Exception: "+e);
+                    Logger.log.Error("Unable to grab user! Exception: "+e);
                 }
             }
         }
@@ -56,7 +56,7 @@ namespace BS_Utils.Gameplay
             }
             else
             {
-                Logger.Log("Steam is not initialized!");
+                Logger.log.Warn("Steam is not initialized!");
             }
         }
 

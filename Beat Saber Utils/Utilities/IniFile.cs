@@ -60,7 +60,7 @@ namespace BS_Utils.Utilities
                 data[Section][Key] = Value;
                 parser.WriteFile(Path, data);
             }
-            catch { Logger.Log("IniWriteValue doesnt want to write the stuffs"); }
+            catch { Logger.log.Debug("IniWriteValue doesnt want to write the stuffs"); }
         }
 
         public string IniReadValue(string Section, string Key)
@@ -81,7 +81,7 @@ namespace BS_Utils.Utilities
             }
             catch
             {
-                Logger.Log("IniReadValue doesn't want to read the stuffs");
+                Logger.log.Debug("IniReadValue doesn't want to read the stuffs");
                 return "";
             }
         }

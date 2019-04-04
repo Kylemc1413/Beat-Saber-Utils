@@ -60,7 +60,7 @@ namespace BS_Utils.Gameplay
             Plugin.ApplyHarmonyPatches();
 
             IsIsolatedLevel = true;
-            Utilities.Logger.Log($"Isolated level being started by {modName}");
+            Utilities.Logger.log.Debug($"Isolated level being started by {modName}");
             IsolatingMod = modName;
 
         }

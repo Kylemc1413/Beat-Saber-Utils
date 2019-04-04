@@ -7,69 +7,69 @@ using System.Media;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using IllusionPlugin;
 using Harmony;
+using IPA;
+using IPALogger = IPA.Logging.Logger;
+using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils
 {
-    public class Plugin : IPlugin
+    public class Plugin : IBeatSaberPlugin
     {
         public string Name => "Beat Saber Utils";
-        public string Version => "1.2.2";
+        public string Version => "1.2.3";
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
         public static Gameplay.LevelData LevelData = new Gameplay.LevelData();
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
         public static event LevelDidFinish LevelDidFinishEvent;
+
+        public void Init(object thisIsNull, IPALogger logger)
+        {
+            Logger.log = logger;
+        }
+
         public void OnApplicationStart()
         {
-            SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-
+            Logger.log.Debug("OnApplicationStart");
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
+        }
+
+        public void OnApplicationQuit()
+        {
+            Logger.log.Debug("OnApplicationQuit");
+        }
+
+        public void OnFixedUpdate()
+        {
 
         }
 
-        private void SceneManagerOnActiveSceneChanged(Scene oldScene, Scene newScene)
+        public void OnUpdate()
         {
-            if (newScene.name == "MenuCore")
+
+        }
+
+        public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
+        {
+            if (nextScene.name == "MenuCore")
             {
-                Utilities.Logger.Log("Removing Isolated Level");
+                Logger.log.Debug("Removing Isolated Level");
                 Gameplay.Gamemode.IsIsolatedLevel = false;
                 Gameplay.Gamemode.IsolatingMod = "";
                 LevelData.Clear();
             }
         }
 
-        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
+        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
         {
 
         }
 
-        public void OnApplicationQuit()
-        {
-            SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
-        }
-
-        public void OnLevelWasLoaded(int level)
+        public void OnSceneUnloaded(Scene scene)
         {
 
-        }
-
-        public void OnLevelWasInitialized(int level)
-        {
-        }
-
-        public void OnUpdate()
-        {
-
-
-        }
-
-        public void OnFixedUpdate()
-        {
         }
 
         internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
@@ -81,14 +81,14 @@ namespace BS_Utils
             if (patched) return;
             try
             {
-                Utilities.Logger.Log("Applying Harmony Patches");
+                Logger.log.Debug("Applying Harmony Patches");
                 harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
                 patched = true;
             }
             catch (Exception ex)
             {
-                Utilities.Logger.Log("Exception Trying to Apply Harmony Patches");
-                Utilities.Logger.Log(ex.ToString());
+                Logger.log.Error("Exception Trying to Apply Harmony Patches");
+                Logger.log.Error(ex.ToString());
             }
 
 
