@@ -16,8 +16,6 @@ namespace BS_Utils
 {
     public class Plugin : IBeatSaberPlugin
     {
-        public string Name => "Beat Saber Utils";
-        public string Version => "1.2.3";
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
         public static Gameplay.LevelData LevelData = new Gameplay.LevelData();
