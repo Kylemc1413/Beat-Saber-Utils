@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BS_Utils.Utilities;
+using LogLevel = IPA.Logging.Logger.Level;
+
 namespace BS_Utils.Gameplay
 {
     public static class GetUserInfo
@@ -26,22 +28,22 @@ namespace BS_Utils.Gameplay
                 {
                     if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
                     {
-                        Logger.Log("Attempting to Grab Steam User");
+                        Logger.Log("Attempting to Grab Steam User", LogLevel.Debug);
                         GetSteamUser();
                     }
                     else if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
                     {
-                        Logger.Log("Attempting to Grab Oculus User");
+                        Logger.Log("Attempting to Grab Oculus User", LogLevel.Debug);
                         GetOculusUser();
                     }
                     else if (Environment.CommandLine.Contains("fpfc") && VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Unknown)
                     {
-                        Logger.Log("Attempting to Grab Steam User");
+                        Logger.Log("Attempting to Grab Steam User", LogLevel.Debug);
                         GetSteamUser();
                     }
                 }catch(Exception e)
                 {
-                    Logger.Log("Unable to grab user! Exception: "+e);
+                    Logger.Log("Unable to grab user! Exception: "+e, LogLevel.Error);
                 }
             }
         }
@@ -56,7 +58,7 @@ namespace BS_Utils.Gameplay
             }
             else
             {
-                Logger.Log("Steam is not initialized!");
+                Logger.Log("Steam is not initialized!", LogLevel.Warning);
             }
         }
 
