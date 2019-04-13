@@ -9,6 +9,7 @@ namespace BS_Utils.Gameplay
     public class Gamemode
     {
         internal static BeatmapCharacteristicSegmentedControlController CharacteristicSelectionViewController;
+        public static BeatmapCharacteristicSO SelectedCharacteristic { get; internal set; }
         internal static SoloFreePlayFlowCoordinator SoloFreePlayFlowCoordinator;
         internal static PartyFreePlayFlowCoordinator PartyFreePlayFlowCoordinator;
         internal static MainMenuViewController MainMenuViewController;
@@ -49,6 +50,7 @@ namespace BS_Utils.Gameplay
         {
         //    Utilities.Logger.Log("Prev: " + GameMode + "    New: " + arg2.characteristicName);
             GameMode = arg2.characteristicName;
+            SelectedCharacteristic = arg2;
         }
 
         internal static void ResetGameMode()
