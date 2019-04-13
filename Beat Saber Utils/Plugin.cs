@@ -10,7 +10,7 @@ namespace BS_Utils
     {
         public string Name => "Beat Saber Utils";
 
-        public string Version => "1.2.3";
+        public string Version => "1.3.0";
         
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
@@ -68,8 +68,6 @@ namespace BS_Utils
 
         }
 
-        public void OnUpdate()
-        {
 
         public void OnUpdate() { }
 

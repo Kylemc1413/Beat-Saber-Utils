@@ -3,15 +3,11 @@ using Oculus.Platform.Models;
 using Steamworks;
 using System;
 using UnityEngine;
-using CustomUI.Utilities;
 using Logger = BS_Utils.Utilities.Logger;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BS_Utils.Utilities;
 using LogLevel = IPA.Logging.Logger.Level;
-
-
+using System.Linq;
+using System.Reflection;
+using System.IO;
 namespace BS_Utils.Gameplay
 {
     public static class GetUserInfo
@@ -79,7 +75,7 @@ namespace BS_Utils.Gameplay
                 {
                     userID = msg.Data.ID;
                     userName = msg.Data.OculusID;
-                    userAvatar = UIUtilities.LoadTextureFromResources("BS_Utils.Resources.oculus.png");
+                    userAvatar = LoadTextureFromResources("BS_Utils.Resources.oculus.png");
                 }
             });
         }
@@ -124,5 +120,29 @@ namespace BS_Utils.Gameplay
         {
             return userAvatar;
         }
+
+
+        internal static Texture2D LoadTextureFromResources(string resourcePath)
+        {
+            return LoadTextureRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath));
+        }
+        internal static Texture2D LoadTextureRaw(byte[] file)
+        {
+            if (file.Count() > 0)
+            {
+                Texture2D Tex2D = new Texture2D(2, 2);
+                if (Tex2D.LoadImage(file))
+                    return Tex2D;
+            }
+            return null;
+        }
+        internal static byte[] GetResource(Assembly asm, string ResourceName)
+        {
+            System.IO.Stream stream = asm.GetManifestResourceStream(ResourceName);
+            byte[] data = new byte[stream.Length];
+            stream.Read(data, 0, (int)stream.Length);
+            return data;
+        }
+
     }
 }
