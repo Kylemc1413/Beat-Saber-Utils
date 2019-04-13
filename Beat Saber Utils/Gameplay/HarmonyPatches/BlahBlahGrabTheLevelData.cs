@@ -8,13 +8,14 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             typeof(IDifficultyBeatmap),
                         typeof(GameplayModifiers),
                                     typeof(PlayerSpecificSettings),
-            typeof(PracticeSettings)})]
+            typeof(PracticeSettings),
+              typeof(bool)})]
     [HarmonyPatch("Init", MethodType.Normal)]
     class BlahBlahGrabTheLevelData
     {
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings)
+        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, bool useTestNoteCutSoundEffects)
         {
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects);
             Plugin.LevelData.IsSet = true;
             __instance.didFinishEvent += __instance_didFinishEvent;
 

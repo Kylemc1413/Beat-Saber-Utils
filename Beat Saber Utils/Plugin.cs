@@ -1,15 +1,17 @@
-﻿using System;
+using System;
 using UnityEngine.SceneManagement;
-using IllusionPlugin;
+using IPA;
 using Harmony;
-
+using IPALogger = IPA.Logging.Logger;
+using LogLevel = IPA.Logging.Logger.Level;
 namespace BS_Utils
 {
-    public class Plugin : IPlugin
+    public class Plugin : IBeatSaberPlugin
     {
         public string Name => "Beat Saber Utils";
-        public string Version => "1.2.1";
 
+        public string Version => "1.2.3";
+        
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
 
@@ -20,16 +22,33 @@ namespace BS_Utils
 
         public void OnApplicationStart()
         {
-            SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
 
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
         }
 
-        private void SceneManagerOnActiveSceneChanged(Scene oldScene, Scene newScene)
+        public void Init(object thisIsNull, IPALogger logger)
         {
-            if (newScene.name == "MenuCore")
+            
+                Utilities.Logger.log = logger;
+
+            
+        }
+        
+        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
+        {
+
+        }
+
+        public void OnSceneUnloaded(Scene scene)
+        {
+
+        }
+
+        public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
+        {
+            if (nextScene.name == "MenuCore")
             {
                 Utilities.Logger.Log("Removing Isolated Level");
                 Gameplay.Gamemode.IsIsolatedLevel = false;
@@ -38,17 +57,19 @@ namespace BS_Utils
             }
         }
 
-        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1) { }
+       
+        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
+        {
+
+        }
 
         public void OnApplicationQuit()
         {
-            SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+
         }
 
-        public void OnLevelWasLoaded(int level) { }
-
-        public void OnLevelWasInitialized(int level) { }
+        public void OnUpdate()
+        {
 
         public void OnUpdate() { }
 
@@ -64,15 +85,16 @@ namespace BS_Utils
             if (patched) return;
             try
             {
-                Utilities.Logger.Log("Applying Harmony Patches");
+                Utilities.Logger.Log("Applying Harmony Patches", LogLevel.Debug);
                 harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
                 patched = true;
             }
             catch (Exception ex)
             {
-                Utilities.Logger.Log("Exception Trying to Apply Harmony Patches");
-                Utilities.Logger.Log(ex.ToString());
+                Utilities.Logger.Log("Exception Trying to Apply Harmony Patches", LogLevel.Error);
+                Utilities.Logger.Log(ex.ToString(), LogLevel.Error);
             }
         }
+
     }
 }
