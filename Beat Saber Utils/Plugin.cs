@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Media;
-using TMPro;
-using UnityEngine;
+using System;
 using UnityEngine.SceneManagement;
 using IPA;
 using Harmony;
@@ -16,19 +9,23 @@ namespace BS_Utils
     public class Plugin : IBeatSaberPlugin
     {
         public string Name => "Beat Saber Utils";
+
         public string Version => "1.2.3";
+        
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
+
         public static Gameplay.LevelData LevelData = new Gameplay.LevelData();
+
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
         public static event LevelDidFinish LevelDidFinishEvent;
+
         public void OnApplicationStart()
         {
 
 
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
-
         }
 
         public void Init(object thisIsNull, IPALogger logger)
@@ -59,6 +56,7 @@ namespace BS_Utils
                 LevelData.Clear();
             }
         }
+
        
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
         {
@@ -73,17 +71,15 @@ namespace BS_Utils
         public void OnUpdate()
         {
 
+        public void OnUpdate() { }
 
-        }
-
-        public void OnFixedUpdate()
-        {
-        }
+        public void OnFixedUpdate() { }
 
         internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
         {
             LevelDidFinishEvent?.Invoke(levelScenesTransitionSetupDataSO, levelCompletionResults);
         }
+
         internal static void ApplyHarmonyPatches()
         {
             if (patched) return;
@@ -98,8 +94,6 @@ namespace BS_Utils
                 Utilities.Logger.Log("Exception Trying to Apply Harmony Patches", LogLevel.Error);
                 Utilities.Logger.Log(ex.ToString(), LogLevel.Error);
             }
-
-
         }
 
     }

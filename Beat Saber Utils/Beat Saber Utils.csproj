@@ -101,6 +101,7 @@
     <Compile Include="Utilities\ReflectionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\oculus.png" />
     <EmbeddedResource Include="manifest.json" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

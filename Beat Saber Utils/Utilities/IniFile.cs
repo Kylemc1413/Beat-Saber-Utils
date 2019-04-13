@@ -1,12 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using IniParser;
 using IniParser.Model;
 using IniParser.Parser;
+
 namespace BS_Utils.Utilities
 {
     internal class IniFile
@@ -23,16 +21,15 @@ namespace BS_Utils.Utilities
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(value));
                 if (!File.Exists(value))
                     File.WriteAllText(value, "", Encoding.Unicode);
+
                 _path = value;
             }
         }
+
         internal IniParser.Model.Configuration.IniParserConfiguration config = new IniParser.Model.Configuration.IniParserConfiguration();
         internal FileIniDataParser parser;
         internal IniDataParser dataParser;
         internal IniData data;
-
-
-
 
         /// <summary>
         /// INIFile Constructor.
@@ -60,7 +57,10 @@ namespace BS_Utils.Utilities
                 data[Section][Key] = Value;
                 parser.WriteFile(Path, data);
             }
-            catch { Logger.Log("IniWriteValue doesnt want to write the stuffs"); }
+            catch
+            {
+                Logger.Log("IniWriteValue doesnt want to write the stuffs");
+            }
         }
 
         public string IniReadValue(string Section, string Key)
@@ -69,6 +69,7 @@ namespace BS_Utils.Utilities
             {
                 data = parser.ReadFile(Path);
                 string result;
+
                 if (!data[Section].ContainsKey(Key))
                 {
                     return "";
@@ -85,12 +86,5 @@ namespace BS_Utils.Utilities
                 return "";
             }
         }
-
-
-
-
-
     }
-
-
 }

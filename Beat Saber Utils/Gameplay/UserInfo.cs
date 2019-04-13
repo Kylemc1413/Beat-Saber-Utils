@@ -1,12 +1,16 @@
-﻿using Oculus.Platform;
+using Oculus.Platform;
 using Oculus.Platform.Models;
 using Steamworks;
 using System;
+using UnityEngine;
+using CustomUI.Utilities;
+using Logger = BS_Utils.Utilities.Logger;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BS_Utils.Utilities;
 using LogLevel = IPA.Logging.Logger.Level;
+
 
 namespace BS_Utils.Gameplay
 {
@@ -14,6 +18,7 @@ namespace BS_Utils.Gameplay
     {
         static string userName = null;
         static ulong userID = 0;
+        static Texture2D userAvatar = null;
 
         static GetUserInfo()
         {
@@ -41,20 +46,24 @@ namespace BS_Utils.Gameplay
                         Logger.Log("Attempting to Grab Steam User", LogLevel.Debug);
                         GetSteamUser();
                     }
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
+
                     Logger.Log("Unable to grab user! Exception: "+e, LogLevel.Error);
                 }
             }
         }
 
-
         internal static void GetSteamUser()
         {
             if (SteamManager.Initialized)
             {
+                var steamUser = SteamUser.GetSteamID();
+
                 userName = SteamFriends.GetPersonaName();
-                userID = SteamUser.GetSteamID().m_SteamID;
+                userID = steamUser.m_SteamID;
+                userAvatar = GetAvatar(steamUser);
             }
             else
             {
@@ -70,9 +79,37 @@ namespace BS_Utils.Gameplay
                 {
                     userID = msg.Data.ID;
                     userName = msg.Data.OculusID;
+                    userAvatar = UIUtilities.LoadTextureFromResources("BS_Utils.Resources.oculus.png");
                 }
             });
         }
+
+        private static Texture2D GetAvatar(CSteamID steamUser)
+        {
+            int avatarInt = SteamFriends.GetLargeFriendAvatar(steamUser);
+            bool success = SteamUtils.GetImageSize(avatarInt, out uint imageWidth, out uint imageHeight);
+
+            if (success && imageWidth > 0 && imageHeight > 0)
+            {
+                byte[] Image = new byte[imageWidth * imageHeight * 4];
+                Texture2D returnTexture = new Texture2D((int)imageWidth, (int)imageHeight, TextureFormat.RGBA32, false, true);
+                success = SteamUtils.GetImageRGBA(avatarInt, Image, (int)(imageWidth * imageHeight * 4));
+
+                if (success)
+                {
+                    returnTexture.LoadRawTextureData(Image);
+                    returnTexture.Apply();
+                }
+
+                return returnTexture;
+            }
+            else
+            {
+                Debug.LogError("Couldn't get avatar.");
+                return new Texture2D(0, 0);
+            }
+        }
+
         public static string GetUserName()
         {
             return userName;
@@ -83,5 +120,9 @@ namespace BS_Utils.Gameplay
             return userID;
         }
 
+        public static Texture2D GetUserAvatar()
+        {
+            return userAvatar;
+        }
     }
 }
