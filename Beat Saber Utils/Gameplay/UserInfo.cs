@@ -20,7 +20,7 @@ namespace BS_Utils.Gameplay
         {
             UpdateUserInfo();
         }
-
+        
         public static void UpdateUserInfo()
         {
             if (userID == 0 || userName == null)

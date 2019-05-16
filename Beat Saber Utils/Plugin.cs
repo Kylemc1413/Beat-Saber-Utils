@@ -8,9 +8,9 @@ namespace BS_Utils
 {
     public class Plugin : IBeatSaberPlugin
     {
-        public string Name => "Beat Saber Utils";
-
-        public string Version => "1.3.0";
+        public string Name => "BS Utils";
+        
+        public string Version => "1.3.2";
         
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
@@ -22,7 +22,7 @@ namespace BS_Utils
 
         public void OnApplicationStart()
         {
-
+            
 
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
