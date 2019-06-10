@@ -50,8 +50,8 @@ namespace BS_Utils.Gameplay
 
         internal static void CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2)
         {
-            //Utilities.Logger.Log("Prev: " + GameMode + "    New: " + arg2.characteristicName);
-            GameMode = arg2.characteristicName;
+        //    Utilities.Logger.Log("Prev: " + GameMode + "    New: " + arg2.serializedName);
+            GameMode = arg2.serializedName;
             SelectedCharacteristic = arg2;
         }
 

@@ -8,9 +8,6 @@ namespace BS_Utils
 {
     public class Plugin : IBeatSaberPlugin
     {
-        public string Name => "BS Utils";
-        
-        public string Version => "1.3.2";
         
         internal static bool patched = false;
         internal static HarmonyInstance harmony;

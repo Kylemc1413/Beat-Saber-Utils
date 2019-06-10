@@ -72,10 +72,6 @@ namespace BS_Utils.Gameplay
         {
             switch (arg2.levelEndStateType)
             {
-                case LevelCompletionResults.LevelEndStateType.Quit:
-                    disabled = false;
-                    ModList.Clear();
-                    break;
                 case LevelCompletionResults.LevelEndStateType.Failed:
                     disabled = false;
                     ModList.Clear();
@@ -85,7 +81,11 @@ namespace BS_Utils.Gameplay
                     ModList.Clear();
                     break;
             }
-
+            if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Quit)
+            {
+                disabled = false;
+                ModList.Clear(); 
+            }
             Plugin.LevelDidFinishEvent -= LevelData_didFinishEvent;
             eventSubscribed = false;
         }
