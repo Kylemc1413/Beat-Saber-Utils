@@ -15,7 +15,21 @@ namespace BS_Utils.Gameplay
         static string userName = null;
         static ulong userID = 0;
         static Texture2D userAvatar = null;
+        public static VRPlatformHelper vRPlatformHelper
+        {
+            get
+            {
+                if (_vRPlatformHelper == null)
+                    _vRPlatformHelper = Resources.FindObjectsOfTypeAll<VRPlatformHelper>().First();
+                return _vRPlatformHelper;
 
+            }
+            internal set
+            {
+                _vRPlatformHelper = value;
+            }
+        }
+        private static VRPlatformHelper _vRPlatformHelper;
         static GetUserInfo()
         {
             UpdateUserInfo();
@@ -27,17 +41,17 @@ namespace BS_Utils.Gameplay
             {
                 try
                 {
-                    if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
+                    if (vRPlatformHelper.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR || Environment.CommandLine.Contains("-vrmode oculus"))
                     {
                         Logger.Log("Attempting to Grab Steam User", LogLevel.Debug);
                         GetSteamUser();
                     }
-                    else if (VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
+                    else if (vRPlatformHelper.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
                     {
                         Logger.Log("Attempting to Grab Oculus User", LogLevel.Debug);
                         GetOculusUser();
                     }
-                    else if (Environment.CommandLine.Contains("fpfc") && VRPlatformHelper.instance.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Unknown)
+                    else if (Environment.CommandLine.Contains("fpfc") && vRPlatformHelper.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Unknown)
                     {
                         Logger.Log("Attempting to Grab Steam User", LogLevel.Debug);
                         GetSteamUser();
