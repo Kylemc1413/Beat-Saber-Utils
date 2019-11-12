@@ -4,6 +4,8 @@ using IPA;
 using Harmony;
 using IPALogger = IPA.Logging.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
+using BS_Utils.Utilities;
+
 namespace BS_Utils
 {
     public class Plugin : IBeatSaberPlugin
@@ -26,6 +28,7 @@ namespace BS_Utils
 
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
+            BSEvents.OnLoad();
         }
 
         public void Init(object thisIsNull, IPALogger logger)
