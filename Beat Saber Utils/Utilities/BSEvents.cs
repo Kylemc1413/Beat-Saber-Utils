@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Zenject;
 namespace BS_Utils.Utilities
 {
     public class BSEvents : MonoBehaviour
@@ -20,7 +20,7 @@ namespace BS_Utils.Utilities
         public static event Action<StandardLevelDetailViewController, IDifficultyBeatmap> difficultySelected;
         public static event Action<BeatmapCharacteristicSegmentedControlController, BeatmapCharacteristicSO> characteristicSelected;
         public static event Action<LevelPacksViewController, IBeatmapLevelPack> levelPackSelected;
-        public static event Action<LevelPackLevelsViewController, IPreviewBeatmapLevel> levelSelected;
+        public static event Action<LevelCollectionViewController, IPreviewBeatmapLevel> levelSelected;
 
         // Game Events
         public static event Action songPaused;
@@ -112,13 +112,13 @@ namespace BS_Utils.Utilities
             }
         }
 
-        private void OnMenuSceneWasLoaded()
+        private void OnMenuSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoaded;
             InvokeAll(menuSceneLoaded);
         }
 
-        private void OnMenuSceneWasLoadedFresh()
+        private void OnMenuSceneWasLoadedFresh(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
 
@@ -130,20 +130,20 @@ namespace BS_Utils.Utilities
 
             var packSelectViewController = Resources.FindObjectsOfTypeAll<LevelPacksViewController>().FirstOrDefault();
             packSelectViewController.didSelectPackEvent += delegate (LevelPacksViewController controller, IBeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
-            var levelSelectViewController = Resources.FindObjectsOfTypeAll<LevelPackLevelsViewController>().FirstOrDefault();
-            levelSelectViewController.didSelectLevelEvent += delegate (LevelPackLevelsViewController controller, IPreviewBeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
+            var levelSelectViewController = Resources.FindObjectsOfTypeAll<LevelCollectionViewController>().FirstOrDefault();
+            levelSelectViewController.didSelectLevelEvent += delegate (LevelCollectionViewController controller, IPreviewBeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
 
             InvokeAll(menuSceneLoadedFresh);
         }
 
-        private void GameSceneSceneWasLoaded()
+        private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             // Prevent firing this event when returning to menu
             Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault().transitionDidFinishEvent -= GameSceneSceneWasLoaded;
 
-            var pauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().FirstOrDefault();
-            pauseManager.GetPrivateField<Signal>("_gameDidResumeSignal").Subscribe(delegate () { InvokeAll(songUnpaused); });
-            pauseManager.GetPrivateField<Signal>("_gameDidPauseSignal").Subscribe(delegate () { InvokeAll(songPaused); });
+            var pauseManager = Resources.FindObjectsOfTypeAll<GamePause>().FirstOrDefault();
+            pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
+            pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
 
             var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
             scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };

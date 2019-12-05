@@ -3,11 +3,7 @@ using Harmony;
 
 namespace BS_Utils.Gameplay.Harmony_Patches
 {
-    [HarmonyPatch(typeof(BeatmapCharacteristicSegmentedControlController),
-            new Type[] {
-            typeof(IDifficultyBeatmapSet[]),
-                        typeof(BeatmapCharacteristicSO)
-                                    })]
+    [HarmonyPatch(typeof(BeatmapCharacteristicSegmentedControlController))]
     [HarmonyPatch("SetData", MethodType.Normal)]
     class BeatmapCharacteristicSelectionViewControllerDidDeactivate
     {
