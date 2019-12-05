@@ -97,6 +97,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\BSEvents.cs" />
     <Compile Include="Utilities\Config.cs" />
     <Compile Include="Utilities\IniFile.cs" />
     <Compile Include="Utilities\Logger.cs" />
