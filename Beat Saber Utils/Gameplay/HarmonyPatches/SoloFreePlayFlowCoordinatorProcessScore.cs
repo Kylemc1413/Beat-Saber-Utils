@@ -4,7 +4,7 @@ using Harmony;
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
     [HarmonyPatch(typeof(SoloFreePlayFlowCoordinator))]
-    [HarmonyPatch("ProcessScore", MethodType.Normal)]
+    [HarmonyPatch("ProcessLevelCompletionResultsAfterLevelDidFinish", MethodType.Normal)]
     class SoloFreePlayFlowCoordinatorProcessScore
     {
         static void Prefix(LevelCompletionResults levelCompletionResults, ref bool practice)

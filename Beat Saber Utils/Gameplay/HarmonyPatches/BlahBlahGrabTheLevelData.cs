@@ -3,11 +3,13 @@ using Harmony;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
-    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO))]
-    [HarmonyPatch("Init", MethodType.Normal)]
+    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), "Init", new Type[] {typeof(IDifficultyBeatmap) , typeof(OverrideEnvironmentSettings) ,typeof(ColorScheme),
+            typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(PracticeSettings) , typeof(string) , typeof(bool)})]
+  //  [HarmonyPatch("Init", MethodType.Normal)]
     class BlahBlahGrabTheLevelData
     {
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
+        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, OverrideEnvironmentSettings overrideEnvironmentSettings, ColorScheme overrideColorScheme,
+            GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects);
             Plugin.LevelData.IsSet = true;
@@ -22,11 +24,12 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
     
-    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO))]
-    [HarmonyPatch("Init", MethodType.Normal)]
+    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), "Init", new Type[] {typeof(IDifficultyBeatmap) , typeof(MissionObjective[]) ,typeof(OverrideEnvironmentSettings),
+            typeof(ColorScheme) , typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(string)})]
     class BlahBlahGrabTheMissionLevelData
     {
-        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings)
+        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap,OverrideEnvironmentSettings overrideEnvironmentSettings,
+            MissionObjective[] missionObjectives, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings)
         {
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false);
             Plugin.LevelData.IsSet = true;

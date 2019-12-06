@@ -45,7 +45,7 @@ namespace BS_Utils.Utilities
         public static event Action<Saber.SaberType> sabersStartCollide;
         public static event Action<Saber.SaberType> sabersEndCollide;
 
-        const string Menu = "MenuCore";
+        const string Menu = "MenuViewControllers";
         const string Game = "GameCore";
         const string EmptyTransition = "EmptyTransition";
 
