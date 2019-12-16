@@ -114,6 +114,7 @@
     <Compile Include="Utilities\IniFile.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\ReflectionUtil.cs" />
+    <Compile Include="Utilities\UIUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\oculus.png" />
