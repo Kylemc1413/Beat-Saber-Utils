@@ -10,53 +10,209 @@ namespace BS_Utils.Utilities
     {
         private const BindingFlags _allBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
-        public static void SetPrivateField(this object obj, string fieldName, object value)
+
+        /// <summary>
+        /// Sets a field on the target object. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to. 
+        /// </summary>
+        /// <param name="obj">the object instance</param>
+        /// <param name="fieldName">the field to set</param>
+        /// <param name="value">the value to set it to</param>
+        /// <param name="targetType">the object <see cref="Type"/> the field belongs to</param>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+		public static void SetField(this object obj, string fieldName, object value, Type targetType)
         {
-            obj.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SetValue(obj, value);
+            var prop = targetType.GetField(fieldName, _allBindingFlags);
+            if (prop == null)
+                throw new InvalidOperationException($"{fieldName} is not a member of {targetType.Name}");
+            prop.SetValue(obj, value);
         }
 
-        public static T GetPrivateField<T>(this object obj, string fieldName)
+        /// <summary>
+        /// Gets the value of a field. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to.
+        /// </summary>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="fieldName">the name of the field to read</param>
+        /// <param name="targetType">the object <see cref="Type"/> the field belongs to</param>
+        /// <returns>the value of the field</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+        public static object GetField(this object obj, string fieldName, Type targetType)
         {
-            return (T)((object)obj.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj));
+            var prop = targetType.GetField(fieldName, _allBindingFlags);
+            if (prop == null)
+                throw new InvalidOperationException($"{fieldName} is not a member of {targetType.Name}");
+            return prop.GetValue(obj);
         }
 
-        //Sets the value of a (static?) field in object "obj" with name "fieldName"
-        public static void SetField(this object obj, string fieldName, object value)
+        /// <summary>
+        /// Sets a private field on the target object. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to. 
+        /// </summary>
+        /// <param name="obj">the object instance</param>
+        /// <param name="fieldName">the field to set</param>
+        /// <param name="value">the value to set it to</param>
+        /// <param name="targetType">the object <see cref="Type"/> the field belongs to</param>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+		public static void SetPrivateField(this object obj, string fieldName, object value, Type targetType)
         {
-            (obj is Type ? (Type)obj : obj.GetType())
-                .GetField(fieldName, _allBindingFlags)
-                .SetValue(obj, value);
+            var prop = targetType.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (prop == null)
+                throw new InvalidOperationException($"{fieldName} is not a member of {targetType.Name}");
+            prop.SetValue(obj, value);
         }
 
-        //Gets the value of a (static?) field in object "obj" with name "fieldName"
-        public static object GetField(this object obj, string fieldName)
+        /// <summary>
+        /// Gets the value of a private field. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to.
+        /// </summary>
+        /// <typeparam name="T">the type of the field (result casted)</typeparam>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="fieldName">the name of the field to read</param>
+        /// <param name="targetType">the object <see cref="Type"/> the field belongs to</param>
+        /// <returns>the value of the field</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+        public static T GetPrivateField<T>(this object obj, string fieldName, Type targetType)
         {
-            return (obj is Type ? (Type)obj : obj.GetType())
-                .GetField(fieldName, _allBindingFlags)
-                .GetValue(obj);
+            var prop = targetType.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+            if (prop == null)
+                throw new InvalidOperationException($"{fieldName} is not a member of {targetType.Name}");
+            var value = prop.GetValue(obj);
+            return (T)value;
         }
 
-        //Gets the value of a (static?) field in object "obj" with name "fieldName" (TYPED)
-        public static T GetField<T>(this object obj, string fieldName) => (T)GetField(obj, fieldName);
 
-        //Sets the value of a (static?) Property specified by the object "obj" and the name "propertyName"
-        public static void SetProperty(this object obj, string propertyName, object value)
+        /// <summary>
+        /// Sets the value of a property on the target object. <paramref name="targetType"/> specifies the <see cref="Type"/> the property belongs to. 
+        /// </summary>
+        /// <param name="obj">the object instance</param>
+        /// <param name="propertyName">the property to set</param>
+        /// <param name="value">the value to set it to</param>
+        /// <param name="targetType">the object <see cref="Type"/> the property belongs to</param>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="propertyName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+        public static void SetProperty(this object obj, string propertyName, object value, Type targetType)
         {
-            (obj is Type ? (Type)obj : obj.GetType())
-                .GetProperty(propertyName, _allBindingFlags)
-                .SetValue(obj, value, null);
+            var prop = targetType.GetProperty(propertyName, _allBindingFlags);
+            if (prop == null)
+                throw new InvalidOperationException($"{propertyName} is not a member of {targetType.Name}");
+            prop.SetValue(obj, value);
         }
 
-        //Gets the value of a (static?) Property specified by the object "obj" and the name "propertyName"
-        public static object GetProperty(this object obj, string propertyName)
+        /// <summary>
+        /// Gets the value of a property. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to.
+        /// </summary>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="propertyName">the name of the property to read</param>
+        /// <param name="targetType">the object <see cref="Type"/> the property belongs to</param>
+        /// <returns>the value of the property</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="propertyName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+        public static object GetProperty(this object obj, string propertyName, Type targetType)
         {
-            return (obj is Type ? (Type)obj : obj.GetType())
-                .GetProperty(propertyName, _allBindingFlags)
-                .GetValue(obj);
+            var prop = targetType.GetProperty(propertyName, _allBindingFlags);
+            if (prop == null)
+                throw new InvalidOperationException($"{propertyName} is not a member of {targetType.Name}");
+            var value = prop.GetValue(obj);
+            return value;
         }
 
-        //Gets the value of a (static?) Property specified by the object "obj" and the name "propertyName" (TYPED)
+
+        #region Overloads
+        /// <summary>
+        /// Sets a private field on the target object. 
+        /// </summary>
+        /// <param name="obj">the object instance</param>
+        /// <param name="fieldName">the field to set</param>
+        /// <param name="value">the value to set it to</param>
+        /// <param name="targetType">the object <see cref="Type"/> the field belongs to</param>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+		public static void SetPrivateField(this object obj, string fieldName, object value) => obj.SetPrivateField(fieldName, value, obj.GetType());
+
+
+        /// <summary>
+        /// Gets the value of a private field.
+        /// </summary>
+        /// <typeparam name="T">the type of te field (result casted)</typeparam>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="fieldName">the name of the field to read</param>
+        /// <returns>the value of the field</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        public static T GetPrivateField<T>(this object obj, string fieldName) => obj.GetPrivateField<T>(fieldName, obj.GetType());
+
+        /// <summary>
+        /// Sets a (potentially) private field on the target object.
+        /// </summary>
+        /// <param name="obj">the object instance</param>
+        /// <param name="fieldName">the field to set</param>
+        /// <param name="value">the value to set it to</param>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        public static void SetField(this object obj, string fieldName, object value) => obj.SetField(fieldName, value, obj.GetType());
+
+        /// <summary>
+        /// Gets the value of an object's field.
+        /// </summary>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="fieldName">the name of the field to read</param>
+        /// <returns>the value of the field</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        public static object GetField(this object obj, string fieldName) => GetField(obj, fieldName, obj.GetType());
+
+
+        /// <summary>
+        /// Gets the value of a field. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to.
+        /// </summary>
+        /// <typeparam name="T">the type of the field (result casted)</typeparam>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="fieldName">the name of the field to read</param>
+        /// <param name="targetType">the object <see cref="Type"/> the field belongs to</param>
+        /// <returns>the value of the field</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        /// <exception cref="ArgumentException">thrown when <paramref name="obj"/> isn't assignable as <paramref name="targetType"/></exception>
+        public static T GetField<T>(this object obj, string fieldName, Type targetType) => (T)obj.GetField(fieldName, targetType);
+
+
+        /// <summary>
+        /// Gets the casted value of a field.
+        /// </summary>
+        /// <typeparam name="T">the type of the field (result casted)</typeparam>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="fieldName">the name of the field to read</param>
+        /// <returns>the value of the field</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="fieldName"/> is not a member of <paramref name="obj"/></exception>
+        public static T GetField<T>(this object obj, string fieldName) => (T)GetField(obj, fieldName, obj.GetType());
+
+        /// <summary>
+        /// Sets the value of a property on the target object.
+        /// </summary>
+        /// <param name="obj">the object instance</param>
+        /// <param name="propertyName">the property to set</param>
+        /// <param name="value">the value to set it to</param>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="propertyName"/> is not a member of <paramref name="obj"/></exception>
+        public static void SetProperty(this object obj, string propertyName, object value) => obj.SetProperty(propertyName, value, obj.GetType());
+
+        /// <summary>
+        /// Gets the value of a property.
+        /// </summary>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="propertyName">the name of the property to read</param>
+        /// <returns>the value of the property</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="propertyName"/> is not a member of <paramref name="obj"/></exception>
+        public static object GetProperty(this object obj, string propertyName) => obj.GetProperty(propertyName, obj.GetType());
+
+        /// <summary>
+        /// Gets the casted value of a property.
+        /// </summary>
+        /// <typeparam name="T">they type of the property</typeparam>
+        /// <param name="obj">the object instance to pull from</param>
+        /// <param name="propertyName">the name of the property to read</param>
+        /// <returns>the value of the property</returns>
+        /// <exception cref="InvalidOperationException">thrown when <paramref name="propertyName"/> is not a member of <paramref name="obj"/></exception>
         public static T GetProperty<T>(this object obj, string propertyName) => (T)GetProperty(obj, propertyName);
+
+        #endregion
+
+
 
         //Invokes a (static?) private method with name "methodName" and params "methodParams", returns an object of the specified type
         public static T InvokeMethod<T>(this object obj, string methodName, params object[] methodParams) => (T)InvokeMethod(obj, methodName, methodParams);
@@ -64,9 +220,10 @@ namespace BS_Utils.Utilities
         //Invokes a (static?) private method with name "methodName" and params "methodParams"
         public static object InvokeMethod(this object obj, string methodName, params object[] methodParams)
         {
-            return (obj is Type ? (Type)obj : obj.GetType())
-                .GetMethod(methodName, _allBindingFlags)
-                .Invoke(obj, methodParams);
+            MethodInfo method = obj.GetType().GetMethod(methodName, _allBindingFlags);
+            if (method == null)
+                throw new InvalidOperationException($"{methodName} is not a member of {obj.GetType().Name}");
+            return method.Invoke(obj, methodParams);
         }
 
         //Returns a constructor with the specified parameters to the specified type or object
