@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json",
   "author": "Kyle1413",
   "description": "A basic library for beat saber mods to use.",
-  "gameVersion": "1.6.0",
+  "gameVersion": "1.6.1",
   "id": "BS Utils",
   "name": "BS_Utils",
   "version": "1.4.1",
