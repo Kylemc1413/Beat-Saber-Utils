@@ -5,6 +5,8 @@ using Harmony;
 using IPALogger = IPA.Logging.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
 using BS_Utils.Utilities;
+using UnityEngine;
+using System.Linq;
 
 namespace BS_Utils
 {
@@ -58,6 +60,17 @@ namespace BS_Utils
                 Gameplay.Gamemode.IsolatingMod = "";
                 LevelData.Clear();
             }
+            if (nextScene.name == "GameCore")
+            {
+                StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+                if (setupDataSO == null) { return; }
+                setupDataSO.didFinishEvent += didFinishEvent;
+            }
+        }
+
+        public static void didFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
+        {
+            Utilities.Logger.Log("didFinishEvent called", LogLevel.Debug);
         }
 
        

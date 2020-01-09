@@ -1,5 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+using Logger = BS_Utils.Utilities.Logger;
+using LogLevel = IPA.Logging.Logger.Level;
 
 namespace BS_Utils.Gameplay
 {
@@ -68,6 +73,26 @@ namespace BS_Utils.Gameplay
                 ModList.Add(mod);
         }
 
+        public static void DisableScoreSaberScoreSubmission()
+        {
+            Logger.Log("ScoreSubmission: DisableScoreSaberScoreSubmission called...", LogLevel.Debug);
+
+            StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            if (setupDataSO == null)
+            {
+                Logger.Log("ScoreSubmission: StandardLevelScenesTransitionSetupDataSO not found - exiting...", LogLevel.Debug);
+                return;
+            }
+
+            LogEvents(setupDataSO, "didFinishEvent");
+
+            Logger.Log("Removing ScoreSaber events...", LogLevel.Debug);
+            DisableEvent(setupDataSO, "didFinishEvent", "Five");
+
+            Logger.Log("ScoreSubmission: Getting list of delegates for didFinish event after removing ScoreSaber...", LogLevel.Debug);
+            LogEvents(setupDataSO, "didFinishEvent");
+        }
+
         private static void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
             switch (arg2.levelEndStateType)
@@ -92,6 +117,7 @@ namespace BS_Utils.Gameplay
 
         public static void ProlongedDisableSubmission(string mod)
         {
+            Logger.Log("Prolonged disable called...", LogLevel.Debug);
             if (prolongedDisable == false)
             {
                 Plugin.ApplyHarmonyPatches();
@@ -107,7 +133,50 @@ namespace BS_Utils.Gameplay
             ProlongedModList.Remove(mod);
 
             if (ProlongedModList.Count == 0)
+            {
                 prolongedDisable = false;
+            }
+                
+        }
+
+        private static bool DisableEvent(object target, string eventName, string delegateName)
+        {
+            FieldInfo fieldInfo = target.GetType().GetField(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+            var eventDelegate = fieldInfo.GetValue(target) as MulticastDelegate;
+            bool eventDisabled = false;
+            if (eventDelegate != null)
+            {
+                var delegates = eventDelegate.GetInvocationList();
+                foreach (var item in delegates)
+                {
+                    if (item.Method.Name == delegateName)
+                    {
+                        target.GetType().GetEvent(eventName).RemoveEventHandler(target, item);
+                        eventDisabled = true;
+                    }
+                }
+            }
+            return eventDisabled;
+        }
+
+        // Used for debugging purposes
+        private static void LogEvents(object target, string eventName)
+        {
+            FieldInfo fieldInfo = target.GetType().GetField(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+            var eventDelegate = fieldInfo.GetValue(target) as MulticastDelegate;
+            if (eventDelegate == null)
+            {
+                Logger.Log("ScoreSubmission: Unable to get eventDelegate from StandardLevelScenesTransitionSetupDataSO - exiting...", LogLevel.Debug);
+            }
+
+            var delegates = eventDelegate.GetInvocationList();
+            Logger.Log("ScoreSubmission: Getting list of delegates for didFinish event...", LogLevel.Debug);
+            foreach (var item in delegates)
+            {
+                Logger.Log(String.Format("ScoreSubmission: Found delegate named '{0}' by Module '{1}', part of Assembly '{2}'", item.Method.Name, item.Method.Module.Name, item.Method.Module.Assembly.FullName), LogLevel.Debug);
+            }
         }
     }
 }
