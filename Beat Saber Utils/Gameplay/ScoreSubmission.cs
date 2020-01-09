@@ -75,22 +75,14 @@ namespace BS_Utils.Gameplay
 
         public static void DisableScoreSaberScoreSubmission()
         {
-            Logger.Log("ScoreSubmission: DisableScoreSaberScoreSubmission called...", LogLevel.Debug);
-
             StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (setupDataSO == null)
             {
-                Logger.Log("ScoreSubmission: StandardLevelScenesTransitionSetupDataSO not found - exiting...", LogLevel.Debug);
+                Logger.Log("ScoreSubmission: StandardLevelScenesTransitionSetupDataSO not found - exiting...", LogLevel.Warning);
                 return;
             }
 
-            LogEvents(setupDataSO, "didFinishEvent");
-
-            Logger.Log("Removing ScoreSaber events...", LogLevel.Debug);
             DisableEvent(setupDataSO, "didFinishEvent", "Five");
-
-            Logger.Log("ScoreSubmission: Getting list of delegates for didFinish event after removing ScoreSaber...", LogLevel.Debug);
-            LogEvents(setupDataSO, "didFinishEvent");
         }
 
         private static void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
@@ -117,7 +109,6 @@ namespace BS_Utils.Gameplay
 
         public static void ProlongedDisableSubmission(string mod)
         {
-            Logger.Log("Prolonged disable called...", LogLevel.Debug);
             if (prolongedDisable == false)
             {
                 Plugin.ApplyHarmonyPatches();
