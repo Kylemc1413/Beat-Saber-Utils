@@ -18,18 +18,4 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
         static void Postfix(LevelCompletionResults levelCompletionResults, ref bool practice) { }
     }
-
-    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO))]
-    [HarmonyPatch("Finish", MethodType.Normal)]
-    class FinishPatch
-    {
-        static void Prefix(LevelCompletionResults levelCompletionResults)
-        {
-            if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
-            {
-                //Utilities.Logger.Log("Score Submission Disabled");
-                ScoreSubmission.DisableScoreSaberScoreSubmission();
-            }
-        }
-    }
 }
