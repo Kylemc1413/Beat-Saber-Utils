@@ -9,9 +9,9 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         static void Prefix(LevelCompletionResults levelCompletionResults, ref bool practice)
         {
-            if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
-                //Utilities.Logger.Log("Score Submission Disabled");
+                //Utilities.Logger.Log($"Score Submission Disabled by {string.Join("|", ScoreSubmission.LastDisablers)}");
                 practice = true;
             }
         }
