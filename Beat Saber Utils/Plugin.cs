@@ -8,14 +8,12 @@ using BS_Utils.Utilities;
 
 namespace BS_Utils
 {
-    public class Plugin : IBeatSaberPlugin
+    [Plugin(RuntimeOptions.SingleStartInit)]
+    public class Plugin
     {
-        
         internal static bool patched = false;
         internal static HarmonyInstance harmony;
-
         public static Gameplay.LevelData LevelData = new Gameplay.LevelData();
-
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
         public static event LevelDidFinish LevelDidFinishEvent;
         
