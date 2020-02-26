@@ -165,32 +165,39 @@ namespace BS_Utils.Utilities
             beatmapObjectCallbackController.beatmapEventDidTriggerEvent += delegate (BeatmapEventData songEvent) { InvokeAll(beatmapEvent, songEvent); };
 
             var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-            transitionSetup.didFinishEvent += delegate (StandardLevelScenesTransitionSetupDataSO data, LevelCompletionResults results)
+            if (transitionSetup)
             {
-                switch (results.levelEndStateType)
-                {
-                    case LevelCompletionResults.LevelEndStateType.Cleared:
-                        InvokeAll(levelCleared, data, results);
-                        break;
-                    case LevelCompletionResults.LevelEndStateType.Failed:
-                        if (results.levelEndAction == LevelCompletionResults.LevelEndAction.Restart)
-                            InvokeAll(levelRestarted, data, results);
-                        else
-                            InvokeAll(levelFailed, data, results);
-                        break;
-                };
-                switch (results.levelEndAction)
-                {
-                    case LevelCompletionResults.LevelEndAction.Quit:
-                        InvokeAll(levelQuit, data, results);
-                        break;
-                    case LevelCompletionResults.LevelEndAction.Restart:
-                        InvokeAll(levelRestarted, data, results);
-                        break;
-                }
-            };
+                transitionSetup.didFinishEvent -= OnTransitionSetupOnDidFinishEvent;
+                transitionSetup.didFinishEvent += OnTransitionSetupOnDidFinishEvent;
+            }
 
             InvokeAll(gameSceneLoaded);
+        }
+
+        private void OnTransitionSetupOnDidFinishEvent(StandardLevelScenesTransitionSetupDataSO data, LevelCompletionResults results)
+        {
+            switch (results.levelEndStateType)
+            {
+                case LevelCompletionResults.LevelEndStateType.Cleared:
+                    InvokeAll(levelCleared, data, results);
+                    break;
+                case LevelCompletionResults.LevelEndStateType.Failed:
+                    if (results.levelEndAction == LevelCompletionResults.LevelEndAction.Restart)
+                        InvokeAll(levelRestarted, data, results);
+                    else
+                        InvokeAll(levelFailed, data, results);
+                    break;
+            }
+
+            switch (results.levelEndAction)
+            {
+                case LevelCompletionResults.LevelEndAction.Quit:
+                    InvokeAll(levelQuit, data, results);
+                    break;
+                case LevelCompletionResults.LevelEndAction.Restart:
+                    InvokeAll(levelRestarted, data, results);
+                    break;
+            }
         }
 
         public void InvokeAll<T1, T2, T3>(Action<T1, T2, T3> action, params object[] args)
