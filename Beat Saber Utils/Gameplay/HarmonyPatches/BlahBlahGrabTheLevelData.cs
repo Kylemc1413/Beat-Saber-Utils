@@ -11,6 +11,8 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, OverrideEnvironmentSettings overrideEnvironmentSettings, ColorScheme overrideColorScheme,
             GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
+            ScoreSubmission._wasDisabled = false;
+            ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects);
             Plugin.LevelData.IsSet = true;
             __instance.didFinishEvent -= __instance_didFinishEvent;
@@ -31,6 +33,8 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap,OverrideEnvironmentSettings overrideEnvironmentSettings,
             MissionObjective[] missionObjectives, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings)
         {
+            ScoreSubmission._wasDisabled = false;
+            ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false);
             Plugin.LevelData.IsSet = true;
             __instance.didFinishEvent -= __instance_didFinishEvent;

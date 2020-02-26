@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BS_Utils.Gameplay
 {
@@ -8,6 +9,16 @@ namespace BS_Utils.Gameplay
         public static bool Disabled { get { return disabled; } }
         public static bool ProlongedDisabled { get { return prolongedDisable; } }
         public static bool eventSubscribed = false;
+
+        public static string LastDisabledModString
+        {
+            get
+            {
+                if (LastDisablers == null || LastDisablers.Length == 0)
+                    return string.Empty;
+                return string.Join(", ", LastDisablers);
+            }
+        }
 
         public static string ModString
         {
@@ -43,15 +54,35 @@ namespace BS_Utils.Gameplay
 
         }
 
+        public static bool WasDisabled { get { return _wasDisabled; } }
+
+        public static string[] LastDisablers
+        {
+            get
+            {
+                if (_lastDisablers == null)
+                    return Array.Empty<string>();
+                return _lastDisablers.ToArray();
+            }
+            internal set
+            {
+                _lastDisablers = value;
+            }
+        }
+
         internal static bool disabled = false;
         internal static bool prolongedDisable = false;
         internal static List<string> ModList { get; set; } = new List<string>(0);
         internal static List<string> ProlongedModList { get; set; } = new List<string>(0);
 
+        internal static bool _wasDisabled = false;
+        private static string[] _lastDisablers;
+
         public static void DisableSubmission(string mod)
         {
             if (disabled == false)
             {
+                //Utilities.Logger.log.Warn($"First DisableSubmission by {mod}");
                 Plugin.ApplyHarmonyPatches();
 
                 disabled = true;
@@ -70,22 +101,10 @@ namespace BS_Utils.Gameplay
 
         private static void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
-            switch (arg2.levelEndStateType)
-            {
-                case LevelCompletionResults.LevelEndStateType.Failed:
-                    disabled = false;
-                    ModList.Clear();
-                    break;
-                case LevelCompletionResults.LevelEndStateType.None:
-                    disabled = false;
-                    ModList.Clear();
-                    break;
-            }
-            if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Quit)
-            {
-                disabled = false;
-                ModList.Clear(); 
-            }
+            _wasDisabled = disabled;
+            _lastDisablers = ModList.ToArray();
+            disabled = false;
+            ModList.Clear();
             Plugin.LevelDidFinishEvent -= LevelData_didFinishEvent;
             eventSubscribed = false;
         }
