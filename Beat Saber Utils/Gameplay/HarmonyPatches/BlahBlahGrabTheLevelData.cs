@@ -1,5 +1,6 @@
 ﻿using System;
 using Harmony;
+using static PlayerSaveData;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {

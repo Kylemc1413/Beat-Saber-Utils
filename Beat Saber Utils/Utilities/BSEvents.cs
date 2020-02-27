@@ -19,7 +19,7 @@ namespace BS_Utils.Utilities
         // Menu Events
         public static event Action<StandardLevelDetailViewController, IDifficultyBeatmap> difficultySelected;
         public static event Action<BeatmapCharacteristicSegmentedControlController, BeatmapCharacteristicSO> characteristicSelected;
-        public static event Action<LevelPacksViewController, IBeatmapLevelPack> levelPackSelected;
+        public static event Action<LevelSelectionNavigationController, IBeatmapLevelPack> levelPackSelected;
         public static event Action<LevelCollectionViewController, IPreviewBeatmapLevel> levelSelected;
 
         // Game Events
@@ -42,8 +42,8 @@ namespace BS_Utils.Utilities
 
         public static event Action<BeatmapEventData> beatmapEvent;
 
-        public static event Action<Saber.SaberType> sabersStartCollide;
-        public static event Action<Saber.SaberType> sabersEndCollide;
+        public static event Action<SaberType> sabersStartCollide;
+        public static event Action<SaberType> sabersEndCollide;
 
         const string Menu = "MenuViewControllers";
         const string Game = "GameCore";
@@ -128,8 +128,8 @@ namespace BS_Utils.Utilities
             var characteristicSelect = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().FirstOrDefault();
             characteristicSelect.didSelectBeatmapCharacteristicEvent += delegate (BeatmapCharacteristicSegmentedControlController controller, BeatmapCharacteristicSO characteristic) { InvokeAll(characteristicSelected, controller, characteristic); };
 
-            var packSelectViewController = Resources.FindObjectsOfTypeAll<LevelPacksViewController>().FirstOrDefault();
-            packSelectViewController.didSelectPackEvent += delegate (LevelPacksViewController controller, IBeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
+            var packSelectViewController = Resources.FindObjectsOfTypeAll<LevelSelectionNavigationController>().FirstOrDefault();
+            packSelectViewController.didSelectLevelPackEvent += delegate (LevelSelectionNavigationController controller, IBeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
             var levelSelectViewController = Resources.FindObjectsOfTypeAll<LevelCollectionViewController>().FirstOrDefault();
             levelSelectViewController.didSelectLevelEvent += delegate (LevelCollectionViewController controller, IPreviewBeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
 
@@ -154,8 +154,8 @@ namespace BS_Utils.Utilities
             scoreController.scoreDidChangeEvent += delegate (int score, int scoreAfterModifier) { InvokeAll(scoreDidChange); };
 
             var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
-            saberCollisionManager.sparkleEffectDidStartEvent += delegate (Saber.SaberType saber) { InvokeAll(sabersStartCollide, saber); };
-            saberCollisionManager.sparkleEffectDidEndEvent += delegate (Saber.SaberType saber) { InvokeAll(sabersEndCollide, saber); };
+            saberCollisionManager.sparkleEffectDidStartEvent += delegate (SaberType saber) { InvokeAll(sabersStartCollide, saber); };
+            saberCollisionManager.sparkleEffectDidEndEvent += delegate (SaberType saber) { InvokeAll(sabersEndCollide, saber); };
 
             var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
             gameEnergyCounter.gameEnergyDidReach0Event += delegate () { InvokeAll(energyReachedZero); };
