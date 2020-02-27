@@ -1,15 +1,23 @@
 ﻿using System;
 using Harmony;
-using static PlayerSaveData;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
-    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), "Init", new Type[] {typeof(IDifficultyBeatmap) , typeof(OverrideEnvironmentSettings) ,typeof(ColorScheme),
-            typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(PracticeSettings) , typeof(string) , typeof(bool)})]
-  //  [HarmonyPatch("Init", MethodType.Normal)]
+    
+    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), "Init", new Type[] 
+    {typeof(IDifficultyBeatmap) ,
+        typeof(OverrideEnvironmentSettings), 
+        typeof(ColorScheme),
+
+            typeof(GameplayModifiers) ,
+        typeof(PlayerSpecificSettings) ,
+        typeof(PracticeSettings) ,
+        typeof(string) ,
+        typeof(bool)})]
+
     class BlahBlahGrabTheLevelData
     {
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, OverrideEnvironmentSettings overrideEnvironmentSettings, ColorScheme overrideColorScheme,
+        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap,
             GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
             ScoreSubmission._wasDisabled = false;
