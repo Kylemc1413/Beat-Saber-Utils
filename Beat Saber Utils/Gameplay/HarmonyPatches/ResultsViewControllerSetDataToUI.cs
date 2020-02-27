@@ -15,15 +15,15 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             ____failedDifficultyText.overflowMode = TextOverflowModes.Overflow;
             ____failedDifficultyText.richText = true;
 
-            if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
                 ____clearedDifficultyText.text += "  \r\n<color=#ff0000ff><size=60%><b>Score Submission Disabled by: " +
-                    ScoreSubmission.ModString +
+                    ScoreSubmission.LastDisabledModString +
                     " | " +
                     ScoreSubmission.ProlongedModString;
 
                ____failedDifficultyText.text += "  \r\n<color=#ff0000ff><size=60%><b>Score Submission Disabled by: " +
-                    ScoreSubmission.ModString +
+                    ScoreSubmission.LastDisabledModString +
                     " | " +
                     ScoreSubmission.ProlongedModString;
             }
