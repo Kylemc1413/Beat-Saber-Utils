@@ -27,13 +27,13 @@ namespace BS_Utils
             //Create Harmony Instance
             harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
             BSEvents.OnLoad();
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
         }
 
         [Init]
         public void Init(IPALogger logger)
         {
             Logger.log = logger;
-            SceneManager.activeSceneChanged += OnActiveSceneChanged;
         }
 
         [OnExit]
