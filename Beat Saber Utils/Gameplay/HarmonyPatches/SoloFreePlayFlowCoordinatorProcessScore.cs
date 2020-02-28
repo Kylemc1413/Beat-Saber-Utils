@@ -1,5 +1,5 @@
 ﻿using System;
-using Harmony;
+using HarmonyLib;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {

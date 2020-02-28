@@ -1,6 +1,6 @@
 using IPA;
 using System;
-using Harmony;
+using HarmonyLib;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
 using UnityEngine.SceneManagement;
@@ -13,7 +13,7 @@ namespace BS_Utils
     public class Plugin
     {
         internal static bool patched = false;
-        internal static HarmonyInstance harmony;
+        internal static Harmony harmony;
         public static LevelData LevelData = new LevelData();
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
         public static event LevelDidFinish LevelDidFinishEvent;
@@ -25,7 +25,7 @@ namespace BS_Utils
         public void OnApplicationStart()
         {
             //Create Harmony Instance
-            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.BS-Utils");
+            harmony = new Harmony("com.kyle1413.BeatSaber.BS-Utils");
             BSEvents.OnLoad();
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
         }
