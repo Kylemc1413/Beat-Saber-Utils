@@ -124,11 +124,7 @@ namespace BS_Utils.Gameplay
                 userName = userInfo.userName;
                 if (PlatformUserModelSO.platformInfo.platform == PlatformInfo.Platform.Steam)
                 {
-                    if (SteamManager.Initialized)
-                    {
-                        var steamUser = SteamUser.GetSteamID();
-                        userAvatar = GetAvatar(steamUser);
-                    }
+                    GetSteamAvatar();
                 }
                 else if(PlatformUserModelSO.platformInfo.platform == PlatformInfo.Platform.Oculus)
                     userAvatar = LoadTextureFromResources("BS_Utils.Resources.oculus.png");
@@ -167,7 +163,14 @@ namespace BS_Utils.Gameplay
         //        }
         //    });
         //}
-
+        private static void GetSteamAvatar()
+        {
+            if (SteamManager.Initialized)
+            {
+                var steamUser = SteamUser.GetSteamID();
+                userAvatar = GetAvatar(steamUser);
+            }
+        }
         private static Texture2D GetAvatar(CSteamID steamUser)
         {
             int avatarInt = SteamFriends.GetLargeFriendAvatar(steamUser);
