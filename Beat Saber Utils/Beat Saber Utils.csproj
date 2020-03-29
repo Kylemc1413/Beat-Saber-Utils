@@ -109,6 +109,7 @@
     <Compile Include="Gameplay\HarmonyPatches\BlahBlahGrabTheLevelData.cs" />
     <Compile Include="Gameplay\HarmonyPatches\ResultsViewControllerSetDataToUI.cs" />
     <Compile Include="Gameplay\HarmonyPatches\SoloFreePlayFlowCoordinatorProcessScore.cs" />
+    <Compile Include="Gameplay\HarmonyPatches\StandardLevelScenesTransitionSetupDataSOFinish.cs" />
     <Compile Include="Gameplay\LevelData.cs" />
     <Compile Include="Gameplay\ScoreSubmission.cs" />
     <Compile Include="Gameplay\UserInfo.cs" />
