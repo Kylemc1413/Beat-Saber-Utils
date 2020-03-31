@@ -123,6 +123,13 @@ namespace BS_Utils.Gameplay
             disabled = false;
             ModList.Clear();
             Plugin.LevelDidFinishEvent -= LevelData_didFinishEvent;
+            if (RemovedFive != null)
+            {
+                StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+                setupDataSO.didFinishEvent -= RemovedFive;
+                setupDataSO.didFinishEvent += RemovedFive;
+                RemovedFive = null;
+            }
             eventSubscribed = false;
         }
 
@@ -146,9 +153,10 @@ namespace BS_Utils.Gameplay
             {
                 prolongedDisable = false;
             }
-                
+
         }
 
+        private static Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> RemovedFive;
         private static bool DisableEvent(object target, string eventName, string delegateName)
         {
             FieldInfo fieldInfo = target.GetType().GetField(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
@@ -162,6 +170,7 @@ namespace BS_Utils.Gameplay
                 {
                     if (item.Method.Name == delegateName)
                     {
+                        RemovedFive = (Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults>)item;
                         target.GetType().GetEvent(eventName).RemoveEventHandler(target, item);
                         eventDisabled = true;
                     }
