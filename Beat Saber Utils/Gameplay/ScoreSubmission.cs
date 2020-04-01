@@ -104,7 +104,7 @@ namespace BS_Utils.Gameplay
                 ModList.Add(mod);
         }
 
-        public static void DisableScoreSaberScoreSubmission()
+        internal static void DisableScoreSaberScoreSubmission()
         {
             StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (setupDataSO == null)
