@@ -3,7 +3,7 @@
      and copying the plugin to to your Beat Saber folder. Only edit this if you know what you are doing. -->
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <BuildTargetsVersion>1.1</BuildTargetsVersion>
+    <BuildTargetsVersion>1.2</BuildTargetsVersion>
     <BuildTargetsModified>false</BuildTargetsModified> <!--Set this to true if you edit this file to prevent automatic updates-->
   </PropertyGroup>
   <!--Build Targets-->
