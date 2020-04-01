@@ -7,9 +7,6 @@
     <BuildTargetsModified>false</BuildTargetsModified> <!--Set this to true if you edit this file to prevent automatic updates-->
   </PropertyGroup>
   <!--Build Targets-->
-  <Target Name="CheckBeatSaberDir" AfterTargets="Build" Condition="!Exists($(BeatSaberDir))">
-    <Message Text="ERROR:" />
-  </Target>
   <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(DisableZipRelease)' != 'True' AND '$(Configuration)' == 'Release'">
     <Message Text="Zipping plugin for release." Importance="high" />
     <GetCommitHash ProjectDir="$(ProjectDir)">
