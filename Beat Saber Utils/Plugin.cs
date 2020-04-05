@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Linq;
 using Logger = BS_Utils.Utilities.Logger;
+using IPA.Utilities.Async;
 
 namespace BS_Utils
 {
@@ -41,7 +42,7 @@ namespace BS_Utils
             var transitionHelper = Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().FirstOrDefault();
             var fadeOutHelper = Resources.FindObjectsOfTypeAll<FadeInOutController>().FirstOrDefault();
             fadeOutHelper?.FadeOut();
-            task.ContinueWith(t => transitionHelper?.RestartGame());
+            task.ContinueWith(t => transitionHelper?.RestartGame(), UnityMainThreadTaskScheduler.Default);
         }
 
         [Init]
