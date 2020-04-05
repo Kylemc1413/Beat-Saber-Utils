@@ -6,6 +6,11 @@ using BS_Utils.Utilities;
 using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
+using IPA.Loader;
+using System.Threading.Tasks;
+using UnityEngine;
+using System.Linq;
+using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils
 {
@@ -28,6 +33,15 @@ namespace BS_Utils
             harmony = new Harmony("com.kyle1413.BeatSaber.BS-Utils");
             BSEvents.OnLoad();
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
+            PluginManager.OnPluginsStateChanged += PluginManager_OnPluginsStateChanged;
+        }
+
+        private void PluginManager_OnPluginsStateChanged(Task task)
+        {
+            var transitionHelper = Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().FirstOrDefault();
+            var fadeOutHelper = Resources.FindObjectsOfTypeAll<FadeInOutController>().FirstOrDefault();
+            fadeOutHelper?.FadeOut();
+            task.ContinueWith(t => transitionHelper?.RestartGame());
         }
 
         [Init]
@@ -37,7 +51,11 @@ namespace BS_Utils
         }
 
         [OnExit]
-        public void Exit() => SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+        public void Exit()
+        {
+            SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+            PluginManager.OnPluginsStateChanged -= PluginManager_OnPluginsStateChanged;
+        }
 
         public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
         {
