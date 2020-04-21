@@ -6,6 +6,9 @@
   "id": "BS Utils",
   "name": "BS_Utils",
   "version": "1.4.9",
-  "features": [
-  ]
+  "features": [],
+  "dependsOn": {
+    "BSIPA": "^4.0.5"
+  }
+
 } 
