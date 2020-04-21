@@ -12,7 +12,17 @@ namespace BS_Utils.Utilities
         //Scene Events
         public static event Action menuSceneActive;
         public static event Action menuSceneLoaded;
+        /// <summary>
+        /// Raised after the game's menu is loaded fresh. This event should be used for cloning game objects. Do NOT modify base game objects during this event.
+        /// </summary>
+        public static event Action<ScenesTransitionSetupDataSO> earlyMenuSceneLoadedFresh;
+        [Obsolete("Use earlyMenuSceneLoadedFresh or lateMenuSceneLoadedFresh.")]
         public static event Action menuSceneLoadedFresh;
+        /// <summary>
+        /// Raised after the game's menu is loaded fresh and <see cref="earlyMenuSceneLoadedFresh"/> and <see cref="menuSceneLoadedFresh"/> have run.
+        /// Base game objects are not guaranteed to be unmodified during this event.
+        /// </summary>
+        public static event Action<ScenesTransitionSetupDataSO> lateMenuSceneLoadedFresh;
         public static event Action gameSceneActive;
         public static event Action gameSceneLoaded;
 
@@ -132,8 +142,10 @@ namespace BS_Utils.Utilities
             packSelectViewController.didSelectLevelPackEvent += delegate (LevelSelectionNavigationController controller, IBeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
             var levelSelectViewController = Resources.FindObjectsOfTypeAll<LevelCollectionViewController>().FirstOrDefault();
             levelSelectViewController.didSelectLevelEvent += delegate (LevelCollectionViewController controller, IPreviewBeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
-
+            
+            InvokeAll(earlyMenuSceneLoadedFresh, transitionSetupData);
             InvokeAll(menuSceneLoadedFresh);
+            InvokeAll(lateMenuSceneLoadedFresh, transitionSetupData);
         }
 
         private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
@@ -235,8 +247,9 @@ namespace BS_Utils.Utilities
 
         public void InvokeAll<T>(Action<T> action, params object[] args)
         {
-            if (action == null) return;
-            foreach (Delegate invoc in action.GetInvocationList())
+            Delegate[] actions = action?.GetInvocationList();
+            if (actions == null) return;
+            foreach (Delegate invoc in actions)
             {
                 try
                 {
@@ -244,15 +257,16 @@ namespace BS_Utils.Utilities
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Caught Exception when executing event");
-                    Console.WriteLine(e);
+                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}");
+                    Utilities.Logger.log.Debug(e);
                 }
             }
         }
         public void InvokeAll(Action action, params object[] args)
         {
-            if (action == null) return;
-            foreach (Delegate invoc in action.GetInvocationList())
+            Delegate[] actions = action?.GetInvocationList();
+            if (actions == null) return;
+            foreach (Delegate invoc in actions)
             {
                 try
                 {
@@ -260,8 +274,8 @@ namespace BS_Utils.Utilities
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Caught Exception when executing event");
-                    Console.WriteLine(e);
+                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}");
+                    Utilities.Logger.log.Debug(e);
                 }
             }
         }

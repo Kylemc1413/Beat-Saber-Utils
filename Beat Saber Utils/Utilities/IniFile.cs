@@ -7,7 +7,7 @@ using IniParser.Parser;
 
 namespace BS_Utils.Utilities
 {
-    internal class IniFile
+    public class IniFile
     {
         private string _path = "";
         public string Path
