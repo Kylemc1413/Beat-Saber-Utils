@@ -58,7 +58,7 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public int GetInt(string section, string name, int defaultValue = 0, bool autoSave = false)
         {
-            if (int.TryParse(_instance.IniReadValue(section, name), out int value))
+            if (int.TryParse(_instance.IniReadValue(section, name), NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out int value))
                 return value;
             else if (autoSave)
                 SetInt(section, name, defaultValue);
@@ -76,7 +76,7 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public float GetFloat(string section, string name, float defaultValue = 0f, bool autoSave = false)
         {
-            if (float.TryParse(_instance.IniReadValue(section, name), out float value))
+            if (float.TryParse(_instance.IniReadValue(section, name), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out float value))
                 return value;
             else if (autoSave)
                 SetFloat(section, name, defaultValue);
