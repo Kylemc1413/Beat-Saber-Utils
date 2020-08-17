@@ -17,12 +17,18 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
     class BlahBlahGrabTheLevelData
     {
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap,
+        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, OverrideEnvironmentSettings overrideEnvironmentSettings,
             GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
+            EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
+            if (overrideEnvironmentSettings != null && overrideEnvironmentSettings.overrideEnvironments)
+            {
+                environmentInfoSO = overrideEnvironmentSettings.GetOverrideEnvironmentInfoForType(environmentInfoSO.environmentType);
+            }
+
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO);
             Plugin.LevelData.IsSet = true;
             __instance.didFinishEvent -= __instance_didFinishEvent;
             __instance.didFinishEvent += __instance_didFinishEvent;
@@ -42,9 +48,14 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap,OverrideEnvironmentSettings overrideEnvironmentSettings,
             MissionObjective[] missionObjectives, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings)
         {
+            EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
+            if (overrideEnvironmentSettings != null && overrideEnvironmentSettings.overrideEnvironments)
+            {
+                environmentInfoSO = overrideEnvironmentSettings.GetOverrideEnvironmentInfoForType(environmentInfoSO.environmentType);
+            }
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO);
             Plugin.LevelData.IsSet = true;
             __instance.didFinishEvent -= __instance_didFinishEvent;
             __instance.didFinishEvent += __instance_didFinishEvent;
