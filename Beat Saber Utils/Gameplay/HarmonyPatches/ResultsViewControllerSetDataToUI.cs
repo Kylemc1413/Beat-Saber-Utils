@@ -8,24 +8,25 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch("SetDataToUI", MethodType.Normal)]
     class ResultsViewControllerSetDataToUI
     {
-        static void Postfix(ref TextMeshProUGUI ____clearedDifficultyText, ref TextMeshProUGUI ____failedDifficultyText)
+        static void Postfix(ref TextMeshProUGUI ____rankText)
         {
-            ____clearedDifficultyText.overflowMode = TextOverflowModes.Overflow;
-            ____clearedDifficultyText.richText = true;
-            ____failedDifficultyText.overflowMode = TextOverflowModes.Overflow;
-            ____failedDifficultyText.richText = true;
+            ____rankText.overflowMode = TextOverflowModes.Overflow;
+            ____rankText.richText = true;
+         //   ____failedDifficultyText.overflowMode = TextOverflowModes.Overflow;
+         //   ____failedDifficultyText.richText = true;
 
             if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
-                ____clearedDifficultyText.text += "  \r\n<color=#ff0000ff><size=60%><b>Score Submission Disabled by: " +
+                ____rankText.text += "  \r\n<color=#ff0000ff><size=60%><b>Score Submission Disabled by: " +
                     ScoreSubmission.LastDisabledModString +
                     " | " +
                     ScoreSubmission.ProlongedModString;
-
+                /*
                ____failedDifficultyText.text += "  \r\n<color=#ff0000ff><size=60%><b>Score Submission Disabled by: " +
                     ScoreSubmission.LastDisabledModString +
                     " | " +
                     ScoreSubmission.ProlongedModString;
+                */
             }
 
 

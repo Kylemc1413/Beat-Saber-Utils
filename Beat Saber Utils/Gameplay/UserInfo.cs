@@ -12,13 +12,14 @@ using System.Collections;
 
 namespace BS_Utils.Gameplay
 {
+    /*
     public static class GetUserInfo
     {
         static PlatformInfo platformInfo;
         static string userName = null;
         static ulong userID = 0;
         static Texture2D userAvatar = null;
-        public static VRPlatformHelper vRPlatformHelper
+        public static IVRPlatformHelper vRPlatformHelper
         {
             get
             {
@@ -33,7 +34,7 @@ namespace BS_Utils.Gameplay
             }
         }
         private static VRPlatformHelper _vRPlatformHelper;
-        private static PlatformUserModelSO _platformUserModel;
+        private static IPlatformUserModel _platformUserModel;
 
         public static PlatformUserModelSO PlatformUserModelSO
         {
@@ -240,4 +241,5 @@ namespace BS_Utils.Gameplay
         }
 
     }
+    */
 }

@@ -3,7 +3,7 @@ using HarmonyLib;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
-    [HarmonyPatch(typeof(SoloFreePlayFlowCoordinator))]
+    [HarmonyPatch(typeof(LevelCompletionResultsHelper))]
     [HarmonyPatch("ProcessScore", MethodType.Normal)]
     class SoloFreePlayFlowCoordinatorProcessScore
     {

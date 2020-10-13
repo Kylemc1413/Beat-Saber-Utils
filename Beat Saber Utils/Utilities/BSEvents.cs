@@ -153,7 +153,7 @@ namespace BS_Utils.Utilities
             // Prevent firing this event when returning to menu
             Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault().transitionDidFinishEvent -= GameSceneSceneWasLoaded;
 
-            var pauseManager = Resources.FindObjectsOfTypeAll<GamePause>().FirstOrDefault();
+            var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
             pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
             pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
 
