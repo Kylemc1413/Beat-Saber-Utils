@@ -81,7 +81,7 @@ namespace BS_Utils.Utilities
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene arg1)
         {
-            Utilities.Logger.log.Info(arg1.name);
+        //    Utilities.Logger.log.Info(arg1.name);
             try
             {
                 if (arg1.name == Game)
@@ -108,6 +108,8 @@ namespace BS_Utils.Utilities
 
                         if (arg0.name == EmptyTransition && !lastMainSceneWasNotMenu)
                         {
+                       //     Utilities.Logger.log.Info("Fresh");
+
                             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
                             gameScenesManager.transitionDidFinishEvent += OnMenuSceneWasLoadedFresh;
                         }
