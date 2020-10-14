@@ -58,7 +58,8 @@ namespace BS_Utils.Utilities
         const string Menu = "MenuViewControllers";
         const string Game = "GameCore";
         const string EmptyTransition = "EmptyTransition";
-        private bool lastMainSceneWasGame = false;
+        readonly string[] MainSceneNames = { "GameCore", "Credits", "BeatmapEditor" };
+        private bool lastMainSceneWasNotMenu = false;
         GameScenesManager gameScenesManager;
 
         public static void OnLoad()
@@ -80,6 +81,7 @@ namespace BS_Utils.Utilities
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene arg1)
         {
+            Utilities.Logger.log.Info(arg1.name);
             try
             {
                 if (arg1.name == Game)
@@ -94,7 +96,6 @@ namespace BS_Utils.Utilities
                         gameScenesManager.transitionDidFinishEvent -= GameSceneSceneWasLoaded;
                         gameScenesManager.transitionDidFinishEvent += GameSceneSceneWasLoaded;
                     }
-                    lastMainSceneWasGame = true;
                 }
                 else if (arg1.name == Menu)
                 {
@@ -105,7 +106,7 @@ namespace BS_Utils.Utilities
                     if (gameScenesManager != null)
                     {
 
-                        if (arg0.name == EmptyTransition && !lastMainSceneWasGame)
+                        if (arg0.name == EmptyTransition && !lastMainSceneWasNotMenu)
                         {
                             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
                             gameScenesManager.transitionDidFinishEvent += OnMenuSceneWasLoadedFresh;
@@ -116,8 +117,10 @@ namespace BS_Utils.Utilities
                             gameScenesManager.transitionDidFinishEvent += OnMenuSceneWasLoaded;
                         }
                     }
-                    lastMainSceneWasGame = false;
+                    lastMainSceneWasNotMenu = false;
                 }
+                if (MainSceneNames.Contains(arg1.name))
+                    lastMainSceneWasNotMenu = true;
             }
             catch (Exception e)
             {
