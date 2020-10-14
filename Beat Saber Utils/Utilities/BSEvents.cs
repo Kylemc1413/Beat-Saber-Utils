@@ -162,8 +162,12 @@ namespace BS_Utils.Utilities
             Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault().transitionDidFinishEvent -= GameSceneSceneWasLoaded;
 
             var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
-            pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
-            pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
+            if(pauseManager != null)
+            {
+                pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
+                pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
+            }
+
 
             var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
             scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
