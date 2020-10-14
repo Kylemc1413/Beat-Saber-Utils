@@ -58,7 +58,7 @@ namespace BS_Utils.Utilities
         const string Menu = "MenuViewControllers";
         const string Game = "GameCore";
         const string EmptyTransition = "EmptyTransition";
-
+        private bool lastMainSceneWasGame = false;
         GameScenesManager gameScenesManager;
 
         public static void OnLoad()
@@ -84,6 +84,7 @@ namespace BS_Utils.Utilities
             {
                 if (arg1.name == Game)
                 {
+
                     InvokeAll(gameSceneActive);
 
                     gameScenesManager = Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault();
@@ -93,6 +94,7 @@ namespace BS_Utils.Utilities
                         gameScenesManager.transitionDidFinishEvent -= GameSceneSceneWasLoaded;
                         gameScenesManager.transitionDidFinishEvent += GameSceneSceneWasLoaded;
                     }
+                    lastMainSceneWasGame = true;
                 }
                 else if (arg1.name == Menu)
                 {
@@ -103,7 +105,7 @@ namespace BS_Utils.Utilities
                     if (gameScenesManager != null)
                     {
 
-                        if (arg0.name == EmptyTransition)
+                        if (arg0.name == EmptyTransition && !lastMainSceneWasGame)
                         {
                             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
                             gameScenesManager.transitionDidFinishEvent += OnMenuSceneWasLoadedFresh;
@@ -114,6 +116,7 @@ namespace BS_Utils.Utilities
                             gameScenesManager.transitionDidFinishEvent += OnMenuSceneWasLoaded;
                         }
                     }
+                    lastMainSceneWasGame = false;
                 }
             }
             catch (Exception e)
