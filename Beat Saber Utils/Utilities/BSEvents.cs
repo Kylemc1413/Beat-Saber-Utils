@@ -81,7 +81,7 @@ namespace BS_Utils.Utilities
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene arg1)
         {
-        //    Utilities.Logger.log.Info(arg1.name);
+            //    Utilities.Logger.log.Info(arg1.name);
             try
             {
                 if (arg1.name == Game)
@@ -108,7 +108,7 @@ namespace BS_Utils.Utilities
 
                         if (arg0.name == EmptyTransition && !lastMainSceneWasNotMenu)
                         {
-                       //     Utilities.Logger.log.Info("Fresh");
+                            //     Utilities.Logger.log.Info("Fresh");
 
                             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
                             gameScenesManager.transitionDidFinishEvent += OnMenuSceneWasLoadedFresh;
@@ -150,7 +150,7 @@ namespace BS_Utils.Utilities
             packSelectViewController.didSelectLevelPackEvent += delegate (LevelSelectionNavigationController controller, IBeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
             var levelSelectViewController = Resources.FindObjectsOfTypeAll<LevelCollectionViewController>().FirstOrDefault();
             levelSelectViewController.didSelectLevelEvent += delegate (LevelCollectionViewController controller, IPreviewBeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
-            
+
             InvokeAll(earlyMenuSceneLoadedFresh, transitionSetupData);
             InvokeAll(menuSceneLoadedFresh);
             InvokeAll(lateMenuSceneLoadedFresh, transitionSetupData);
@@ -162,7 +162,7 @@ namespace BS_Utils.Utilities
             Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault().transitionDidFinishEvent -= GameSceneSceneWasLoaded;
 
             var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
-            if(pauseManager != null)
+            if (pauseManager != null)
             {
                 pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
                 pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
@@ -170,23 +170,39 @@ namespace BS_Utils.Utilities
 
 
             var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
-            scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
-            scoreController.noteWasMissedEvent += delegate (NoteData noteData, int multiplier) { InvokeAll(noteWasMissed, noteData, multiplier); }; ;
-            scoreController.multiplierDidChangeEvent += delegate (int multiplier, float progress) { InvokeAll(multiplierDidChange, multiplier, progress); if (multiplier > 1 && progress < 0.1f) InvokeAll(multiplierDidIncrease, multiplier); };
-            scoreController.comboDidChangeEvent += delegate (int combo) { InvokeAll(comboDidChange, combo); };
-            scoreController.comboBreakingEventHappenedEvent += delegate () { InvokeAll(comboDidBreak); };
-            scoreController.scoreDidChangeEvent += delegate (int score, int scoreAfterModifier) { InvokeAll(scoreDidChange); };
+            if (scoreController != null)
+            {
+                scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
+                scoreController.noteWasMissedEvent += delegate (NoteData noteData, int multiplier) { InvokeAll(noteWasMissed, noteData, multiplier); }; ;
+                scoreController.multiplierDidChangeEvent += delegate (int multiplier, float progress) { InvokeAll(multiplierDidChange, multiplier, progress); if (multiplier > 1 && progress < 0.1f) InvokeAll(multiplierDidIncrease, multiplier); };
+                scoreController.comboDidChangeEvent += delegate (int combo) { InvokeAll(comboDidChange, combo); };
+                scoreController.comboBreakingEventHappenedEvent += delegate () { InvokeAll(comboDidBreak); };
+                scoreController.scoreDidChangeEvent += delegate (int score, int scoreAfterModifier) { InvokeAll(scoreDidChange); };
+
+            }
 
             var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
-            saberCollisionManager.sparkleEffectDidStartEvent += delegate (SaberType saber) { InvokeAll(sabersStartCollide, saber); };
-            saberCollisionManager.sparkleEffectDidEndEvent += delegate (SaberType saber) { InvokeAll(sabersEndCollide, saber); };
+            if (saberCollisionManager != null)
+            {
+                saberCollisionManager.sparkleEffectDidStartEvent += delegate (SaberType saber) { InvokeAll(sabersStartCollide, saber); };
+                saberCollisionManager.sparkleEffectDidEndEvent += delegate (SaberType saber) { InvokeAll(sabersEndCollide, saber); };
+            }
+
 
             var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
-            gameEnergyCounter.gameEnergyDidReach0Event += delegate () { InvokeAll(energyReachedZero); };
-            gameEnergyCounter.gameEnergyDidChangeEvent += delegate (float energy) { InvokeAll(energyDidChange, energy); };
+            if (gameEnergyCounter != null)
+            {
+                gameEnergyCounter.gameEnergyDidReach0Event += delegate () { InvokeAll(energyReachedZero); };
+                gameEnergyCounter.gameEnergyDidChangeEvent += delegate (float energy) { InvokeAll(energyDidChange, energy); };
+
+            }
 
             var beatmapObjectCallbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
-            beatmapObjectCallbackController.beatmapEventDidTriggerEvent += delegate (BeatmapEventData songEvent) { InvokeAll(beatmapEvent, songEvent); };
+            if (beatmapObjectCallbackController != null)
+            {
+                beatmapObjectCallbackController.beatmapEventDidTriggerEvent += delegate (BeatmapEventData songEvent) { InvokeAll(beatmapEvent, songEvent); };
+
+            }
 
             var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (transitionSetup)
