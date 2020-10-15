@@ -150,8 +150,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetFileName)" "$(BeatSaberDir)\Plugins"</PostBuildEvent>
-  </PropertyGroup>
+  <!-- Copy the plugin to the Beat Saber installation -->
+  <Target Name="CopyToPlugins" AfterTargets="AfterBuild">
+    <Message Text="Copying $(TargetDir)$(TargetFileName) to Plugins folder" Importance="high"/>
+    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFiles="$(BeatSaberDir)\Plugins\$(TargetFileName)"/>
+  </Target>
   <ProjectExtensions />
 </Project>
