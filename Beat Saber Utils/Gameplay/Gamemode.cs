@@ -6,14 +6,14 @@ namespace BS_Utils.Gameplay
 {
     public class Gamemode
     {
-        internal static BeatmapCharacteristicSegmentedControlController CharacteristicSelectionViewController;
-        public static BeatmapCharacteristicSO SelectedCharacteristic { get; internal set; }
+      //  internal static BeatmapCharacteristicSegmentedControlController CharacteristicSelectionViewController;
+      //  public static BeatmapCharacteristicSO SelectedCharacteristic { get; internal set; }
         internal static SoloFreePlayFlowCoordinator SoloFreePlayFlowCoordinator;
         internal static PartyFreePlayFlowCoordinator PartyFreePlayFlowCoordinator;
         internal static MainMenuViewController MainMenuViewController;
 
         public static bool IsPartyActive { get; private set; } = false;
-        public static string GameMode { get; private set; } = "Standard";
+     //   public static string GameMode { get; private set; } = "Standard";
         public static bool IsIsolatedLevel { get; internal set; } = false;
         public static string IsolatingMod { get; internal set; } = "";
 
@@ -29,13 +29,14 @@ namespace BS_Utils.Gameplay
 
                 if (MainMenuViewController == null) return;
                 MainMenuViewController.didFinishEvent += MainMenuViewController_didFinishEvent;
-
+                /*
                 if (CharacteristicSelectionViewController == null)
                 {
                     CharacteristicSelectionViewController = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().FirstOrDefault();
                     if (CharacteristicSelectionViewController != null)
                         CharacteristicSelectionViewController.didSelectBeatmapCharacteristicEvent += CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent;
                 }
+                */
 
             }
         }
@@ -47,19 +48,20 @@ namespace BS_Utils.Gameplay
             else
                 IsPartyActive = false;
         }
-
+        /*
         internal static void CharacteristicSelectionViewController_didSelectBeatmapCharacteristicEvent(BeatmapCharacteristicSegmentedControlController arg1, BeatmapCharacteristicSO arg2)
         {
         //    Utilities.Logger.Log("Prev: " + GameMode + "    New: " + arg2.serializedName);
             GameMode = arg2.serializedName;
             SelectedCharacteristic = arg2;
         }
-
+        */
+        /*
         internal static void ResetGameMode()
         {
             GameMode = "Standard";
         }
-
+        */
         public static void NextLevelIsIsolated(string modName)
         {
             Plugin.ApplyHarmonyPatches();
