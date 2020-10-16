@@ -36,6 +36,7 @@ namespace BS_Utils
             BSEvents.OnLoad();
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
             PluginManager.OnPluginsStateChanged += PluginManager_OnPluginsStateChanged;
+            ApplyHarmonyPatches();
         }
 
         private void PluginManager_OnPluginsStateChanged(Task task)
