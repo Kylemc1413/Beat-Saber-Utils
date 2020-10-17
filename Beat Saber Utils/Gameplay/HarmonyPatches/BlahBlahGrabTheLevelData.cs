@@ -4,7 +4,7 @@ using IPA.Logging;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
-    
+
     [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), "Init")]
     /*, new Type[] 
     {typeof(string), typeof(IDifficultyBeatmap) ,
@@ -59,17 +59,16 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     */
     class BlahBlahGrabTheMultiLevelData
     {
-        static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance, string gameMode, 
-            IPreviewBeatmapLevel previewBeatmapLevel, BeatmapDifficulty beatmapDifficulty, 
-            BeatmapCharacteristicSO beatmapCharacteristic, IDifficultyBeatmap difficultyBeatmap, 
-            ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, 
+        static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance, ref EnvironmentInfoSO ____multiplayerEnvironmentInfo, string gameMode,
+            IPreviewBeatmapLevel previewBeatmapLevel, BeatmapDifficulty beatmapDifficulty,
+            BeatmapCharacteristicSO beatmapCharacteristic, IDifficultyBeatmap difficultyBeatmap,
+            ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings,
             PracticeSettings practiceSettings, bool useTestNoteCutSoundEffects = false)
         {
-            EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, ____multiplayerEnvironmentInfo);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Multiplayer;
             Utilities.Logger.log.Debug("Level Data set");
