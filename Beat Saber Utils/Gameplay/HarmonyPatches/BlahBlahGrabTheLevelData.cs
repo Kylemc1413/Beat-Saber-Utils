@@ -88,14 +88,10 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(string)})]*/
     class BlahBlahGrabTheMissionLevelData
     {
-        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap,OverrideEnvironmentSettings overrideColorScheme,
-            MissionObjective[] missionObjectives, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings)
+        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, string missionId, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, string backButtonText)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
-            if (overrideColorScheme != null && overrideColorScheme.overrideEnvironments)
-            {
-                environmentInfoSO = overrideColorScheme.GetOverrideEnvironmentInfoForType(environmentInfoSO.environmentType);
-            }
+
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO);
