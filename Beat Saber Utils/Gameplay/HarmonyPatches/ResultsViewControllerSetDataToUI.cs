@@ -26,12 +26,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
                 string color = "<color=#ff0000ff>";
-                string scoresubmissiontext = $"  \r\n{color}<size=60%><b>Score Submission Disabled by: " +
+                string scoresubmissiontext = $"  \r\n{color}<size=50%><b>Score Submission Disabled by: " +
                     ScoreSubmission.LastDisabledModString +
                     " | " +
                     ScoreSubmission.ProlongedModString;
                 tmp.color = Color.white;
                 tmp.text += scoresubmissiontext;
+                tmp.enableWordWrapping = false;
                 if(bgGo != null)
                     bgGo.SetActive(false);
                 /*
