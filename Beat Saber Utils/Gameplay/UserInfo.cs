@@ -43,6 +43,11 @@ namespace BS_Utils.Gameplay
             UpdateUserInfo();
         }
 
+        public static IPlatformUserModel GetPlatformUserModel()
+        {
+            return _platformUserModel ?? SetPlatformUserModel();
+        }
+
         internal static IPlatformUserModel SetPlatformUserModel()
         {
             if (_platformUserModel != null)
