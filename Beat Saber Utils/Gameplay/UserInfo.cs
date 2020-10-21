@@ -9,161 +9,134 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Collections;
+using BS_Utils.Utilities;
+using IPA.Utilities;
+using System.Threading.Tasks;
 
 namespace BS_Utils.Gameplay
 {
-    /*
+
     public static class GetUserInfo
     {
-        static PlatformInfo platformInfo;
+        private static FieldAccessor<PlatformLeaderboardsModel, IPlatformUserModel>.Accessor AccessPlatformUserModel;
         static string userName = null;
-        static ulong userID = 0;
+        static string userID = null;
+        static UserInfo.Platform platform;
         static Texture2D userAvatar = null;
-        public static IVRPlatformHelper vRPlatformHelper
-        {
-            get
-            {
-                if (_vRPlatformHelper == null)
-                    _vRPlatformHelper = Resources.FindObjectsOfTypeAll<VRPlatformHelper>().First();
-                return _vRPlatformHelper;
+        private static Task<UserInfo> getUserTask;
+        private static object getUserLock = new object();
 
-            }
-            internal set
-            {
-                _vRPlatformHelper = value;
-            }
-        }
-        private static VRPlatformHelper _vRPlatformHelper;
         private static IPlatformUserModel _platformUserModel;
-
-        public static PlatformUserModelSO PlatformUserModelSO
-        {
-            get
-            {
-                if (_platformUserModel == null)
-                    _platformUserModel = ScriptableObject.CreateInstance<PlatformUserModelSO>();
-                return _platformUserModel;
-            }
-            internal set { _platformUserModel = value; }
-        }
 
         static GetUserInfo()
         {
-            UpdateUserInfo();
-        }
-        
-        public static void UpdateUserInfo()
-        {
-            if (getUserActive)
-                return; // Already retrieving user info.
-            if (userID == 0 || userName == null)
-            {
-                try
-                {
-                    SharedCoroutineStarter.instance.StartCoroutine(GetUserCoroutine());
-                }
-                catch (Exception e)
-                {
-
-                    Logger.Log("Unable to grab user! Exception: "+e, LogLevel.Error);
-                }
-            }
-        }
-        private static bool getUserActive = false;
-        private static bool foundUser = false;
-        private static bool waitingForCompletion = false;
-        private static IEnumerator GetUserCoroutine()
-        {
-            getUserActive = true;
-            WaitForSeconds wait = new WaitForSeconds(5f);
-            int tries = 1;
             try
             {
-                while (!foundUser && tries < 10)
-                {
-                    if (!waitingForCompletion)
-                    {
-                        if (!foundUser)
-                        {
-                            Logger.log.Debug($"Detected platform: {PlatformUserModelSO.platformInfo.platform}");
-                            try
-                            {
-                                waitingForCompletion = true;
-                                PlatformUserModelSO.GetUserInfo(UserInfoCompletionHandler);
-                            }
-                            catch (Exception ex)
-                            {
-                                waitingForCompletion = false;
-                                Logger.log.Error($"Error retrieving user info: {ex.Message}");
-                                Logger.log.Debug(ex);
-                            }
-                            tries++;
-                        }
-                    }
-                    yield return wait;
-                }
+                AccessPlatformUserModel = FieldAccessor<PlatformLeaderboardsModel, IPlatformUserModel>.GetAccessor("_platformUserModel");
             }
-            finally
+            catch (Exception ex)
             {
-                getUserActive = false;
+                Logger.log.Error($"Error getting PlatformUserModel, GetUserInfo is unavailable: {ex.Message}");
+                Logger.log.Debug(ex);
+            }
+
+            UpdateUserInfo();
+        }
+
+        internal static IPlatformUserModel SetPlatformUserModel()
+        {
+            if (_platformUserModel != null)
+                return _platformUserModel;
+            try
+            {
+                // Need to check for null because there's multiple PlatformLeaderboardsModels (at least sometimes), and one has a null IPlatformUserModel with 'vrmode oculus'
+                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Where(p => AccessPlatformUserModel(ref p) != null).FirstOrDefault();
+                IPlatformUserModel platformUserModel = null;
+                if (leaderboardsModel == null)
+                {
+                    Logger.log.Error($"Could not find a 'PlatformLeaderboardsModel', GetUserInfo unavailable.");
+                    return null;
+                }
+                if (AccessPlatformUserModel == null)
+                {
+                    Logger.log.Error($"Accessor for 'PlatformLeaderboardsModel._platformUserModel' is null, GetUserInfo unavailable.");
+                    return null;
+                }
+
+                platformUserModel = AccessPlatformUserModel(ref leaderboardsModel);
+                _platformUserModel = platformUserModel;
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Error($"Error getting 'IPlatformUserModel', GetUserInfo unavailable: {ex.Message}");
+                Logger.log.Debug(ex);
+            }
+            return _platformUserModel;
+        }
+
+        public static async void UpdateUserInfo()
+        {
+            SetPlatformUserModel();
+
+            try
+            {
+                await GetUserAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Error($"Error retrieving UserInfo: {ex.Message}.");
+                Logger.log.Debug(ex);
             }
         }
 
-        private static void UserInfoCompletionHandler(PlatformUserModelSO.GetUserInfoResult result, PlatformUserModelSO.UserInfo userInfo)
+        /// <summary>
+        /// Attempts to retrieve the UserInfo. Returns null if <see cref="IPlatformUserModel"/> is unavailable.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">Thrown if <see cref="IPlatformUserModel"/> returns null for the <see cref="UserInfo"/>.</exception>
+        public static async Task<UserInfo> GetUserAsync()
         {
-            if (result == PlatformUserModelSO.GetUserInfoResult.OK)
+            try
             {
-                Logger.log.Debug($"UserInfo found: {userInfo.userId}: {userInfo.userName}");
-                platformInfo = PlatformUserModelSO.platformInfo;
-                if (ulong.TryParse(userInfo.userId, out ulong id))
-                    userID = id;
-                else
+                lock (getUserLock)
                 {
-                    Logger.log.Warn($"Unable to parse {userInfo.userId} as a ulong.");
-                    userID = 0;
+                    if (_platformUserModel == null)
+                    {
+                        Logger.log.Error($"IPlatformUserModel not found, cannot update user info.");
+                        return null;
+                    }
+                    if (getUserTask == null || getUserTask.Status == TaskStatus.Faulted)
+                        getUserTask = InternalGetUserAsync();
                 }
+                return await getUserTask;
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Error($"Error retrieving UserInfo: {ex.Message}.");
+                Logger.log.Debug(ex);
+                throw;
+            }
+        }
+
+        private static async Task<UserInfo> InternalGetUserAsync()
+        {
+            UserInfo userInfo = await _platformUserModel.GetUserInfo();
+            if (userInfo != null)
+            {
+                Logger.log.Debug($"UserInfo found: {userInfo.platformUserId}: {userInfo.userName}");
                 userName = userInfo.userName;
-                if (PlatformUserModelSO.platformInfo.platform == PlatformInfo.Platform.Steam)
-                {
+                userID = userInfo.platformUserId;
+                platform = userInfo.platform;
+                if (userInfo.platform == UserInfo.Platform.Steam)
                     GetSteamAvatar();
-                }
-                else if(PlatformUserModelSO.platformInfo.platform == PlatformInfo.Platform.Oculus)
+                else if (userInfo.platform == UserInfo.Platform.Oculus)
                     userAvatar = LoadTextureFromResources("BS_Utils.Resources.oculus.png");
-                foundUser = true;
             }
             else
-                Logger.log.Error("Failed to retrieve user info.");
-            waitingForCompletion = false;
+                throw new InvalidOperationException("UserInfo is null.");
+            return userInfo;
         }
 
-        //internal static void GetSteamUser()
-        //{
-        //    if (SteamManager.Initialized)
-        //    {
-        //        var steamUser = SteamUser.GetSteamID();
-
-        //        userName = SteamFriends.GetPersonaName();
-        //        userID = steamUser.m_SteamID;
-        //        userAvatar = GetAvatar(steamUser);
-        //    }
-        //    else
-        //    {
-        //        Logger.Log("Steam is not initialized!", LogLevel.Warning);
-        //    }
-        //}
-
-        //internal static void GetOculusUser()
-        //{
-        //    Users.GetLoggedInUser().OnComplete((Message<User> msg) =>
-        //    {
-        //        if (!msg.IsError)
-        //        {
-        //            userID = msg.Data.ID;
-        //            userName = msg.Data.OculusID;
-        //            userAvatar = LoadTextureFromResources("BS_Utils.Resources.oculus.png");
-        //        }
-        //    });
-        //}
         private static void GetSteamAvatar()
         {
             if (SteamManager.Initialized)
@@ -197,9 +170,9 @@ namespace BS_Utils.Gameplay
                 return new Texture2D(0, 0);
             }
         }
-        public static PlatformInfo GetPlatformInfo()
+        public static UserInfo.Platform GetPlatformInfo()
         {
-            return platformInfo;
+            return platform;
         }
 
         public static string GetUserName()
@@ -207,7 +180,7 @@ namespace BS_Utils.Gameplay
             return userName;
         }
 
-        public static ulong GetUserID()
+        public static string GetUserID()
         {
             return userID;
         }
@@ -241,5 +214,4 @@ namespace BS_Utils.Gameplay
         }
 
     }
-    */
 }
