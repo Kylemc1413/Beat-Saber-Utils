@@ -152,8 +152,8 @@
   <Import Project="BuildTargets.targets" />
   <!-- Copy the plugin to the Beat Saber installation -->
   <Target Name="CopyToPlugins" AfterTargets="AfterBuild">
-    <Message Text="Copying $(TargetDir)$(TargetFileName) to Plugins folder" Importance="high"/>
-    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFiles="$(BeatSaberDir)\Plugins\$(TargetFileName)"/>
+    <Message Text="Copying $(TargetDir)$(TargetFileName) to Plugins folder" Importance="high" />
+    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFiles="$(BeatSaberDir)\Plugins\$(TargetFileName)" />
   </Target>
   <ProjectExtensions />
 </Project>
