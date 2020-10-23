@@ -25,7 +25,8 @@ namespace BS_Utils.Gameplay
         static Texture2D userAvatar = null;
         private static Task<UserInfo> getUserTask;
         private static object getUserLock = new object();
-
+        private static TaskCompletionSource<bool> shouldBeReadyTask = new TaskCompletionSource<bool>();
+        private static bool isReady => shouldBeReadyTask.Task.IsCompleted;
         private static IPlatformUserModel _platformUserModel;
 
         static GetUserInfo()
@@ -39,8 +40,11 @@ namespace BS_Utils.Gameplay
                 Logger.log.Error($"Error getting PlatformUserModel, GetUserInfo is unavailable: {ex.Message}");
                 Logger.log.Debug(ex);
             }
+        }
 
-            UpdateUserInfo();
+        internal static void TriggerReady()
+        {
+            shouldBeReadyTask.TrySetResult(true);
         }
 
         public static IPlatformUserModel GetPlatformUserModel()
@@ -103,9 +107,12 @@ namespace BS_Utils.Gameplay
         {
             try
             {
+                if (!isReady)
+                    await shouldBeReadyTask.Task;
                 lock (getUserLock)
                 {
-                    if (_platformUserModel == null)
+                    IPlatformUserModel platformUserModel = _platformUserModel ?? SetPlatformUserModel();
+                    if (platformUserModel == null)
                     {
                         Logger.log.Error($"IPlatformUserModel not found, cannot update user info.");
                         return null;

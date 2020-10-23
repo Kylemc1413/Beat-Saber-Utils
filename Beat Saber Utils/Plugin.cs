@@ -62,8 +62,11 @@ namespace BS_Utils
 
         public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
         {
+            if (nextScene.name == "HealthWarning")
+                Gameplay.GetUserInfo.TriggerReady();
             if (nextScene.name == "MenuCore")
             {
+                Gameplay.GetUserInfo.TriggerReady();
                 if (Gamemode.IsIsolatedLevel) // Only remove is necessary.
                     Logger.Log("Removing Isolated Level");
                 Gamemode.IsIsolatedLevel = false;
