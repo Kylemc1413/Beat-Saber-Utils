@@ -85,8 +85,6 @@ namespace BS_Utils.Gameplay
 
         public static async void UpdateUserInfo()
         {
-            SetPlatformUserModel();
-
             try
             {
                 await GetUserAsync();
@@ -111,7 +109,7 @@ namespace BS_Utils.Gameplay
                     await shouldBeReadyTask.Task;
                 lock (getUserLock)
                 {
-                    IPlatformUserModel platformUserModel = _platformUserModel ?? SetPlatformUserModel();
+                    IPlatformUserModel platformUserModel = GetPlatformUserModel();
                     if (platformUserModel == null)
                     {
                         Logger.log.Error($"IPlatformUserModel not found, cannot update user info.");
