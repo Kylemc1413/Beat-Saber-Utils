@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace BS_Utils
 {
-    public class SceneNames
+    public static class SceneNames
     {
         public static readonly string Menu = "MenuViewControllers";
         public static readonly string PostSongMenu = "MenuCore";
         public static readonly string Game = "GameCore";
         public static readonly string HealthWarning = "HealthWarning";
         public static readonly string EmptyTransition = "EmptyTransition";
+        public static readonly string Credits = "Credits";
+        public static readonly string BeatmapEditor = "BeatmapEditor";
 
     }
 }

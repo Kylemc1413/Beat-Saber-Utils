@@ -55,10 +55,7 @@ namespace BS_Utils.Utilities
         public static event Action<SaberType> sabersStartCollide;
         public static event Action<SaberType> sabersEndCollide;
 
-        const string Menu = "MenuViewControllers";
-        const string Game = "GameCore";
-        const string EmptyTransition = "EmptyTransition";
-        readonly string[] MainSceneNames = { "GameCore", "Credits", "BeatmapEditor" };
+        readonly string[] MainSceneNames = { SceneNames.Game, SceneNames.Credits, SceneNames.BeatmapEditor };
         private bool lastMainSceneWasNotMenu = false;
         GameScenesManager gameScenesManager;
 
@@ -84,7 +81,7 @@ namespace BS_Utils.Utilities
             //    Utilities.Logger.log.Info(arg1.name);
             try
             {
-                if (arg1.name == Game)
+                if (arg1.name == SceneNames.Game)
                 {
 
                     InvokeAll(gameSceneActive);
@@ -97,7 +94,7 @@ namespace BS_Utils.Utilities
                         gameScenesManager.transitionDidFinishEvent += GameSceneSceneWasLoaded;
                     }
                 }
-                else if (arg1.name == Menu)
+                else if (arg1.name == SceneNames.Menu)
                 {
                     gameScenesManager = Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault();
 
@@ -106,7 +103,7 @@ namespace BS_Utils.Utilities
                     if (gameScenesManager != null)
                     {
 
-                        if (arg0.name == EmptyTransition && !lastMainSceneWasNotMenu)
+                        if (arg0.name == SceneNames.EmptyTransition && !lastMainSceneWasNotMenu)
                         {
                             //     Utilities.Logger.log.Info("Fresh");
 
