@@ -51,6 +51,7 @@ namespace BS_Utils
         public void Init(IPALogger logger)
         {
             Logger.log = logger;
+            Gameplay.GetUserInfo.UpdateUserInfo();
         }
 
         [OnExit]
@@ -62,11 +63,12 @@ namespace BS_Utils
 
         public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
         {
-            if (nextScene.name == "HealthWarning")
+            if (nextScene.name == SceneNames.HealthWarning)
                 Gameplay.GetUserInfo.TriggerReady();
-            if (nextScene.name == "MenuCore")
+            if (nextScene.name == SceneNames.Menu)
+                GetUserInfo.TriggerReady();
+            if (nextScene.name == SceneNames.PostSongMenu)
             {
-                Gameplay.GetUserInfo.TriggerReady();
                 if (Gamemode.IsIsolatedLevel) // Only remove is necessary.
                     Logger.Log("Removing Isolated Level");
                 Gamemode.IsIsolatedLevel = false;

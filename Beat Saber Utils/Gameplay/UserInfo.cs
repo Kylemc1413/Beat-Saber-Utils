@@ -133,7 +133,7 @@ namespace BS_Utils.Gameplay
             UserInfo userInfo = await _platformUserModel.GetUserInfo();
             if (userInfo != null)
             {
-                Logger.log.Debug($"UserInfo found: {userInfo.platformUserId}: {userInfo.userName}");
+                Logger.log.Debug($"UserInfo found: {userInfo.platformUserId}: {userInfo.userName} on {userInfo.platform}");
                 userName = userInfo.userName;
                 userID = userInfo.platformUserId;
                 platform = userInfo.platform;
@@ -180,16 +180,20 @@ namespace BS_Utils.Gameplay
                 return new Texture2D(0, 0);
             }
         }
+
+        [Obsolete("This will not be valid unless BS_Utils has finished retrieving the UserInfo.")]
         public static UserInfo.Platform GetPlatformInfo()
         {
             return platform;
         }
 
+        [Obsolete("This will return null until BS_Utils has finished retrieving the UserInfo.")]
         public static string GetUserName()
         {
             return userName;
         }
 
+        [Obsolete("This will return null until BS_Utils has finished retrieving the UserInfo.")]
         public static string GetUserID()
         {
             return userID;
