@@ -181,19 +181,19 @@ namespace BS_Utils.Gameplay
             }
         }
 
-        [Obsolete("This will not be valid unless BS_Utils has finished retrieving the UserInfo.")]
+        [Obsolete("This will not be valid unless BS_Utils has finished retrieving the UserInfo. Use 'GetUserAsync()' instead.")]
         public static UserInfo.Platform GetPlatformInfo()
         {
             return platform;
         }
 
-        [Obsolete("This will return null until BS_Utils has finished retrieving the UserInfo.")]
+        [Obsolete("This will return null until BS_Utils has finished retrieving the UserInfo. Use 'GetUserAsync()' instead.")]
         public static string GetUserName()
         {
             return userName;
         }
 
-        [Obsolete("This will return null until BS_Utils has finished retrieving the UserInfo.")]
+        [Obsolete("This will return null until BS_Utils has finished retrieving the UserInfo. Use 'GetUserAsync()' instead.")]
         public static string GetUserID()
         {
             return userID;
