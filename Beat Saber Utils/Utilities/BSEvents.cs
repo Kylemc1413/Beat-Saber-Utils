@@ -158,7 +158,7 @@ namespace BS_Utils.Utilities
             // Prevent firing this event when returning to menu
             Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault().transitionDidFinishEvent -= GameSceneSceneWasLoaded;
 
-            var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
+            var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().LastOrDefault();
             if (pauseManager != null)
             {
                 pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
@@ -166,7 +166,7 @@ namespace BS_Utils.Utilities
             }
 
 
-            var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
+            var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault();
             if (scoreController != null)
             {
                 scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
@@ -178,7 +178,7 @@ namespace BS_Utils.Utilities
 
             }
 
-            var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
+            var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().LastOrDefault();
             if (saberCollisionManager != null)
             {
                 saberCollisionManager.sparkleEffectDidStartEvent += delegate (SaberType saber) { InvokeAll(sabersStartCollide, saber); };
@@ -186,7 +186,7 @@ namespace BS_Utils.Utilities
             }
 
 
-            var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
+            var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().LastOrDefault();
             if (gameEnergyCounter != null)
             {
                 gameEnergyCounter.gameEnergyDidReach0Event += delegate () { InvokeAll(energyReachedZero); };
@@ -194,14 +194,14 @@ namespace BS_Utils.Utilities
 
             }
 
-            var beatmapObjectCallbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
+            var beatmapObjectCallbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().LastOrDefault();
             if (beatmapObjectCallbackController != null)
             {
                 beatmapObjectCallbackController.beatmapEventDidTriggerEvent += delegate (BeatmapEventData songEvent) { InvokeAll(beatmapEvent, songEvent); };
 
             }
 
-            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().LastOrDefault();
             if (transitionSetup)
             {
                 transitionSetup.didFinishEvent -= OnTransitionSetupOnDidFinishEvent;
