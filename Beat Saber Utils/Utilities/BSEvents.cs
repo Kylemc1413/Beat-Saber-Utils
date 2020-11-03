@@ -166,7 +166,7 @@ namespace BS_Utils.Utilities
             }
 
 
-            var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault();
+            var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
             if (scoreController != null)
             {
                 scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
@@ -178,7 +178,7 @@ namespace BS_Utils.Utilities
 
             }
 
-            var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().LastOrDefault();
+            var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().LastOrDefault(x => x.isActiveAndEnabled);
             if (saberCollisionManager != null)
             {
                 saberCollisionManager.sparkleEffectDidStartEvent += delegate (SaberType saber) { InvokeAll(sabersStartCollide, saber); };
@@ -186,7 +186,7 @@ namespace BS_Utils.Utilities
             }
 
 
-            var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().LastOrDefault();
+            var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().LastOrDefault(x => x.isActiveAndEnabled);
             if (gameEnergyCounter != null)
             {
                 gameEnergyCounter.gameEnergyDidReach0Event += delegate () { InvokeAll(energyReachedZero); };
@@ -194,14 +194,14 @@ namespace BS_Utils.Utilities
 
             }
 
-            var beatmapObjectCallbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().LastOrDefault();
+            var beatmapObjectCallbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().LastOrDefault(x => x.isActiveAndEnabled);
             if (beatmapObjectCallbackController != null)
             {
                 beatmapObjectCallbackController.beatmapEventDidTriggerEvent += delegate (BeatmapEventData songEvent) { InvokeAll(beatmapEvent, songEvent); };
 
             }
 
-            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().LastOrDefault();
+            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (transitionSetup)
             {
                 transitionSetup.didFinishEvent -= OnTransitionSetupOnDidFinishEvent;
