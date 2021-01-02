@@ -3,6 +3,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
+using System.Collections;
+using System.Collections.Generic;
 namespace BS_Utils.Utilities
 {
     public class BSEvents : MonoBehaviour
@@ -90,8 +92,8 @@ namespace BS_Utils.Utilities
 
                     if (gameScenesManager != null)
                     {
-                        gameScenesManager.transitionDidFinishEvent -= GameSceneSceneWasLoaded;
-                        gameScenesManager.transitionDidFinishEvent += GameSceneSceneWasLoaded;
+                        gameScenesManager.transitionDidFinishEvent -= GameSceneLoadedCallback;
+                        gameScenesManager.transitionDidFinishEvent += GameSceneLoadedCallback;
                     }
                 }
                 else if (arg1.name == SceneNames.Menu)
@@ -153,10 +155,39 @@ namespace BS_Utils.Utilities
             InvokeAll(lateMenuSceneLoadedFresh, transitionSetupData);
         }
 
-        private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void GameSceneLoadedCallback(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             // Prevent firing this event when returning to menu
-            Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault().transitionDidFinishEvent -= GameSceneSceneWasLoaded;
+            var gameScenesManager = Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault();
+            gameScenesManager.transitionDidFinishEvent -= GameSceneLoadedCallback;
+            if (Plugin.LevelData.Mode == Gameplay.Mode.Multiplayer)
+            {
+                MultiplayerController sync = Resources.FindObjectsOfTypeAll<MultiplayerController>().LastOrDefault(x => x.isActiveAndEnabled);
+                if (sync != null)
+                {
+                    sync.stateChangedEvent += (state) => { MultiControllerStateChanged(state, transitionSetupData, diContainer, sync); };
+
+                }
+
+            }
+            else
+            {
+                GameSceneSceneWasLoaded(transitionSetupData, diContainer);
+            }
+        }
+
+        private void MultiControllerStateChanged(MultiplayerController.State newState, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
+        {
+            if(newState == MultiplayerController.State.Gameplay)
+            {
+                sync.stateChangedEvent -= (state) => { MultiControllerStateChanged(state, transitionSetupData, diContainer, sync); };
+                GameSceneSceneWasLoaded(transitionSetupData, diContainer, sync);
+            }
+        }
+
+        private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
+        {
+
 
             var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().LastOrDefault();
             if (pauseManager != null)
@@ -164,7 +195,6 @@ namespace BS_Utils.Utilities
                 pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
                 pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
             }
-
 
             var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
             if (scoreController != null)
@@ -239,33 +269,39 @@ namespace BS_Utils.Utilities
 
         public void InvokeAll<T1, T2, T3>(Action<T1, T2, T3> action, params object[] args)
         {
-            if (action == null) return;
-            foreach (Delegate invoc in action.GetInvocationList())
+            Delegate[] actions = action?.GetInvocationList();
+            if (actions == null) return;
+            foreach (Delegate invoc in actions)
             {
+                string name = "";
                 try
                 {
+                    name = invoc?.Method.DeclaringType.Assembly.FullName;
                     invoc?.DynamicInvoke(args);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Caught Exception when executing event");
-                    Console.WriteLine(e);
+                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
+                    Utilities.Logger.log.Debug(e);
                 }
             }
         }
         public void InvokeAll<T1, T2>(Action<T1, T2> action, params object[] args)
         {
-            if (action == null) return;
-            foreach (Delegate invoc in action.GetInvocationList())
+            Delegate[] actions = action?.GetInvocationList();
+            if (actions == null) return;
+            foreach (Delegate invoc in actions)
             {
+                string name = "";
                 try
                 {
+                    name = invoc?.Method.DeclaringType.Assembly.FullName;
                     invoc?.DynamicInvoke(args);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Caught Exception when executing event");
-                    Console.WriteLine(e);
+                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
+                    Utilities.Logger.log.Debug(e);
                 }
             }
         }
@@ -276,13 +312,15 @@ namespace BS_Utils.Utilities
             if (actions == null) return;
             foreach (Delegate invoc in actions)
             {
+                string name = "";
                 try
                 {
+                    name = invoc?.Method.DeclaringType.Assembly.FullName;
                     invoc?.DynamicInvoke(args);
                 }
                 catch (Exception e)
                 {
-                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}");
+                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
                     Utilities.Logger.log.Debug(e);
                 }
             }
@@ -293,13 +331,15 @@ namespace BS_Utils.Utilities
             if (actions == null) return;
             foreach (Delegate invoc in actions)
             {
+                string name = "";
                 try
                 {
+                    name = invoc?.Method.DeclaringType.Assembly.FullName;
                     invoc?.DynamicInvoke(args);
                 }
                 catch (Exception e)
                 {
-                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}");
+                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
                     Utilities.Logger.log.Debug(e);
                 }
             }

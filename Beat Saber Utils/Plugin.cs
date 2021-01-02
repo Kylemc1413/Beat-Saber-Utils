@@ -63,8 +63,8 @@ namespace BS_Utils
 
         public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
         {
-            if (nextScene.name == SceneNames.HealthWarning)
-                GetUserInfo.TriggerReady();
+      //      if (nextScene.name == SceneNames.HealthWarning)
+      //          GetUserInfo.TriggerReady();
             if (nextScene.name == SceneNames.Menu)
                 GetUserInfo.TriggerReady();
             if (nextScene.name == SceneNames.PostSongMenu)

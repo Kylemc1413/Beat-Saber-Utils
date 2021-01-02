@@ -59,7 +59,8 @@ namespace BS_Utils.Gameplay
             try
             {
                 // Need to check for null because there's multiple PlatformLeaderboardsModels (at least sometimes), and one has a null IPlatformUserModel with 'vrmode oculus'
-                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Where(p => AccessPlatformUserModel(ref p) != null).FirstOrDefault();
+                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Where(p => AccessPlatformUserModel(ref p) != null).LastOrDefault();
+            //    Logger.log.Info(Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Count().ToString());
                 IPlatformUserModel platformUserModel = null;
                 if (leaderboardsModel == null)
                 {
@@ -107,8 +108,10 @@ namespace BS_Utils.Gameplay
             {
                 if (!isReady)
                     await shouldBeReadyTask.Task;
+                await Task.Delay(200);
                 lock (getUserLock)
                 {
+
                     IPlatformUserModel platformUserModel = GetPlatformUserModel();
                     if (platformUserModel == null)
                     {
