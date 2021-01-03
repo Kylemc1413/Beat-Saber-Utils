@@ -122,6 +122,7 @@ namespace BS_Utils.Gameplay
                                 if (type.Name == "Plugin")
                                 {
                                     _scoreSaberSubmissionProperty = type.GetProperty("ScoreSubmission", BindingFlags.Public | BindingFlags.Static);
+                                    return _scoreSaberSubmissionProperty;
                                 }
                             }
                         }
