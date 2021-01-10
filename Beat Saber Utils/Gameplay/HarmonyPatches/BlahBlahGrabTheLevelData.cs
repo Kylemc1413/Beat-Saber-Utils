@@ -35,12 +35,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Plugin.LevelData.Mode = Mode.Standard;
             Utilities.Logger.log.Debug("Level Data set");
             __instance.didFinishEvent -= __instance_didFinishEvent;
-            __instance.didFinishEvent += __instance_didFinishEvent;
+            __instance.didFinishEvent += __instance_didFinishEvent; // Not triggered in multiplayer
 
         }
 
         private static void __instance_didFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
         {
+            Utilities.Logger.log.Debug("Triggering LevelFinishEvent.");
             Plugin.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
         }
     }
@@ -78,6 +79,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
         private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
         {
+            Utilities.Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
             Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
         }
     }

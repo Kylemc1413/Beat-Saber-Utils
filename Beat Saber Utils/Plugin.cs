@@ -21,8 +21,11 @@ namespace BS_Utils
         internal static bool patched = false;
         internal static Harmony harmony;
         public static LevelData LevelData = new LevelData();
+        [Obsolete("Use LevelFinished event.")]
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
+        [Obsolete("Use LevelFinished event.")]
         public static event LevelDidFinish LevelDidFinishEvent;
+        public static event EventHandler<LevelFinishedEventArgs> LevelFinished;
         public delegate void MultiLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults);
         public static event MultiLevelDidFinish MultiLevelDidFinishEvent;
         public delegate void MissionDidFinish(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults);
@@ -80,15 +83,21 @@ namespace BS_Utils
 
         internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
         {
+            Logger.log.Debug("Solo/Party mode level finished.");
+            LevelFinished?.Invoke(levelScenesTransitionSetupDataSO, new SoloLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults));
             LevelDidFinishEvent?.Invoke(levelScenesTransitionSetupDataSO, levelCompletionResults);
         }
 
         internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
         {
+            Logger.log.Debug("Multiplayer level finished.");
+            LevelFinished?.Invoke(levelScenesTransitionSetupDataSO, new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults));
             MultiLevelDidFinishEvent?.Invoke(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
         }
         internal static void TriggerMissionFinishEvent(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
         {
+            Logger.log.Debug("Campaign level finished.");
+            LevelFinished?.Invoke(missionLevelScenesTransitionSetupDataSO, new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupDataSO, missionCompletionResults));
             MissionDidFinishEvent?.Invoke(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
         }
 

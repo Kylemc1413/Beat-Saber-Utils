@@ -95,7 +95,7 @@ namespace BS_Utils.Gameplay
 
                 if (!eventSubscribed)
                 {
-                    Plugin.LevelDidFinishEvent += LevelData_didFinishEvent;
+                    Plugin.LevelFinished += LevelData_didFinishEvent;
                     eventSubscribed = true;
                 }
             }
@@ -116,13 +116,13 @@ namespace BS_Utils.Gameplay
             DisableEvent(setupDataSO, "didFinishEvent", "Five");
         }
 
-        private static void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
+        private static void LevelData_didFinishEvent(object sender, LevelFinishedEventArgs args)
         {
             _wasDisabled = disabled;
             _lastDisablers = ModList.ToArray();
             disabled = false;
             ModList.Clear();
-            Plugin.LevelDidFinishEvent -= LevelData_didFinishEvent;
+            Plugin.LevelFinished -= LevelData_didFinishEvent;
             if (RemovedFive != null)
             {
                 StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
