@@ -100,6 +100,11 @@ namespace BS_Utils
             LevelFinished?.Invoke(missionLevelScenesTransitionSetupDataSO, new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupDataSO, missionCompletionResults));
             MissionDidFinishEvent?.Invoke(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
         }
+        internal static void TriggerTutorialFinishEvent(TutorialScenesTransitionSetupDataSO tutorialLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+        {
+            Logger.log.Debug("Tutorial level finished.");
+            LevelFinished?.Invoke(tutorialLevelScenesTransitionSetupDataSO, new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupDataSO, endState));
+        }
 
         internal static void ApplyHarmonyPatches()
         {

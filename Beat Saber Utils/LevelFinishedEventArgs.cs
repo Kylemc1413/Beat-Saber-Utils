@@ -61,6 +61,7 @@ namespace BS_Utils
         }
 
     }
+
     public class CampaignLevelFinishedEventArgs : LevelFinishedEventArgs
     {
         public readonly MissionCompletionResults CompletionResults;
@@ -70,12 +71,22 @@ namespace BS_Utils
             CompletionResults = levelCompletionResults;
         }
     }
+    public class TutorialLevelFinishedEventArgs : LevelFinishedEventArgs
+    {
+        public readonly TutorialScenesTransitionSetupDataSO.TutorialEndStateType EndState;
+        public TutorialLevelFinishedEventArgs(TutorialScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+            : base(LevelType.Tutorial, levelScenesTransitionSetupDataSO)
+        {
+            EndState = endState;
+        }
+    }
 
 
     public enum LevelType
     {
         SoloParty,
         Multiplayer,
-        Campaign
+        Campaign,
+        Tutorial
     }
 }

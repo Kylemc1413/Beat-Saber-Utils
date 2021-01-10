@@ -109,4 +109,23 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Plugin.TriggerMissionFinishEvent(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
         }
     }
+
+    [HarmonyPatch(typeof(TutorialScenesTransitionSetupDataSO), "Init")]
+    class BlahBlahSetTutorialEvent
+    {
+        static void Prefix(TutorialScenesTransitionSetupDataSO __instance)
+        {
+            ScoreSubmission._wasDisabled = false;
+            ScoreSubmission.LastDisablers = Array.Empty<string>();
+
+            __instance.didFinishEvent -= __instance_didFinishEvent;
+            __instance.didFinishEvent += __instance_didFinishEvent;
+
+        }
+
+        private static void __instance_didFinishEvent(TutorialScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+        {
+            Plugin.TriggerTutorialFinishEvent(missionLevelScenesTransitionSetupDataSO, endState);
+        }
+    }
 }
