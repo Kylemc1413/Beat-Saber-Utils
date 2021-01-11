@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BS_Utils.Utilities
 {
-    public class LevelFinishedEventArgs : EventArgs
+    public abstract class LevelFinishedEventArgs : EventArgs
     {
         /// <summary>
         /// The type of level that finished.
@@ -20,18 +20,29 @@ namespace BS_Utils.Utilities
         }
     }
 
-    public class SoloLevelFinishedEventArgs : LevelFinishedEventArgs
+    /// <summary>
+    /// <see cref="LevelFinishedEventArgs"/> that contains <see cref="LevelCompletionResults"/>.
+    /// </summary>
+    public abstract class LevelFinishedWithResultsEventArgs : LevelFinishedEventArgs
     {
         public readonly LevelCompletionResults CompletionResults;
-        public SoloLevelFinishedEventArgs(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
-            : base(LevelType.SoloParty, levelScenesTransitionSetupDataSO)
+
+        protected LevelFinishedWithResultsEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO, LevelCompletionResults completionResults) 
+            : base(levelType, scenesTransitionSetupDataSO)
         {
-            CompletionResults = levelCompletionResults;
         }
     }
-    public class MultiplayerLevelFinishedEventArgs : LevelFinishedEventArgs
+
+    public class SoloLevelFinishedEventArgs : LevelFinishedWithResultsEventArgs
     {
-        public readonly LevelCompletionResults CompletionResults;
+        public SoloLevelFinishedEventArgs(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
+            : base(LevelType.SoloParty, levelScenesTransitionSetupDataSO, levelCompletionResults)
+        {
+        }
+    }
+
+    public class MultiplayerLevelFinishedEventArgs : LevelFinishedWithResultsEventArgs
+    {
         private readonly Dictionary<string, LevelCompletionResults> playersCompletionResults;
 
         /// <summary>
@@ -57,21 +68,20 @@ namespace BS_Utils.Utilities
         }
 
         public MultiplayerLevelFinishedEventArgs(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
-            : base(LevelType.Multiplayer, levelScenesTransitionSetupDataSO)
+            : base(LevelType.Multiplayer, levelScenesTransitionSetupDataSO, levelCompletionResults)
         {
-            CompletionResults = levelCompletionResults;
             playersCompletionResults = otherPlayersLevelCompletionResults;
         }
 
     }
 
-    public class CampaignLevelFinishedEventArgs : LevelFinishedEventArgs
+    public class CampaignLevelFinishedEventArgs : LevelFinishedWithResultsEventArgs
     {
-        public readonly MissionCompletionResults CompletionResults;
-        public CampaignLevelFinishedEventArgs(MissionLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MissionCompletionResults levelCompletionResults)
-            : base(LevelType.Campaign, levelScenesTransitionSetupDataSO)
+        public readonly MissionCompletionResults MissionCompletionResults;
+        public CampaignLevelFinishedEventArgs(MissionLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
+            : base(LevelType.Campaign, levelScenesTransitionSetupDataSO, missionCompletionResults?.levelCompletionResults)
         {
-            CompletionResults = levelCompletionResults;
+            MissionCompletionResults = missionCompletionResults;
         }
     }
     public class TutorialLevelFinishedEventArgs : LevelFinishedEventArgs
