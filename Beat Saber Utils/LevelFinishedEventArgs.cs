@@ -8,6 +8,9 @@ namespace BS_Utils
 {
     public class LevelFinishedEventArgs : EventArgs
     {
+        /// <summary>
+        /// The type of level that finished.
+        /// </summary>
         public readonly LevelType LevelType;
         public readonly ScenesTransitionSetupDataSO ScenesTransitionSetupDataSO;
         protected LevelFinishedEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO)

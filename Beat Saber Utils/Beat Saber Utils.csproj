@@ -135,6 +135,7 @@
     <Compile Include="SceneNames.cs" />
     <Compile Include="Utilities\BSEvents.cs" />
     <Compile Include="Utilities\Config.cs" />
+    <Compile Include="Utilities\Events\EventExtensions.cs" />
     <Compile Include="Utilities\IniFile.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\ReflectionUtil.cs" />

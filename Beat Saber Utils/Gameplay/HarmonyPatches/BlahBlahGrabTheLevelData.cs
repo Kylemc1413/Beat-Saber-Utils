@@ -1,4 +1,5 @@
 ﻿using System;
+using BS_Utils.Utilities;
 using HarmonyLib;
 using IPA.Logging;
 
@@ -43,6 +44,8 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         {
             Utilities.Logger.log.Debug("Triggering LevelFinishEvent.");
             Plugin.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
+            BSEvents.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
+
         }
     }
 
@@ -81,6 +84,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         {
             Utilities.Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
             Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
+            BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
         }
     }
     [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), "Init")]
@@ -107,6 +111,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         private static void __instance_didFinishEvent(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
         {
             Plugin.TriggerMissionFinishEvent(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
+            BSEvents.TriggerMissionFinishEvent(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
         }
     }
 
@@ -126,6 +131,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         private static void __instance_didFinishEvent(TutorialScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
         {
             Plugin.TriggerTutorialFinishEvent(missionLevelScenesTransitionSetupDataSO, endState);
+            BSEvents.TriggerTutorialFinishEvent(missionLevelScenesTransitionSetupDataSO, endState);
         }
     }
 }
