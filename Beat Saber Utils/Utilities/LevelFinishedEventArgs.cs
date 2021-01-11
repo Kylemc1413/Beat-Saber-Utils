@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BS_Utils
+namespace BS_Utils.Utilities
 {
     public class LevelFinishedEventArgs : EventArgs
     {
