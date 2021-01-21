@@ -1,4 +1,5 @@
 ﻿using System;
+using BS_Utils.Utilities;
 using HarmonyLib;
 using IPA.Logging;
 
@@ -35,13 +36,16 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Plugin.LevelData.Mode = Mode.Standard;
             Utilities.Logger.log.Debug("Level Data set");
             __instance.didFinishEvent -= __instance_didFinishEvent;
-            __instance.didFinishEvent += __instance_didFinishEvent;
+            __instance.didFinishEvent += __instance_didFinishEvent; // Not triggered in multiplayer
 
         }
 
         private static void __instance_didFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
         {
+            Utilities.Logger.log.Debug("Triggering LevelFinishEvent.");
             Plugin.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
+            BSEvents.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
+
         }
     }
 
@@ -78,7 +82,9 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
         private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
         {
+            Utilities.Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
             Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
+            BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
         }
     }
     [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), "Init")]
@@ -105,6 +111,27 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         private static void __instance_didFinishEvent(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
         {
             Plugin.TriggerMissionFinishEvent(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
+            BSEvents.TriggerMissionFinishEvent(missionLevelScenesTransitionSetupDataSO, missionCompletionResults);
+        }
+    }
+
+    [HarmonyPatch(typeof(TutorialScenesTransitionSetupDataSO), "Init")]
+    class BlahBlahSetTutorialEvent
+    {
+        static void Prefix(TutorialScenesTransitionSetupDataSO __instance)
+        {
+            ScoreSubmission._wasDisabled = false;
+            ScoreSubmission.LastDisablers = Array.Empty<string>();
+
+            __instance.didFinishEvent -= __instance_didFinishEvent;
+            __instance.didFinishEvent += __instance_didFinishEvent;
+
+        }
+
+        private static void __instance_didFinishEvent(TutorialScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+        {
+            Plugin.TriggerTutorialFinishEvent(missionLevelScenesTransitionSetupDataSO, endState);
+            BSEvents.TriggerTutorialFinishEvent(missionLevelScenesTransitionSetupDataSO, endState);
         }
     }
 }

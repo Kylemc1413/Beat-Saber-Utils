@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BS_Utils.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -96,7 +97,7 @@ namespace BS_Utils.Gameplay
 
                 if (!eventSubscribed)
                 {
-                    Plugin.LevelDidFinishEvent += LevelData_didFinishEvent;
+                    Plugin.LevelFinished += LevelData_didFinishEvent;
                     eventSubscribed = true;
                 }
             }
@@ -151,14 +152,15 @@ namespace BS_Utils.Gameplay
             }
         }
 
-        private static void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
+        private static void LevelData_didFinishEvent(object sender, LevelFinishedEventArgs args)
         {
             _wasDisabled = disabled;
             _lastDisablers = ModList.ToArray();
             disabled = false;
             ModList.Clear();
-            Plugin.LevelDidFinishEvent -= LevelData_didFinishEvent;
+            Plugin.LevelFinished -= LevelData_didFinishEvent;
             ScoreSaberSubmissionProperty?.SetValue(null, true);
+          
             if (RemovedFive != null)
             {
                 StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();

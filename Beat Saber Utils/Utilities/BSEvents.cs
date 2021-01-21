@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using System.Collections;
 using System.Collections.Generic;
+using BS_Utils.Utilities.Events;
+
 namespace BS_Utils.Utilities
 {
     public class BSEvents : MonoBehaviour
@@ -37,6 +39,7 @@ namespace BS_Utils.Utilities
         // Game Events
         public static event Action songPaused;
         public static event Action songUnpaused;
+        public static event EventHandler<LevelFinishedEventArgs> LevelFinished;
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelCleared;
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelQuit;
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelFailed;
@@ -178,7 +181,7 @@ namespace BS_Utils.Utilities
 
         private void MultiControllerStateChanged(MultiplayerController.State newState, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
         {
-            if(newState == MultiplayerController.State.Gameplay)
+            if (newState == MultiplayerController.State.Gameplay)
             {
                 sync.stateChangedEvent -= (state) => { MultiControllerStateChanged(state, transitionSetupData, diContainer, sync); };
                 GameSceneSceneWasLoaded(transitionSetupData, diContainer, sync);
@@ -344,5 +347,37 @@ namespace BS_Utils.Utilities
                 }
             }
         }
+
+        #region LevelFinishedInvokers
+        internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
+        {
+            Logger.log.Debug("Solo/Party mode level finished.");
+            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
+                new SoloLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults),
+                nameof(LevelFinished));
+        }
+
+        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
+        {
+            Logger.log.Debug("Multiplayer level finished.");
+            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
+                new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults),
+                nameof(LevelFinished));
+        }
+        internal static void TriggerMissionFinishEvent(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
+        {
+            Logger.log.Debug("Campaign level finished.");
+            LevelFinished?.RaiseEventSafe(missionLevelScenesTransitionSetupDataSO,
+                new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupDataSO, missionCompletionResults),
+                nameof(LevelFinished));
+        }
+        internal static void TriggerTutorialFinishEvent(TutorialScenesTransitionSetupDataSO tutorialLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+        {
+            Logger.log.Debug("Tutorial level finished.");
+            LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupDataSO, 
+                new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupDataSO, endState), 
+                nameof(LevelFinished));
+        }
+        #endregion
     }
 }
