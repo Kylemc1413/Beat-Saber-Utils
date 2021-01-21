@@ -30,6 +30,7 @@ namespace BS_Utils.Utilities
         protected LevelFinishedWithResultsEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO, LevelCompletionResults completionResults) 
             : base(levelType, scenesTransitionSetupDataSO)
         {
+            CompletionResults = completionResults;
         }
     }
 
