@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using IPA.Loader;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
 
@@ -105,16 +106,50 @@ namespace BS_Utils.Gameplay
                 ModList.Add(mod);
         }
 
+        private static PropertyInfo _scoreSaberSubmissionProperty;
+        private static PropertyInfo ScoreSaberSubmissionProperty
+        {
+            get
+            {
+                if (_scoreSaberSubmissionProperty == null)
+                {
+                    PluginMetadata scoreSaberMetaData = PluginManager.GetPluginFromId("ScoreSaber");
+                    if (scoreSaberMetaData != null)
+                    {
+                        foreach (Type type in scoreSaberMetaData.Assembly.GetTypes())
+                        {
+                            if (type.Namespace == "ScoreSaber")
+                            {
+                                if (type.Name == "Plugin")
+                                {
+                                    _scoreSaberSubmissionProperty = type.GetProperty("ScoreSubmission", BindingFlags.Public | BindingFlags.Static);
+                                    return _scoreSaberSubmissionProperty;
+                                }
+                            }
+                        }
+                    }
+                }
+                return _scoreSaberSubmissionProperty;
+            }
+        }
+
         internal static void DisableScoreSaberScoreSubmission()
         {
-            StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-            if (setupDataSO == null)
+            if (ScoreSaberSubmissionProperty != null)
             {
-                Logger.Log("ScoreSubmission: StandardLevelScenesTransitionSetupDataSO not found - exiting...", LogLevel.Warning);
-                return;
+                ScoreSaberSubmissionProperty.SetValue(null, false);
             }
+            else
+            {
+                StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
+                if (setupDataSO == null)
+                {
+                    Logger.Log("ScoreSubmission: StandardLevelScenesTransitionSetupDataSO not found - exiting...", LogLevel.Warning);
+                    return;
+                }
 
-            DisableEvent(setupDataSO, "didFinishEvent", "Five");
+                DisableEvent(setupDataSO, "didFinishEvent", "Five");
+            }
         }
 
         private static void LevelData_didFinishEvent(object sender, LevelFinishedEventArgs args)
@@ -124,6 +159,8 @@ namespace BS_Utils.Gameplay
             disabled = false;
             ModList.Clear();
             Plugin.LevelFinished -= LevelData_didFinishEvent;
+            ScoreSaberSubmissionProperty?.SetValue(null, true);
+          
             if (RemovedFive != null)
             {
                 StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
