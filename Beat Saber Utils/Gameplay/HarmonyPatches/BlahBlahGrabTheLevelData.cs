@@ -20,18 +20,17 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     */
     class BlahBlahGrabTheLevelData
     {
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, string gameMode, IDifficultyBeatmap difficultyBeatmap, OverrideEnvironmentSettings overrideEnvironmentSettings,
-            GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
+        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, string gameMode, IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel previewBeatmapLevel, OverrideEnvironmentSettings overrideEnvironmentSettings,
+            GameplayModifiers gameplayModifiers, ColorScheme overrideColorScheme, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
             if (overrideEnvironmentSettings != null && overrideEnvironmentSettings.overrideEnvironments)
             {
                 environmentInfoSO = overrideEnvironmentSettings.GetOverrideEnvironmentInfoForType(environmentInfoSO.environmentType);
             }
-
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Standard;
             Utilities.Logger.log.Debug("Level Data set");
@@ -72,7 +71,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, ____multiplayerEnvironmentInfo);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, ____multiplayerEnvironmentInfo, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Multiplayer;
             Utilities.Logger.log.Debug("Level Data set");
@@ -80,11 +79,11 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             __instance.didFinishEvent += __instance_didFinishEvent;
         }
 
-        private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
+        private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MultiplayerResultsData resultsData)
         {
             Utilities.Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
-            Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
-            BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults);
+            Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.levelCompletionResults, resultsData.otherPlayersData);
+            BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.levelCompletionResults, resultsData.otherPlayersData);
         }
     }
     [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), "Init")]
@@ -93,13 +92,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(string)})]*/
     class BlahBlahGrabTheMissionLevelData
     {
-        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, string missionId, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, string backButtonText)
+        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IPreviewBeatmapLevel previewBeatmapLevel, string missionId, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, string backButtonText)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO);
+            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Mission;
             Utilities.Logger.log.Debug("Level Data set");

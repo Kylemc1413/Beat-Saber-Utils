@@ -44,7 +44,7 @@ namespace BS_Utils.Utilities
 
     public class MultiplayerLevelFinishedEventArgs : LevelFinishedWithResultsEventArgs
     {
-        private readonly Dictionary<string, LevelCompletionResults> playersCompletionResults;
+        private IReadOnlyList<MultiplayerPlayerResultsData> playersCompletionResults;
 
         /// <summary>
         /// Gets the <see cref="LevelCompletionResults"/> for the specified player ID. 
@@ -56,19 +56,17 @@ namespace BS_Utils.Utilities
         {
             if (playersCompletionResults == null)
                 return null;
-            if(playersCompletionResults.TryGetValue(playerId, out LevelCompletionResults value))
-            {
-                return value;
-            }
-            return null;
+            var player = playersCompletionResults.FirstOrDefault(x => x.connectedPlayer.userId == playerId);
+
+            return player.levelCompletionResults;
         }
 
-        public IEnumerator<KeyValuePair<string, LevelCompletionResults>> PlayerResults()
+        public IEnumerator<MultiplayerPlayerResultsData> PlayerResults()
         {
             return playersCompletionResults.GetEnumerator();
         }
 
-        public MultiplayerLevelFinishedEventArgs(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
+        public MultiplayerLevelFinishedEventArgs(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
             : base(LevelType.Multiplayer, levelScenesTransitionSetupDataSO, levelCompletionResults)
         {
             playersCompletionResults = otherPlayersLevelCompletionResults;

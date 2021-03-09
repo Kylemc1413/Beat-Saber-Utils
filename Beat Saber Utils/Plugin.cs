@@ -13,7 +13,8 @@ using System.Linq;
 using Logger = BS_Utils.Utilities.Logger;
 using IPA.Utilities.Async;
 using BS_Utils.Utilities.Events;
-
+using System.Collections.Generic;
+using System.Collections;
 namespace BS_Utils
 {
     [Plugin(RuntimeOptions.SingleStartInit)]
@@ -28,7 +29,7 @@ namespace BS_Utils
         public static event LevelDidFinish LevelDidFinishEvent;
         internal static event EventHandler<LevelFinishedEventArgs> LevelFinished; // Raised before the BSEvents version.
         [Obsolete("Use Utilities.BSEvents.LevelFinished event.")]
-        public delegate void MultiLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults);
+        public delegate void MultiLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults);
         [Obsolete("Use Utilities.BSEvents.LevelFinished event.")]
         public static event MultiLevelDidFinish MultiLevelDidFinishEvent;
         [Obsolete("Use Utilities.BSEvents.LevelFinished event.")]
@@ -93,7 +94,7 @@ namespace BS_Utils
             LevelDidFinishEvent?.Invoke(levelScenesTransitionSetupDataSO, levelCompletionResults);
         }
 
-        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
+        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
         {
             Logger.log.Debug("Multiplayer level finished.");
             LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO, new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults), nameof(LevelFinished));

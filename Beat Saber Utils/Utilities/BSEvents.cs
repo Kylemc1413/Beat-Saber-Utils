@@ -202,7 +202,7 @@ namespace BS_Utils.Utilities
             var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
             if (scoreController != null)
             {
-                scoreController.noteWasCutEvent += delegate (NoteData noteData, NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
+                scoreController.noteWasCutEvent += delegate (NoteData noteData, in NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
                 scoreController.noteWasMissedEvent += delegate (NoteData noteData, int multiplier) { InvokeAll(noteWasMissed, noteData, multiplier); }; ;
                 scoreController.multiplierDidChangeEvent += delegate (int multiplier, float progress) { InvokeAll(multiplierDidChange, multiplier, progress); if (multiplier > 1 && progress < 0.1f) InvokeAll(multiplierDidIncrease, multiplier); };
                 scoreController.comboDidChangeEvent += delegate (int combo) { InvokeAll(comboDidChange, combo); };
@@ -357,7 +357,7 @@ namespace BS_Utils.Utilities
                 nameof(LevelFinished));
         }
 
-        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, System.Collections.Generic.Dictionary<string, LevelCompletionResults> otherPlayersLevelCompletionResults)
+        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
         {
             Logger.log.Debug("Multiplayer level finished.");
             LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
