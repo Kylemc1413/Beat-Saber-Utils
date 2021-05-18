@@ -21,7 +21,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     class BlahBlahGrabTheLevelData
     {
         static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, string gameMode, IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel previewBeatmapLevel, OverrideEnvironmentSettings overrideEnvironmentSettings,
-            GameplayModifiers gameplayModifiers, ColorScheme overrideColorScheme, PlayerSpecificSettings playerSpecificSettings, PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
+            GameplayModifiers gameplayModifiers, ColorScheme overrideColorScheme, PlayerSpecificSettings playerSpecificSettings, ref PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
             if (overrideEnvironmentSettings != null && overrideEnvironmentSettings.overrideEnvironments)
@@ -66,7 +66,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             IPreviewBeatmapLevel previewBeatmapLevel, BeatmapDifficulty beatmapDifficulty,
             BeatmapCharacteristicSO beatmapCharacteristic, IDifficultyBeatmap difficultyBeatmap,
             ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings,
-            PracticeSettings practiceSettings, bool useTestNoteCutSoundEffects = false)
+            ref PracticeSettings practiceSettings, bool useTestNoteCutSoundEffects = false)
         {
 
             ScoreSubmission._wasDisabled = false;

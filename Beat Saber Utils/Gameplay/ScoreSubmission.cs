@@ -104,6 +104,7 @@ namespace BS_Utils.Gameplay
 
             if (!ModList.Contains(mod))
                 ModList.Add(mod);
+
         }
 
         private static PropertyInfo _scoreSaberSubmissionProperty;
