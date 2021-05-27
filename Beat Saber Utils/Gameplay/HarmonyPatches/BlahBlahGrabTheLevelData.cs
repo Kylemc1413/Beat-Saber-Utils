@@ -20,7 +20,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     */
     class BlahBlahGrabTheLevelData
     {
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, string gameMode, IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel previewBeatmapLevel, OverrideEnvironmentSettings overrideEnvironmentSettings,
+        static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance, string gameMode, IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel previewBeatmapLevel, OverrideEnvironmentSettings overrideEnvironmentSettings,
             GameplayModifiers gameplayModifiers, ColorScheme overrideColorScheme, PlayerSpecificSettings playerSpecificSettings, ref PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
@@ -62,7 +62,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     */
     class BlahBlahGrabTheMultiLevelData
     {
-        static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance, ref EnvironmentInfoSO ____multiplayerEnvironmentInfo, string gameMode,
+        static void Postfix(MultiplayerLevelScenesTransitionSetupDataSO __instance, ref EnvironmentInfoSO ____multiplayerEnvironmentInfo, string gameMode,
             IPreviewBeatmapLevel previewBeatmapLevel, BeatmapDifficulty beatmapDifficulty,
             BeatmapCharacteristicSO beatmapCharacteristic, IDifficultyBeatmap difficultyBeatmap,
             ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings,
@@ -92,7 +92,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(string)})]*/
     class BlahBlahGrabTheMissionLevelData
     {
-        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance, IPreviewBeatmapLevel previewBeatmapLevel, string missionId, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, string backButtonText)
+        static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance, IPreviewBeatmapLevel previewBeatmapLevel, string missionId, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, string backButtonText)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
 
@@ -117,7 +117,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch(typeof(TutorialScenesTransitionSetupDataSO), "Init")]
     class BlahBlahSetTutorialEvent
     {
-        static void Prefix(TutorialScenesTransitionSetupDataSO __instance)
+        static void Postfix(TutorialScenesTransitionSetupDataSO __instance)
         {
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
