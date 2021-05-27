@@ -8,8 +8,8 @@ namespace BS_Utils
 {
     public static class SceneNames
     {
-        public static readonly string Menu = "MenuViewControllers";
-        public static readonly string PostSongMenu = "MenuCore";
+        public static readonly string Menu = "MainMenu";
+        public static readonly string PostSongMenu = "MainMenu";
         public static readonly string Game = "GameCore";
         public static readonly string HealthWarning = "HealthWarning";
         public static readonly string EmptyTransition = "EmptyTransition";
