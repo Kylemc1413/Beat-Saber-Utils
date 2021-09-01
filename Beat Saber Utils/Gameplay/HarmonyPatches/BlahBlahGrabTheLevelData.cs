@@ -82,8 +82,8 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MultiplayerResultsData resultsData)
         {
             Utilities.Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
-            Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.levelCompletionResults, resultsData.otherPlayersData);
-            BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.levelCompletionResults, resultsData.otherPlayersData);
+            Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, resultsData.otherPlayersData);
+            BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, resultsData.otherPlayersData);
         }
     }
     [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), "Init")]

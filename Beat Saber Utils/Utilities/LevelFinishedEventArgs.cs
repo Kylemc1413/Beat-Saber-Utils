@@ -58,7 +58,7 @@ namespace BS_Utils.Utilities
                 return null;
             var player = playersCompletionResults.FirstOrDefault(x => x.connectedPlayer.userId == playerId);
 
-            return player.levelCompletionResults;
+            return player.multiplayerLevelCompletionResults.levelCompletionResults;
         }
 
         public IEnumerator<MultiplayerPlayerResultsData> PlayerResults()
