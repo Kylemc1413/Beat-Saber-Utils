@@ -20,17 +20,18 @@ namespace BS_Utils.Gameplay.HarmonyPatches
       //  static void Postfix(LevelCompletionResults levelCompletionResults, ref bool practice) { }
     }
 
-    [HarmonyPatch(typeof(SinglePlayerLevelSelectionFlowCoordinator))]
-    [HarmonyPatch("HandleStandardLevelDidFinish", MethodType.Normal)]
+    [HarmonyPatch(typeof(PrepareLevelCompletionResults))]
+    [HarmonyPatch("FillLevelCompletionResults", MethodType.Normal)]
     class ScoreSubmissionInsurance1
     {
-        static void Prefix(ref StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupData, ref LevelCompletionResults levelCompletionResults)
+        static void Postfix(ref LevelCompletionResults __result, LevelCompletionResults.LevelEndStateType levelEndStateType)
         {
-            if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            if ((ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+                && levelEndStateType == LevelCompletionResults.LevelEndStateType.Cleared)
             {
-                var gameplayCoreSceneSetupData = standardLevelScenesTransitionSetupData.Get<GameplayCoreSceneSetupData>();
-                if (gameplayCoreSceneSetupData.practiceSettings == null)
-                    gameplayCoreSceneSetupData.SetField("practiceSettings", new PracticeSettings());
+                Plugin.scenesTransitionSetupData.Get<GameplayCoreSceneSetupData>().SetField("practiceSettings", new PracticeSettings());
+                Plugin.scenesTransitionSetupData = null;
+                __result.SetField("rawScore", -__result.rawScore);
             }
         }
     }

@@ -22,6 +22,7 @@ namespace BS_Utils
     {
         internal static bool patched = false;
         internal static Harmony harmony;
+        internal static ScenesTransitionSetupDataSO scenesTransitionSetupData;
         public static LevelData LevelData = new LevelData();
         [Obsolete("Use Utilities.BSEvents.LevelFinished event.")]
         public delegate void LevelDidFinish(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults);
@@ -83,6 +84,7 @@ namespace BS_Utils
                     Logger.Log("Removing Isolated Level");
                 Gamemode.IsIsolatedLevel = false;
                 Gamemode.IsolatingMod = "";
+                scenesTransitionSetupData = null;
                 LevelData.Clear();
             }
         }
