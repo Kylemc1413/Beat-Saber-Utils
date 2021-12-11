@@ -6,6 +6,8 @@ using System.IO;
 
 namespace BS_Utils.Utilities
 {
+    // TODO: Mark class as internal at some point, and remove unused methods (only a few are used internally by the GetUserInfo class)
+    [Obsolete("The UIUtilities class will be marked as internal in a future update. Please use BSML's Utilities class instead.")]
     public static class UIUtilities
     {
         public static Texture2D LoadTextureRaw(byte[] file)

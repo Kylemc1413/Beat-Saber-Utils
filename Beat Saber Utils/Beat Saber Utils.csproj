@@ -12,6 +12,8 @@
         <BeatSaberDir>$(LocalRefsDir)</BeatSaberDir>
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
         <Copyright>Copyright ©  2018</Copyright>
+        <!-- Disable warning for usage of Obsolete types, we're getting these warnings because of our own types which will be marked as internal in the future. -->
+        <NoWarn>CS0618</NoWarn> 
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

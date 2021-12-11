@@ -6,10 +6,11 @@ using UnityEngine;
 
 namespace BS_Utils.Utilities
 {
+    // TODO: Remove this class at some point.
+    [Obsolete("The BS-Utils ReflectionUtil will be removed in a future update. Please use BSIPA's ReflectionUtil instead.")]
     public static class ReflectionUtil
     {
         private const BindingFlags _allBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-
 
         /// <summary>
         /// Sets a field on the target object. <paramref name="targetType"/> specifies the <see cref="Type"/> the field belongs to. 
