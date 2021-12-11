@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System.Text;
+using HarmonyLib;
 using HMUI;
 using TMPro;
 using UnityEngine;
@@ -25,12 +26,22 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
                 string color = "<color=#ff0000ff>";
-                string scoresubmissiontext = $"  \r\n{color}<size=50%><b>Score Submission Disabled by: " +
-                    ScoreSubmission.LastDisabledModString +
-                    " | " +
-                    ScoreSubmission.ProlongedModString;
+                StringBuilder scoreSubmissionTextBuilder = new StringBuilder("  \r\n").Append(color).Append("<size=50%><b>Score Submission Disabled by: ");
+                if (ScoreSubmission.disabled)
+                {
+                    scoreSubmissionTextBuilder.Append(ScoreSubmission.LastDisabledModString);
+
+                    if (ScoreSubmission.prolongedDisable)
+                        scoreSubmissionTextBuilder.Append(" | ");
+                }
+
+                if (ScoreSubmission.prolongedDisable)
+                {
+                    scoreSubmissionTextBuilder.Append(ScoreSubmission.ProlongedModString);
+                }
+
                 tmp.color = Color.white;
-                tmp.text += scoresubmissiontext;
+                tmp.text += scoreSubmissionTextBuilder.ToString();
                 tmp.enableWordWrapping = false;
                 if(bgGo != null)
                     bgGo.SetActive(false);
