@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BS_Utils
+﻿namespace BS_Utils
 {
     public static class SceneNames
     {
@@ -15,6 +9,5 @@ namespace BS_Utils
         public static readonly string EmptyTransition = "EmptyTransition";
         public static readonly string Credits = "Credits";
         public static readonly string BeatmapEditor = "BeatmapEditor";
-
     }
 }
