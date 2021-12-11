@@ -1,31 +1,26 @@
-using Oculus.Platform;
-using Oculus.Platform.Models;
 using Steamworks;
 using System;
 using UnityEngine;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
 using System.Linq;
-using System.Reflection;
-using System.IO;
-using System.Collections;
-using BS_Utils.Utilities;
 using IPA.Utilities;
 using System.Threading.Tasks;
+using BS_Utils.Utilities;
 
 namespace BS_Utils.Gameplay
 {
-
     public static class GetUserInfo
     {
-        private static FieldAccessor<PlatformLeaderboardsModel, IPlatformUserModel>.Accessor AccessPlatformUserModel;
+        private static readonly FieldAccessor<PlatformLeaderboardsModel, IPlatformUserModel>.Accessor AccessPlatformUserModel;
+        private static readonly TaskCompletionSource<bool> shouldBeReadyTask = new TaskCompletionSource<bool>();
+        private static readonly object getUserLock = new object();
+
         static string userName = null;
         static string userID = null;
         static UserInfo.Platform platform;
         static Texture2D userAvatar = null;
         private static Task<UserInfo> getUserTask;
-        private static object getUserLock = new object();
-        private static TaskCompletionSource<bool> shouldBeReadyTask = new TaskCompletionSource<bool>();
         private static bool isReady => shouldBeReadyTask.Task.IsCompleted;
         private static IPlatformUserModel _platformUserModel;
 
@@ -60,16 +55,15 @@ namespace BS_Utils.Gameplay
             {
                 // Need to check for null because there's multiple PlatformLeaderboardsModels (at least sometimes), and one has a null IPlatformUserModel with 'vrmode oculus'
                 var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Where(p => AccessPlatformUserModel(ref p) != null).LastOrDefault();
-            //    Logger.log.Info(Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Count().ToString());
                 IPlatformUserModel platformUserModel = null;
                 if (leaderboardsModel == null)
                 {
-                    Logger.log.Error($"Could not find a 'PlatformLeaderboardsModel', GetUserInfo unavailable.");
+                    Logger.log.Error("Could not find a 'PlatformLeaderboardsModel', GetUserInfo unavailable.");
                     return null;
                 }
                 if (AccessPlatformUserModel == null)
                 {
-                    Logger.log.Error($"Accessor for 'PlatformLeaderboardsModel._platformUserModel' is null, GetUserInfo unavailable.");
+                    Logger.log.Error("Accessor for 'PlatformLeaderboardsModel._platformUserModel' is null, GetUserInfo unavailable.");
                     return null;
                 }
 
@@ -115,7 +109,7 @@ namespace BS_Utils.Gameplay
                     IPlatformUserModel platformUserModel = GetPlatformUserModel();
                     if (platformUserModel == null)
                     {
-                        Logger.log.Error($"IPlatformUserModel not found, cannot update user info.");
+                        Logger.log.Error("IPlatformUserModel not found, cannot update user info.");
                         return null;
                     }
                     if (getUserTask == null || getUserTask.Status == TaskStatus.Faulted)
@@ -143,7 +137,7 @@ namespace BS_Utils.Gameplay
                 if (userInfo.platform == UserInfo.Platform.Steam)
                     GetSteamAvatar();
                 else if (userInfo.platform == UserInfo.Platform.Oculus)
-                    userAvatar = LoadTextureFromResources("BS_Utils.Resources.oculus.png");
+                    userAvatar = UIUtilities.LoadTextureFromResources("BS_Utils.Resources.oculus.png");
             }
             else
                 throw new InvalidOperationException("UserInfo is null.");
@@ -206,29 +200,5 @@ namespace BS_Utils.Gameplay
         {
             return userAvatar;
         }
-
-
-        internal static Texture2D LoadTextureFromResources(string resourcePath)
-        {
-            return LoadTextureRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath));
-        }
-        internal static Texture2D LoadTextureRaw(byte[] file)
-        {
-            if (file.Count() > 0)
-            {
-                Texture2D Tex2D = new Texture2D(2, 2);
-                if (Tex2D.LoadImage(file))
-                    return Tex2D;
-            }
-            return null;
-        }
-        internal static byte[] GetResource(Assembly asm, string ResourceName)
-        {
-            System.IO.Stream stream = asm.GetManifestResourceStream(ResourceName);
-            byte[] data = new byte[stream.Length];
-            stream.Read(data, 0, (int)stream.Length);
-            return data;
-        }
-
     }
 }
