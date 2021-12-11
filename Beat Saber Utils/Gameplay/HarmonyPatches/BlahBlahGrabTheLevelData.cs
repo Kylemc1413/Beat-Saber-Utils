@@ -30,6 +30,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             }
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
+            Plugin.scenesTransitionSetupData = __instance;
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Standard;
@@ -71,6 +72,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
+            Plugin.scenesTransitionSetupData = __instance;
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, ____multiplayerEnvironmentInfo, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Multiplayer;
@@ -98,6 +100,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
+            Plugin.scenesTransitionSetupData = __instance;
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Mission;
