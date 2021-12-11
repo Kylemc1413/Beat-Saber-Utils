@@ -1,30 +1,17 @@
 ﻿using System;
 using BS_Utils.Utilities;
 using HarmonyLib;
-using IPA.Logging;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
-
-    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), "Init")]
-    /*, new Type[] 
-    {typeof(string), typeof(IDifficultyBeatmap) ,
-        typeof(OverrideEnvironmentSettings), 
-        typeof(ColorScheme),
-
-            typeof(GameplayModifiers) ,
-        typeof(PlayerSpecificSettings) ,
-        typeof(PracticeSettings) ,
-        typeof(string) ,
-        typeof(bool)})]
-    */
+    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheLevelData
     {
         static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance, string gameMode, IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel previewBeatmapLevel, OverrideEnvironmentSettings overrideEnvironmentSettings,
             GameplayModifiers gameplayModifiers, ColorScheme overrideColorScheme, PlayerSpecificSettings playerSpecificSettings, ref PracticeSettings practiceSettings, string backButtonText, bool useTestNoteCutSoundEffects)
         {
             EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
-            if (overrideEnvironmentSettings != null && overrideEnvironmentSettings.overrideEnvironments)
+            if (overrideEnvironmentSettings is { overrideEnvironments: true })
             {
                 environmentInfoSO = overrideEnvironmentSettings.GetOverrideEnvironmentInfoForType(environmentInfoSO.environmentType);
             }
@@ -34,33 +21,21 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Standard;
-            Utilities.Logger.log.Debug("Level Data set");
+            Logger.log.Debug("Level Data set");
             __instance.didFinishEvent -= __instance_didFinishEvent;
             __instance.didFinishEvent += __instance_didFinishEvent; // Not triggered in multiplayer
-
         }
 
         private static void __instance_didFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
         {
-            Utilities.Logger.log.Debug("Triggering LevelFinishEvent.");
+            Logger.log.Debug("Triggering LevelFinishEvent.");
             Plugin.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
             BSEvents.TriggerLevelFinishEvent(levelScenesTransitionSetupDataSO, levelCompletionResults);
 
         }
     }
 
-    [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), "Init")]
-    /*, new Type[] 
-    {typeof(string), typeof(IDifficultyBeatmap) ,
-        typeof(OverrideEnvironmentSettings), 
-        typeof(ColorScheme),
-
-            typeof(GameplayModifiers) ,
-        typeof(PlayerSpecificSettings) ,
-        typeof(PracticeSettings) ,
-        typeof(string) ,
-        typeof(bool)})]
-    */
+    [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheMultiLevelData
     {
         static void Postfix(MultiplayerLevelScenesTransitionSetupDataSO __instance, ref EnvironmentInfoSO ____multiplayerEnvironmentInfo, string gameMode,
@@ -76,22 +51,20 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, ____multiplayerEnvironmentInfo, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Multiplayer;
-            Utilities.Logger.log.Debug("Level Data set");
+            Logger.log.Debug("Level Data set");
             __instance.didFinishEvent -= __instance_didFinishEvent;
             __instance.didFinishEvent += __instance_didFinishEvent;
         }
 
         private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MultiplayerResultsData resultsData)
         {
-            Utilities.Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
+            Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
             Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, resultsData.otherPlayersData);
             BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, resultsData.otherPlayersData);
         }
     }
-    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), "Init")]
-    /*
-        ,new Type[] {typeof(string), typeof(IDifficultyBeatmap) , typeof(MissionObjective[]) ,typeof(ColorScheme),
-            typeof(GameplayModifiers) , typeof(PlayerSpecificSettings) , typeof(string)})]*/
+
+    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheMissionLevelData
     {
         static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance, IPreviewBeatmapLevel previewBeatmapLevel, string missionId, IDifficultyBeatmap difficultyBeatmap, MissionObjective[] missionObjectives, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, string backButtonText)
@@ -104,7 +77,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO, overrideColorScheme);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Mission;
-            Utilities.Logger.log.Debug("Level Data set");
+            Logger.log.Debug("Level Data set");
             __instance.didFinishEvent -= __instance_didFinishEvent;
             __instance.didFinishEvent += __instance_didFinishEvent;
 
@@ -117,7 +90,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(typeof(TutorialScenesTransitionSetupDataSO), "Init")]
+    [HarmonyPatch(typeof(TutorialScenesTransitionSetupDataSO), nameof(TutorialScenesTransitionSetupDataSO.Init))]
     class BlahBlahSetTutorialEvent
     {
         static void Postfix(TutorialScenesTransitionSetupDataSO __instance)
