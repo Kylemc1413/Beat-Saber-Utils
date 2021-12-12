@@ -94,8 +94,8 @@
             <HintPath>$(BeatSaberDir)\Libs\0Harmony.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="INIFileParser">
-            <HintPath>$(BeatSaberDir)\Libs\INIFileParser.dll</HintPath>
+        <Reference Include="INIParser">
+            <HintPath>$(BeatSaberDir)\Libs\INIParser.dll</HintPath>
             <Private>false</Private>
         </Reference>
     </ItemGroup>
