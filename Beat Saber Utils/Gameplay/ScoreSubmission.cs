@@ -8,13 +8,12 @@ using IPA.Loader;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
 
-
 namespace BS_Utils.Gameplay
 {
     public class ScoreSubmission
     {
-        public static bool Disabled { get { return disabled; } }
-        public static bool ProlongedDisabled { get { return prolongedDisable; } }
+        public static bool Disabled => disabled;
+        public static bool ProlongedDisabled => prolongedDisable;
         public static bool eventSubscribed = false;
 
         public static string LastDisabledModString
@@ -27,41 +26,10 @@ namespace BS_Utils.Gameplay
             }
         }
 
-        public static string ModString
-        {
-            get
-            {
-                string value = "";
-                for (int i = 0; i < ModList.Count; i++)
-                {
-                    if (i == 0)
-                        value += ModList[i];
-                    else
-                        value += ", " + ModList[i];
-                }
-                return value;
-            }
+        public static string ModString => string.Join(", ", ModList);
+        public static string ProlongedModString => string.Join(", ", ProlongedModList);
 
-        }
-
-        public static string ProlongedModString
-        {
-            get
-            {
-                string value = "";
-                for (int i = 0; i < ProlongedModList.Count; i++)
-                {
-                    if (i == 0)
-                        value += ProlongedModList[i];
-                    else
-                        value += ", " + ProlongedModList[i];
-                }
-                return value;
-            }
-
-        }
-
-        public static bool WasDisabled { get { return _wasDisabled; } }
+        public static bool WasDisabled => _wasDisabled;
 
         public static string[] LastDisablers
         {
@@ -71,10 +39,7 @@ namespace BS_Utils.Gameplay
                     return Array.Empty<string>();
                 return _lastDisablers.ToArray();
             }
-            internal set
-            {
-                _lastDisablers = value;
-            }
+            internal set => _lastDisablers = value;
         }
 
         internal static bool disabled = false;
@@ -104,7 +69,6 @@ namespace BS_Utils.Gameplay
 
             if (!ModList.Contains(mod))
                 ModList.Add(mod);
-
         }
 
         private static PropertyInfo _scoreSaberSubmissionProperty;
@@ -119,17 +83,15 @@ namespace BS_Utils.Gameplay
                     {
                         foreach (Type type in scoreSaberMetaData.Assembly.GetTypes())
                         {
-                            if (type.Namespace == "ScoreSaber")
+                            if (type.Namespace == "ScoreSaber" && type.Name == "Plugin")
                             {
-                                if (type.Name == "Plugin")
-                                {
-                                    _scoreSaberSubmissionProperty = type.GetProperty("ScoreSubmission", BindingFlags.Public | BindingFlags.Static);
-                                    return _scoreSaberSubmissionProperty;
-                                }
+                                _scoreSaberSubmissionProperty = type.GetProperty("ScoreSubmission", BindingFlags.Public | BindingFlags.Static);
+                                return _scoreSaberSubmissionProperty;
                             }
                         }
                     }
                 }
+
                 return _scoreSaberSubmissionProperty;
             }
         }

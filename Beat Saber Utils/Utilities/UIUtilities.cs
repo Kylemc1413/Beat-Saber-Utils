@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using System.Reflection;
 using System.IO;
+
 namespace BS_Utils.Utilities
 {
-    public class UIUtilities
+    // TODO: Mark class as internal at some point, and remove unused methods (only a few are used internally by the GetUserInfo class)
+    [Obsolete("The UIUtilities class will be marked as internal in a future update. Please use BSML's Utilities class instead.")]
+    public static class UIUtilities
     {
-
         public static Texture2D LoadTextureRaw(byte[] file)
         {
-            if (file.Count() > 0)
+            if (file.Any())
             {
-                Texture2D Tex2D = new Texture2D(2, 2);
-                if (Tex2D.LoadImage(file))
-                    return Tex2D;
+                Texture2D tex2D = new Texture2D(2, 2);
+                if (tex2D.LoadImage(file))
+                    return tex2D;
             }
             return null;
         }
 
-        public static Texture2D LoadTextureFromFile(string FilePath)
+        public static Texture2D LoadTextureFromFile(string filePath)
         {
-            if (File.Exists(FilePath))
-                return LoadTextureRaw(File.ReadAllBytes(FilePath));
+            if (File.Exists(filePath))
+                return LoadTextureRaw(File.ReadAllBytes(filePath));
 
             return null;
         }
@@ -35,31 +34,31 @@ namespace BS_Utils.Utilities
             return LoadTextureRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath));
         }
 
-        public static Sprite LoadSpriteRaw(byte[] image, float PixelsPerUnit = 100.0f)
+        public static Sprite LoadSpriteRaw(byte[] image, float pixelsPerUnit = 100.0f)
         {
-            return LoadSpriteFromTexture(LoadTextureRaw(image), PixelsPerUnit);
+            return LoadSpriteFromTexture(LoadTextureRaw(image), pixelsPerUnit);
         }
 
-        public static Sprite LoadSpriteFromTexture(Texture2D SpriteTexture, float PixelsPerUnit = 100.0f)
+        public static Sprite LoadSpriteFromTexture(Texture2D spriteTexture, float pixelsPerUnit = 100.0f)
         {
-            if (SpriteTexture)
-                return Sprite.Create(SpriteTexture, new Rect(0, 0, SpriteTexture.width, SpriteTexture.height), new Vector2(0, 0), PixelsPerUnit);
+            if (spriteTexture)
+                return Sprite.Create(spriteTexture, new Rect(0, 0, spriteTexture.width, spriteTexture.height), new Vector2(0, 0), pixelsPerUnit);
             return null;
         }
 
-        public static Sprite LoadSpriteFromFile(string FilePath, float PixelsPerUnit = 100.0f)
+        public static Sprite LoadSpriteFromFile(string filePath, float pixelsPerUnit = 100.0f)
         {
-            return LoadSpriteFromTexture(LoadTextureFromFile(FilePath), PixelsPerUnit);
+            return LoadSpriteFromTexture(LoadTextureFromFile(filePath), pixelsPerUnit);
         }
 
-        public static Sprite LoadSpriteFromResources(string resourcePath, float PixelsPerUnit = 100.0f)
+        public static Sprite LoadSpriteFromResources(string resourcePath, float pixelsPerUnit = 100.0f)
         {
-            return LoadSpriteRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath), PixelsPerUnit);
+            return LoadSpriteRaw(GetResource(Assembly.GetCallingAssembly(), resourcePath), pixelsPerUnit);
         }
 
-        public static byte[] GetResource(Assembly asm, string ResourceName)
+        public static byte[] GetResource(Assembly asm, string resourceName)
         {
-            System.IO.Stream stream = asm.GetManifestResourceStream(ResourceName);
+            using Stream stream = asm.GetManifestResourceStream(resourceName);
             byte[] data = new byte[stream.Length];
             stream.Read(data, 0, (int)stream.Length);
             return data;

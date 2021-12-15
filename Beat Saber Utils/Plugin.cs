@@ -14,7 +14,7 @@ using Logger = BS_Utils.Utilities.Logger;
 using IPA.Utilities.Async;
 using BS_Utils.Utilities.Events;
 using System.Collections.Generic;
-using System.Collections;
+
 namespace BS_Utils
 {
     [Plugin(RuntimeOptions.SingleStartInit)]

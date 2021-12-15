@@ -1,61 +1,55 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using IniParser;
 using IniParser.Model;
+using IniParser.Model.Configuration;
 using IniParser.Parser;
 
 namespace BS_Utils.Utilities
 {
     public class IniFile
     {
-        private string _path = "";
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(value));
-                if (!File.Exists(value))
-                    File.WriteAllText(value, "", Encoding.Unicode);
+        private readonly string _path;
 
-                _path = value;
-            }
-        }
-
-        internal IniParser.Model.Configuration.IniParserConfiguration config = new IniParser.Model.Configuration.IniParserConfiguration();
-        internal FileIniDataParser parser;
-        internal IniDataParser dataParser;
-        internal IniData data;
+        private readonly IniParserConfiguration _config;
+        private readonly FileIniDataParser _parser;
+        private readonly IniDataParser _dataParser;
+        internal IniData Data;
 
         /// <summary>
         /// INIFile Constructor.
         /// </summary>
         /// <PARAM name="INIPath"></PARAM>
-        public IniFile(string INIPath)
+        public IniFile(string iniPath)
         {
-            this.Path = INIPath;
-            config.AllowCreateSectionsOnFly = true;
-            config.AllowDuplicateKeys = true;
-            config.AllowDuplicateSections = true;
-            config.OverrideDuplicateKeys = true;
-            config.SkipInvalidLines = true;
-            config.ThrowExceptionsOnError = true;
-            config.AllowKeysWithoutSection = true;
-            dataParser = new IniDataParser(config);
-            parser = new FileIniDataParser(dataParser);
-            data = parser.ReadFile(Path);
+            _path = iniPath;
+            
+            Directory.CreateDirectory(Path.GetDirectoryName(_path));
+            if (!File.Exists(_path))
+                File.WriteAllText(_path, string.Empty, Encoding.Unicode);
+
+            _config = new IniParserConfiguration
+            {
+                AllowCreateSectionsOnFly = true,
+                AllowDuplicateKeys = true,
+                AllowDuplicateSections = true,
+                OverrideDuplicateKeys = true,
+                SkipInvalidLines = true,
+                ThrowExceptionsOnError = true,
+                AllowKeysWithoutSection = true
+            };
+
+            _dataParser = new IniDataParser(_config);
+            _parser = new FileIniDataParser(_dataParser);
+            Data = _parser.ReadFile(_path);
         }
 
-        public void IniWriteValue(string Section, string Key, string Value)
+        public void IniWriteValue(string section, string key, string value)
         {
             try
             {
-                data[Section][Key] = Value;
-                parser.WriteFile(Path, data);
+                Data[section][key] = value;
+                _parser.WriteFile(_path, Data);
             }
             catch
             {
@@ -63,27 +57,17 @@ namespace BS_Utils.Utilities
             }
         }
 
-        public string IniReadValue(string Section, string Key)
+        public string IniReadValue(string section, string key)
         {
             try
             {
-                data = parser.ReadFile(Path);
-                string result;
-
-                if (!data[Section].ContainsKey(Key))
-                {
-                    return "";
-                }
-                else
-                {
-                    result = data[Section].GetKeyData(Key).Value;
-                    return result;
-                }
+                Data = _parser.ReadFile(_path);
+                return Data[section].ContainsKey(key) ? Data[section].GetKeyData(key).Value : string.Empty;
             }
             catch
             {
                 Logger.Log("IniReadValue doesn't want to read the stuffs");
-                return "";
+                return string.Empty;
             }
         }
     }

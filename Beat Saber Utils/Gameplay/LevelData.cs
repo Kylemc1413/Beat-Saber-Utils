@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BS_Utils.Gameplay
+﻿namespace BS_Utils.Gameplay
 {
     public enum Mode { None, Standard, Multiplayer, Mission};
     public class LevelData

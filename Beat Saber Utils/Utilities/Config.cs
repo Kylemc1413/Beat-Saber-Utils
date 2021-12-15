@@ -7,7 +7,7 @@ namespace BS_Utils.Utilities
 {
     public class Config
     {
-        private IniFile _instance;
+        private readonly IniFile _instance;
 
         #region Bool Alternatives
 
@@ -129,10 +129,7 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public bool HasKey(string section, string name)
         {
-            if (_instance.data.Sections.ContainsSection(section))
-                return _instance.data[section].ContainsKey(name);
-            else
-                return false;
+            return _instance.Data.Sections.ContainsSection(section) && _instance.Data[section].ContainsKey(name);
         }
 
         /// <summary>
