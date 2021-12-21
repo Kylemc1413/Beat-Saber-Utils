@@ -8,9 +8,9 @@ namespace BS_Utils.Gameplay.HarmonyPatches
 {
     [HarmonyPatch(typeof(ResultsViewController))]
     [HarmonyPatch(nameof(ResultsViewController.SetDataToUI), MethodType.Normal)]
-    class ResultsViewControllerSetDataToUI
+    internal class ResultsViewControllerSetDataToUI
     {
-        static void Postfix(ref TextMeshProUGUI ____rankText, ref GameObject ____clearedBannerGo, ref GameObject ____failedBannerGo)
+        private static void Postfix(ref TextMeshProUGUI ____rankText, ref GameObject ____clearedBannerGo, ref GameObject ____failedBannerGo)
         {
             ____rankText.overflowMode = TextOverflowModes.Overflow;
             ____rankText.richText = true;
@@ -23,11 +23,11 @@ namespace BS_Utils.Gameplay.HarmonyPatches
                 tmp.color = Color.red;
             if (bgGo != null)
                 bgGo.SetActive(true);
-            if (ScoreSubmission.WasDisabled || ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            if (ScoreSubmission.WasDisabled || ScoreSubmission.prolongedDisable)
             {
                 string color = "<color=#ff0000ff>";
                 StringBuilder scoreSubmissionTextBuilder = new StringBuilder("  \r\n").Append(color).Append("<size=50%><b>Score Submission Disabled by: ");
-                if (ScoreSubmission.disabled)
+                if (ScoreSubmission.WasDisabled)
                 {
                     scoreSubmissionTextBuilder.Append(ScoreSubmission.LastDisabledModString);
 
