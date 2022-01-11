@@ -5,7 +5,7 @@
   "gameVersion": "1.19.0",
   "id": "BS Utils",
   "name": "BS_Utils",
-  "version": "1.11.1",
+  "version": "1.11.2",
   "dependsOn": {
     "BSIPA": "^4.2.0",
     "Ini Parser":  "^2.5.8"
