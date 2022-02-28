@@ -129,6 +129,5 @@ namespace BS_Utils
                 Logger.Log(ex.ToString(), LogLevel.Error);
             }
         }
-
     }
 }
