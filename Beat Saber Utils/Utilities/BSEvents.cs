@@ -44,8 +44,8 @@ namespace BS_Utils.Utilities
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelFailed;
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelRestarted;
 
-        public static event Action<NoteData, NoteCutInfo, int> noteWasCut;
-        public static event Action<NoteData, int> noteWasMissed;
+        public static event Action<NoteController, NoteCutInfo> noteWasCut;
+        public static event Action<NoteController> noteWasMissed;
         public static event Action<int, float> multiplierDidChange;
         public static event Action<int> multiplierDidIncrease;
         public static event Action<int> comboDidChange;
@@ -197,9 +197,8 @@ namespace BS_Utils.Utilities
             var beatmapObjectManager = diContainer.TryResolve<BeatmapObjectManager>();
             if (beatmapObjectManager != null)
             {
-                // TODO: Either fix or yeet the multiplier callback argument
-                beatmapObjectManager.noteWasCutEvent += (NoteController controller, in NoteCutInfo noteCutInfo) => InvokeAll(noteWasCut, controller.noteData, noteCutInfo, 0);
-                beatmapObjectManager.noteWasMissedEvent += controller => InvokeAll(noteWasMissed, controller.noteData, 0);
+                beatmapObjectManager.noteWasCutEvent += (NoteController controller, in NoteCutInfo noteCutInfo) => InvokeAll(noteWasCut, controller, noteCutInfo);
+                beatmapObjectManager.noteWasMissedEvent += controller => InvokeAll(noteWasMissed, controller);
             }
 
             var comboController = diContainer.TryResolve<ComboController>();
