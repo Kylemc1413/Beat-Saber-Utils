@@ -15,8 +15,7 @@ namespace BS_Utils.Utilities.Events
         public static void RaiseEventSafe(this EventHandler e, object sender, string eventName)
         {
             if (e == null) return;
-            EventHandler[] handlers = e.GetInvocationList().Select(d => (EventHandler)d).ToArray()
-                ?? Array.Empty<EventHandler>();
+            EventHandler[] handlers = e.GetInvocationList().Select(d => (EventHandler)d).ToArray();
             for (int i = 0; i < handlers.Length; i++)
             {
                 try
@@ -43,8 +42,7 @@ namespace BS_Utils.Utilities.Events
         public static void RaiseEventSafe<TArg>(this EventHandler<TArg> e, object sender, TArg args, string eventName)
         {
             if (e == null) return;
-            EventHandler<TArg>[] handlers = e.GetInvocationList().Select(d => (EventHandler<TArg>)d).ToArray()
-                ?? Array.Empty<EventHandler<TArg>>();
+            EventHandler<TArg>[] handlers = e.GetInvocationList().Select(d => (EventHandler<TArg>)d).ToArray();
             for (int i = 0; i < handlers.Length; i++)
             {
                 try
