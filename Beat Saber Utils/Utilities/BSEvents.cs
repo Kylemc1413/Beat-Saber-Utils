@@ -127,7 +127,7 @@ namespace BS_Utils.Utilities
             }
             catch (Exception e)
             {
-                Console.WriteLine("[BSEvents] " + e);
+                Logger.log.Error(e);
             }
         }
 
