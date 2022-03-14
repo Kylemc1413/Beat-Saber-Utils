@@ -44,8 +44,8 @@ namespace BS_Utils.Utilities
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelFailed;
         public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelRestarted;
 
-        public static event Action<NoteData, NoteCutInfo, int> noteWasCut;
-        public static event Action<NoteData, int> noteWasMissed;
+        public static event Action<NoteController, NoteCutInfo> noteWasCut;
+        public static event Action<NoteController> noteWasMissed;
         public static event Action<int, float> multiplierDidChange;
         public static event Action<int> multiplierDidIncrease;
         public static event Action<int> comboDidChange;
@@ -127,7 +127,7 @@ namespace BS_Utils.Utilities
             }
             catch (Exception e)
             {
-                Console.WriteLine("[BSEvents] " + e);
+                Logger.log.Error(e);
             }
         }
 
@@ -168,9 +168,7 @@ namespace BS_Utils.Utilities
                 if (sync != null)
                 {
                     sync.stateChangedEvent += (state) => { MultiControllerStateChanged(state, transitionSetupData, diContainer, sync); };
-
                 }
-
             }
             else
             {
@@ -189,25 +187,34 @@ namespace BS_Utils.Utilities
 
         private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
         {
-
-
-            var pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().LastOrDefault();
+            var pauseManager = diContainer.TryResolve<PauseController>();
             if (pauseManager != null)
             {
-                pauseManager.didResumeEvent += delegate () { InvokeAll(songUnpaused); };
-                pauseManager.didPauseEvent += delegate () { InvokeAll(songPaused); };
+                pauseManager.didResumeEvent += delegate { InvokeAll(songUnpaused); };
+                pauseManager.didPauseEvent += delegate { InvokeAll(songPaused); };
             }
 
-            var scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
+            var beatmapObjectManager = diContainer.TryResolve<BeatmapObjectManager>();
+            if (beatmapObjectManager != null)
+            {
+                beatmapObjectManager.noteWasCutEvent += (NoteController controller, in NoteCutInfo noteCutInfo) => InvokeAll(noteWasCut, controller, noteCutInfo);
+                beatmapObjectManager.noteWasMissedEvent += controller => InvokeAll(noteWasMissed, controller);
+            }
+
+            var comboController = diContainer.TryResolve<ComboController>();
+            if (comboController != null)
+            {
+                comboController.comboDidChangeEvent += delegate (int combo) { InvokeAll(comboDidChange, combo); };
+                comboController.comboBreakingEventHappenedEvent += delegate { InvokeAll(comboDidBreak); };
+            }
+
+            var scoreController = diContainer.TryResolve<ScoreController>();
             if (scoreController != null)
             {
-                scoreController.noteWasCutEvent += delegate (NoteData noteData, in NoteCutInfo noteCutInfo, int multiplier) { InvokeAll(noteWasCut, noteData, noteCutInfo, multiplier); };
-                scoreController.noteWasMissedEvent += delegate (NoteData noteData, int multiplier) { InvokeAll(noteWasMissed, noteData, multiplier); }; ;
-                scoreController.multiplierDidChangeEvent += delegate (int multiplier, float progress) { InvokeAll(multiplierDidChange, multiplier, progress); if (multiplier > 1 && progress < 0.1f) InvokeAll(multiplierDidIncrease, multiplier); };
-                scoreController.comboDidChangeEvent += delegate (int combo) { InvokeAll(comboDidChange, combo); };
-                scoreController.comboBreakingEventHappenedEvent += delegate () { InvokeAll(comboDidBreak); };
-                scoreController.scoreDidChangeEvent += delegate (int score, int scoreAfterModifier) { InvokeAll(scoreDidChange); };
-
+                scoreController.multiplierDidChangeEvent += delegate (int multiplier, float progress) { InvokeAll(multiplierDidChange, multiplier, progress);
+                if (multiplier > 1 && progress < 0.1f)
+                    InvokeAll(multiplierDidIncrease, multiplier); };
+                scoreController.scoreDidChangeEvent += delegate { InvokeAll(scoreDidChange); };
             }
 
             var saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().LastOrDefault(x => x.isActiveAndEnabled);
@@ -217,21 +224,15 @@ namespace BS_Utils.Utilities
                 saberCollisionManager.sparkleEffectDidEndEvent += delegate (SaberType saber) { InvokeAll(sabersEndCollide, saber); };
             }
 
-
             var gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().LastOrDefault(x => x.isActiveAndEnabled);
             if (gameEnergyCounter != null)
             {
-                gameEnergyCounter.gameEnergyDidReach0Event += delegate () { InvokeAll(energyReachedZero); };
+                gameEnergyCounter.gameEnergyDidReach0Event += delegate { InvokeAll(energyReachedZero); };
                 gameEnergyCounter.gameEnergyDidChangeEvent += delegate (float energy) { InvokeAll(energyDidChange, energy); };
-
             }
 
-            var beatmapObjectCallbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().LastOrDefault(x => x.isActiveAndEnabled);
-            if (beatmapObjectCallbackController != null)
-            {
-                beatmapObjectCallbackController.beatmapEventDidTriggerEvent += delegate (BeatmapEventData songEvent) { InvokeAll(beatmapEvent, songEvent); };
-
-            }
+            var beatmapCallbacksController = diContainer.TryResolve<BeatmapCallbacksController>();
+            beatmapCallbacksController?.AddBeatmapCallback(new BeatmapDataCallback<BeatmapEventData>(songEvent => InvokeAll(beatmapEvent, songEvent)));
 
             var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
             if (transitionSetup)
@@ -251,10 +252,7 @@ namespace BS_Utils.Utilities
                     InvokeAll(levelCleared, data, results);
                     break;
                 case LevelCompletionResults.LevelEndStateType.Failed:
-                    if (results.levelEndAction == LevelCompletionResults.LevelEndAction.Restart)
-                        InvokeAll(levelRestarted, data, results);
-                    else
-                        InvokeAll(levelFailed, data, results);
+                    InvokeAll(results.levelEndAction == LevelCompletionResults.LevelEndAction.Restart ? levelRestarted : levelFailed, data, results);
                     break;
             }
 
@@ -283,8 +281,8 @@ namespace BS_Utils.Utilities
                 }
                 catch (Exception e)
                 {
-                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
-                    Utilities.Logger.log.Debug(e);
+                    Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
+                    Logger.log.Debug(e);
                 }
             }
         }
@@ -302,8 +300,8 @@ namespace BS_Utils.Utilities
                 }
                 catch (Exception e)
                 {
-                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
-                    Utilities.Logger.log.Debug(e);
+                    Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
+                    Logger.log.Debug(e);
                 }
             }
         }
@@ -322,8 +320,8 @@ namespace BS_Utils.Utilities
                 }
                 catch (Exception e)
                 {
-                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
-                    Utilities.Logger.log.Debug(e);
+                    Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
+                    Logger.log.Debug(e);
                 }
             }
         }
@@ -341,8 +339,8 @@ namespace BS_Utils.Utilities
                 }
                 catch (Exception e)
                 {
-                    Utilities.Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
-                    Utilities.Logger.log.Debug(e);
+                    Logger.log.Error($"Caught Exception when executing event: {e.Message}\n In Assembly: {name}");
+                    Logger.log.Debug(e);
                 }
             }
         }

@@ -74,10 +74,6 @@
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
             <Private>False</Private>
         </Reference>
-        <Reference Include="OculusPlatform">
-            <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Oculus.Platform.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
         <Reference Include="Steamworks.NET">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Steamworks.NET.dll</HintPath>
             <Private>False</Private>

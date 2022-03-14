@@ -10,7 +10,9 @@ namespace BS_Utils.Utilities
         /// The type of level that finished.
         /// </summary>
         public readonly LevelType LevelType;
+
         public readonly ScenesTransitionSetupDataSO ScenesTransitionSetupDataSO;
+
         protected LevelFinishedEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO)
         {
             LevelType = levelType;
@@ -25,7 +27,7 @@ namespace BS_Utils.Utilities
     {
         public readonly LevelCompletionResults CompletionResults;
 
-        protected LevelFinishedWithResultsEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO, LevelCompletionResults completionResults) 
+        protected LevelFinishedWithResultsEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO, LevelCompletionResults completionResults)
             : base(levelType, scenesTransitionSetupDataSO)
         {
             CompletionResults = completionResults;
@@ -52,11 +54,8 @@ namespace BS_Utils.Utilities
         /// <returns></returns>
         public LevelCompletionResults GetPlayerResults(string playerId)
         {
-            if (playersCompletionResults == null)
-                return null;
-            var player = playersCompletionResults.FirstOrDefault(x => x.connectedPlayer.userId == playerId);
-
-            return player.multiplayerLevelCompletionResults.levelCompletionResults;
+            var player = playersCompletionResults?.FirstOrDefault(x => x.connectedPlayer.userId == playerId);
+            return player?.multiplayerLevelCompletionResults.levelCompletionResults;
         }
 
         public IEnumerator<MultiplayerPlayerResultsData> PlayerResults()
@@ -69,28 +68,29 @@ namespace BS_Utils.Utilities
         {
             playersCompletionResults = otherPlayersLevelCompletionResults;
         }
-
     }
 
     public class CampaignLevelFinishedEventArgs : LevelFinishedWithResultsEventArgs
     {
         public readonly MissionCompletionResults MissionCompletionResults;
+
         public CampaignLevelFinishedEventArgs(MissionLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
             : base(LevelType.Campaign, levelScenesTransitionSetupDataSO, missionCompletionResults?.levelCompletionResults)
         {
             MissionCompletionResults = missionCompletionResults;
         }
     }
+
     public class TutorialLevelFinishedEventArgs : LevelFinishedEventArgs
     {
         public readonly TutorialScenesTransitionSetupDataSO.TutorialEndStateType EndState;
+
         public TutorialLevelFinishedEventArgs(TutorialScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
             : base(LevelType.Tutorial, levelScenesTransitionSetupDataSO)
         {
             EndState = endState;
         }
     }
-
 
     public enum LevelType
     {
