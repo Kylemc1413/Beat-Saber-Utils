@@ -7,19 +7,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheLevelData
     {
-        static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance, IDifficultyBeatmap difficultyBeatmap, IPreviewBeatmapLevel previewBeatmapLevel,
-            OverrideEnvironmentSettings overrideEnvironmentSettings, GameplayModifiers gameplayModifiers, ColorScheme overrideColorScheme, PlayerSpecificSettings playerSpecificSettings,
-            ref PracticeSettings practiceSettings, bool useTestNoteCutSoundEffects, MainSettingsModelSO ____mainSettingsModel)
+        static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
-            EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
-            if (overrideEnvironmentSettings is { overrideEnvironments: true })
-            {
-                environmentInfoSO = overrideEnvironmentSettings.GetOverrideEnvironmentInfoForType(environmentInfoSO.environmentType);
-            }
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, environmentInfoSO, overrideColorScheme, ____mainSettingsModel);
+            var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
+            Plugin.LevelData.GameplayCoreSceneSetupData = Accessors.SceneSetupDataGetter(ref setupDataBase);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Standard;
             Logger.log.Debug("Level Data set");
@@ -39,15 +33,14 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheMultiLevelData
     {
-        static void Postfix(MultiplayerLevelScenesTransitionSetupDataSO __instance, ref EnvironmentInfoSO ____multiplayerEnvironmentInfo, IPreviewBeatmapLevel previewBeatmapLevel,
-            IDifficultyBeatmap difficultyBeatmap, ColorScheme overrideColorScheme, GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings,
-            ref PracticeSettings practiceSettings, MainSettingsModelSO ____mainSettingsModel, bool useTestNoteCutSoundEffects = false)
+        static void Postfix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
         {
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, practiceSettings, useTestNoteCutSoundEffects, ____multiplayerEnvironmentInfo, overrideColorScheme, ____mainSettingsModel);
+            var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
+            Plugin.LevelData.GameplayCoreSceneSetupData = Accessors.SceneSetupDataGetter(ref setupDataBase);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Multiplayer;
             Logger.log.Debug("Level Data set");
@@ -66,15 +59,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheMissionLevelData
     {
-        static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance, IPreviewBeatmapLevel previewBeatmapLevel, IDifficultyBeatmap difficultyBeatmap, ColorScheme overrideColorScheme,
-            GameplayModifiers gameplayModifiers, PlayerSpecificSettings playerSpecificSettings, MainSettingsModelSO ____mainSettingsModel)
+        static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance)
         {
-            EnvironmentInfoSO environmentInfoSO = difficultyBeatmap.GetEnvironmentInfo();
-
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
-            Plugin.LevelData.GameplayCoreSceneSetupData = new GameplayCoreSceneSetupData(difficultyBeatmap, previewBeatmapLevel, gameplayModifiers, playerSpecificSettings, PracticeSettings.defaultPracticeSettings, false, environmentInfoSO, overrideColorScheme, ____mainSettingsModel);
+            var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
+            Plugin.LevelData.GameplayCoreSceneSetupData = Accessors.SceneSetupDataGetter(ref setupDataBase);
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Mission;
             Logger.log.Debug("Level Data set");
