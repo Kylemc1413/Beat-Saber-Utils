@@ -1,6 +1,13 @@
 ﻿namespace BS_Utils.Gameplay
 {
-    public enum Mode { None, Standard, Multiplayer, Mission};
+    public enum Mode
+    {
+        None,
+        Standard,
+        Multiplayer,
+        Mission
+    }
+
     public class LevelData
     {
         public GameplayCoreSceneSetupData GameplayCoreSceneSetupData { get; internal set; }

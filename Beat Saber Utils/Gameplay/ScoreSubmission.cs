@@ -96,7 +96,7 @@ namespace BS_Utils.Gameplay
             }
         }
 
-        internal static void DisableScoreSaberScoreSubmission()
+        internal static void DisableScoreSaberScoreSubmission(LevelScenesTransitionSetupDataSO setupDataSO)
         {
             if (ScoreSaberSubmissionProperty != null)
             {
@@ -104,13 +104,6 @@ namespace BS_Utils.Gameplay
             }
             else
             {
-                StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-                if (setupDataSO == null)
-                {
-                    Logger.Log("ScoreSubmission: StandardLevelScenesTransitionSetupDataSO not found - exiting...", LogLevel.Warning);
-                    return;
-                }
-
                 DisableEvent(setupDataSO, "didFinishEvent", "Five");
             }
         }
