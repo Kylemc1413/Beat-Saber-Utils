@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using IPA.Loader;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
@@ -116,14 +115,29 @@ namespace BS_Utils.Gameplay
             ModList.Clear();
             Plugin.LevelFinished -= LevelData_didFinishEvent;
             ScoreSaberSubmissionProperty?.SetValue(null, true);
-          
-            if (RemovedFive != null)
+
+            switch (args.ScenesTransitionSetupDataSO)
             {
-                StandardLevelScenesTransitionSetupDataSO setupDataSO = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-                setupDataSO.didFinishEvent -= RemovedFive;
-                setupDataSO.didFinishEvent += RemovedFive;
-                RemovedFive = null;
+                case StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSO:
+                    if (RemovedSoloFive != null)
+                    {
+                        standardLevelScenesTransitionSetupDataSO.didFinishEvent -= RemovedSoloFive;
+                        standardLevelScenesTransitionSetupDataSO.didFinishEvent += RemovedSoloFive;
+                        RemovedSoloFive = null;
+                    }
+                    break;
+                case MultiplayerLevelScenesTransitionSetupDataSO multiplayerLevelScenesTransitionSetupDataSO:
+                    if (RemovedMultiFive != null)
+                    {
+                        multiplayerLevelScenesTransitionSetupDataSO.didFinishEvent -= RemovedMultiFive;
+                        multiplayerLevelScenesTransitionSetupDataSO.didFinishEvent += RemovedMultiFive;
+                        RemovedMultiFive = null;
+                    }
+                    break;
+                
+                // TODO: Check whether MP finish by disconnect results in not properly restoring score submission functionality
             }
+
             eventSubscribed = false;
         }
 
@@ -150,7 +164,8 @@ namespace BS_Utils.Gameplay
 
         }
 
-        private static Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> RemovedFive;
+        private static Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> RemovedSoloFive;
+        private static Action<MultiplayerLevelScenesTransitionSetupDataSO, MultiplayerResultsData> RemovedMultiFive;
         private static bool DisableEvent(object target, string eventName, string delegateName)
         {
             FieldInfo fieldInfo = target.GetType().GetField(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
@@ -164,7 +179,18 @@ namespace BS_Utils.Gameplay
                 {
                     if (item.Method.Name == delegateName)
                     {
-                        RemovedFive = (Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults>)item;
+                        switch (target)
+                        {
+                            case StandardLevelScenesTransitionSetupDataSO _:
+                                RemovedSoloFive = (Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults>)item;
+                                break;
+                            case MultiplayerLevelScenesTransitionSetupDataSO _:
+                                RemovedMultiFive = (Action<MultiplayerLevelScenesTransitionSetupDataSO, MultiplayerResultsData>)item;
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+
                         target.GetType().GetEvent(eventName).RemoveEventHandler(target, item);
                         eventDisabled = true;
                     }
