@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
@@ -9,7 +7,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         [HarmonyPrefix]
         [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance, LevelCompletionResults levelCompletionResults)
+        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
@@ -19,7 +17,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
-        static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance, MultiplayerResultsData multiplayerResultsData)
+        static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
         {
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
