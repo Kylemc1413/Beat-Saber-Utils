@@ -62,6 +62,7 @@ namespace BS_Utils.Gameplay
                 if (!eventSubscribed)
                 {
                     Plugin.LevelFinished += LevelData_didFinishEvent;
+                    Plugin.MultiplayerDidDisconnect += Plugin_MultiplayerDidDisconnect;
                     eventSubscribed = true;
                 }
             }
@@ -114,6 +115,7 @@ namespace BS_Utils.Gameplay
             disabled = false;
             ModList.Clear();
             Plugin.LevelFinished -= LevelData_didFinishEvent;
+            Plugin.MultiplayerDidDisconnect -= Plugin_MultiplayerDidDisconnect;
             ScoreSaberSubmissionProperty?.SetValue(null, true);
 
             switch (args.ScenesTransitionSetupDataSO)
@@ -134,11 +136,14 @@ namespace BS_Utils.Gameplay
                         RemovedMultiFive = null;
                     }
                     break;
-                
-                // TODO: Check whether MP finish by disconnect results in not properly restoring score submission functionality
             }
 
             eventSubscribed = false;
+        }
+
+        private static void Plugin_MultiplayerDidDisconnect(object sender, (MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason) eventDetails)
+        {
+            LevelData_didFinishEvent(sender, new MultiplayerLevelFinishedEventArgs(eventDetails.levelScenesTransitionSetupDataSO, null, null));
         }
 
         public static void ProlongedDisableSubmission(string mod)

@@ -46,6 +46,9 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Logger.log.Debug("Level Data set");
             __instance.didFinishEvent -= __instance_didFinishEvent;
             __instance.didFinishEvent += __instance_didFinishEvent;
+
+            __instance.didDisconnectEvent -= __instance_didDisconnectEvent;
+            __instance.didDisconnectEvent += __instance_didDisconnectEvent;
         }
 
         private static void __instance_didFinishEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MultiplayerResultsData resultsData)
@@ -53,6 +56,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             Logger.log.Debug("Triggering Multiplayer LevelFinishEvent.");
             Plugin.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, resultsData.otherPlayersData);
             BSEvents.TriggerMultiplayerLevelDidFinish(levelScenesTransitionSetupDataSO, resultsData.localPlayerResultData.multiplayerLevelCompletionResults.levelCompletionResults, resultsData.otherPlayersData);
+        }
+
+        private static void __instance_didDisconnectEvent(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason disconnectedReason)
+        {
+            Logger.log.Debug("Triggering Multiplayer DidDisconnectEvent.");
+            Plugin.TriggerMultiplayerDidDisconnect(levelScenesTransitionSetupDataSO, disconnectedReason);
+            BSEvents.TriggerMultiplayerDidDisconnect(levelScenesTransitionSetupDataSO, disconnectedReason);
         }
     }
 
