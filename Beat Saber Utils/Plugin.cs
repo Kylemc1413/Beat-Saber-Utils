@@ -27,6 +27,7 @@ namespace BS_Utils
         public static LevelData LevelData = new LevelData();
 
         internal static event EventHandler<LevelFinishedEventArgs> LevelFinished; // Raised before the BSEvents version.
+        internal static event EventHandler<(MultiplayerLevelScenesTransitionSetupDataSO, DisconnectedReason)> MultiplayerDidDisconnect;
 
         [OnStart]
         public void OnApplicationStart()
@@ -100,6 +101,12 @@ namespace BS_Utils
         {
             Logger.log.Debug("Tutorial level finished.");
             LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupDataSO, new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupDataSO, endState), nameof(LevelFinished));
+        }
+
+        internal static void TriggerMultiplayerDidDisconnect(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason resultsData)
+        {
+            Logger.log.Debug("Multiplayer did disconnect.");
+            MultiplayerDidDisconnect?.RaiseEventSafe(levelScenesTransitionSetupDataSO, (levelScenesTransitionSetupDataSO, resultsData), nameof(MultiplayerDidDisconnect));
         }
 
         internal static void ApplyHarmonyPatches()

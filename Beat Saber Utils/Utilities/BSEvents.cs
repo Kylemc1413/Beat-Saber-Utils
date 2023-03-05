@@ -59,6 +59,8 @@ namespace BS_Utils.Utilities
         public static event Action<SaberType> sabersStartCollide;
         public static event Action<SaberType> sabersEndCollide;
 
+        public static event EventHandler<(MultiplayerLevelScenesTransitionSetupDataSO, DisconnectedReason)> MultiplayerDidDisconnect;
+
         readonly string[] MainSceneNames = { SceneNames.Game, SceneNames.Credits, SceneNames.BeatmapEditor };
         private bool lastMainSceneWasNotMenu = false;
         GameScenesManager gameScenesManager;
@@ -374,6 +376,13 @@ namespace BS_Utils.Utilities
             LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupDataSO, 
                 new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupDataSO, endState), 
                 nameof(LevelFinished));
+        }
+        internal static void TriggerMultiplayerDidDisconnect(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason disconnectedReason)
+        {
+            Logger.log.Debug("Multiplayer did disconnect.");
+            MultiplayerDidDisconnect?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
+                (levelScenesTransitionSetupDataSO, disconnectedReason),
+                nameof(MultiplayerDidDisconnect));
         }
         #endregion
     }
