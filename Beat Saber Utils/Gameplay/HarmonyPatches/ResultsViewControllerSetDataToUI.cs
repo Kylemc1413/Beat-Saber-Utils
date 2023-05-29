@@ -7,7 +7,7 @@ using UnityEngine;
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
     [HarmonyPatch(typeof(ResultsViewController))]
-    [HarmonyPatch(nameof(ResultsViewController.SetDataToUI), MethodType.Normal)]
+    [HarmonyPatch("SetDataToUI", MethodType.Normal)]
     internal class ResultsViewControllerSetDataToUI
     {
         private static void Postfix(ref TextMeshProUGUI ____rankText, ref GameObject ____clearedBannerGo, ref GameObject ____failedBannerGo)
