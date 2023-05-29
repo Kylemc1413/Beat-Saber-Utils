@@ -7,7 +7,7 @@
   "name": "BS_Utils",
   "version": "1.12.2",
   "dependsOn": {
-    "BSIPA": "^4.2.0",
+    "BSIPA": "^4.3.0",
     "Ini Parser":  "^2.5.9"
   }
 } 
