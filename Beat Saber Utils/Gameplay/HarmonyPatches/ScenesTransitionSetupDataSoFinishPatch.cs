@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using UnityEngine;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
@@ -24,6 +23,18 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
         {
             Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Finish: Prefix");
+
+            if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
+            {
+                ScoreSubmission.DisableScoreSaberScoreSubmission(__instance);
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
+        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance)
+        {
+            Debug.Log("MissionLevelScenesTransitionSetupDataSO.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {

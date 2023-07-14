@@ -101,7 +101,7 @@ namespace BS_Utils.Gameplay
 
         internal static void DisableScoreSaberScoreSubmission(LevelScenesTransitionSetupDataSO setupDataSO)
         {
-            Debug.Log("DisableScoreSaberScoreSubmission(): " + setupDataSO.ToString()); ;
+            //Debug.Log("DisableScoreSaberScoreSubmission(): " + setupDataSO.ToString()); ;
 
             if (ScoreSaberSubmissionProperty != null)
             {
@@ -115,7 +115,7 @@ namespace BS_Utils.Gameplay
 
         private static void LevelData_didFinishEvent(object sender, LevelFinishedEventArgs args)
         {
-            Debug.Log("LevelData_didFinishEvent(): " + args.LevelType.ToString()); ;
+            //Debug.Log("LevelData_didFinishEvent(): " + args.LevelType.ToString()); ;
 
             _wasDisabled = disabled;
             _lastDisablers = ModList.ToArray();
@@ -215,11 +215,19 @@ namespace BS_Utils.Gameplay
         // Use ONLY for restarts from pause menu
         internal static void PauseMenuRestart()
         {
+            Logger.Log("RestartLevel from Pause Menu");
+
+            // These are reset in GrabTheLevelData, which doesnt run when restarted from Pause menu (that only runs when restarting from ResultsView)
             _wasDisabled = false;
             LastDisablers = Array.Empty<string>();
-            ModList.Clear();
-            disabled = false;
+
+            // These must be called in ResultsView to actually reset, which doesnt run if restarting from Pause menu
+            ModList.Clear();    // Removes text from ResultsView
+            disabled = false;   // Stops DisableScoreSubmission() from being called. This was otherwise reset to false in LevelData_didFinishEvent and ResultsViewControllerSetDataToUI
+
             eventSubscribed = false;
+            Plugin.LevelFinished -= LevelData_didFinishEvent;
+            Plugin.MultiplayerDidDisconnect -= Plugin_MultiplayerDidDisconnect;
         }
 
         // Used for debugging purposes

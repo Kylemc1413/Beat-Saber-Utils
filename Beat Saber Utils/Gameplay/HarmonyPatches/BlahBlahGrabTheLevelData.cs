@@ -1,7 +1,7 @@
 ﻿using System;
 using BS_Utils.Utilities;
 using HarmonyLib;
-using UnityEngine;
+//using UnityEngine;
 using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
@@ -11,7 +11,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
-            Debug.Log("StandardLevelScenesTransitionSetupDataSO.Init: Postfix");
+            //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Init: Postfix");
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
@@ -38,7 +38,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         static void Postfix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
         {
-            Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Init: Postfix");
+            //Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Init: Postfix");
 
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
