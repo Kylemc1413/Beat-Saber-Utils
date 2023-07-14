@@ -189,6 +189,14 @@ namespace BS_Utils.Utilities
 
         private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
         {
+            Debug.Log("GameSceneSceneWasLoaded()");
+
+            /*if (ScoreSubmission._wasDisabled)
+            {
+                ScoreSubmission._wasDisabled = false;
+                ScoreSubmission.LastDisablers = Array.Empty<string>();
+            }*/
+
             var pauseManager = diContainer.TryResolve<PauseController>();
             if (pauseManager != null)
             {

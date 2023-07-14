@@ -6,6 +6,7 @@ using System.Reflection;
 using IPA.Loader;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
+using UnityEngine;
 
 namespace BS_Utils.Gameplay
 {
@@ -51,6 +52,8 @@ namespace BS_Utils.Gameplay
 
         public static void DisableSubmission(string mod)
         {
+            Debug.Log("DisableSubmission(): " + mod);
+
             if (disabled == false)
             {
                 //Utilities.Logger.log.Warn($"First DisableSubmission by {mod}");
@@ -98,6 +101,8 @@ namespace BS_Utils.Gameplay
 
         internal static void DisableScoreSaberScoreSubmission(LevelScenesTransitionSetupDataSO setupDataSO)
         {
+            Debug.Log("DisableScoreSaberScoreSubmission(): " + setupDataSO.ToString()); ;
+
             if (ScoreSaberSubmissionProperty != null)
             {
                 ScoreSaberSubmissionProperty.SetValue(null, false);
@@ -110,10 +115,13 @@ namespace BS_Utils.Gameplay
 
         private static void LevelData_didFinishEvent(object sender, LevelFinishedEventArgs args)
         {
+            Debug.Log("LevelData_didFinishEvent(): " + args.LevelType.ToString()); ;
+
             _wasDisabled = disabled;
             _lastDisablers = ModList.ToArray();
             disabled = false;
             ModList.Clear();
+
             Plugin.LevelFinished -= LevelData_didFinishEvent;
             Plugin.MultiplayerDidDisconnect -= Plugin_MultiplayerDidDisconnect;
             ScoreSaberSubmissionProperty?.SetValue(null, true);
@@ -202,6 +210,16 @@ namespace BS_Utils.Gameplay
                 }
             }
             return eventDisabled;
+        }
+
+        // Use ONLY for restarts from pause menu
+        internal static void PauseMenuRestart()
+        {
+            _wasDisabled = false;
+            LastDisablers = Array.Empty<string>();
+            ModList.Clear();
+            disabled = false;
+            eventSubscribed = false;
         }
 
         // Used for debugging purposes
