@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using UnityEngine;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
@@ -9,7 +8,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         static void Postfix()
         {
-            Debug.Log("StandardLevelRestartController: Postfix");
+            //Debug.Log("StandardLevelRestartController: Postfix");
             ScoreSubmission.PauseMenuRestart();
         }
     }
@@ -20,7 +19,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         static void Postfix()
         {
-            Debug.Log("MissionLevelRestartController: Postfix");
+            //Debug.Log("MissionLevelRestartController: Postfix");
             ScoreSubmission.PauseMenuRestart();
         }
     }
@@ -31,7 +30,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     {
         static void Postfix()
         {
-            Debug.Log("TutorialRestartController: Postfix");
+            //Debug.Log("TutorialRestartController: Postfix");
             ScoreSubmission.PauseMenuRestart();
         }
     }
