@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using UnityEngine;
+//using UnityEngine;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
@@ -10,7 +10,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
         static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
-            Debug.Log("StandardLevelScenesTransitionSetupDataSO.Finish: Prefix");
+            //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
@@ -22,7 +22,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
         static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
         {
-            Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Finish: Prefix");
+            //Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
@@ -34,7 +34,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
         static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance)
         {
-            Debug.Log("MissionLevelScenesTransitionSetupDataSO.Finish: Prefix");
+            //Debug.Log("MissionLevelScenesTransitionSetupDataSO.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {

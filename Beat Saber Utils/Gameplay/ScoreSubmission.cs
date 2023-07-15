@@ -6,7 +6,7 @@ using System.Reflection;
 using IPA.Loader;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
-using UnityEngine;
+//using UnityEngine;
 
 namespace BS_Utils.Gameplay
 {
@@ -52,7 +52,7 @@ namespace BS_Utils.Gameplay
 
         public static void DisableSubmission(string mod)
         {
-            Debug.Log("DisableSubmission(): " + mod);
+            //Debug.Log("DisableSubmission(): " + mod);
 
             if (disabled == false)
             {
@@ -228,6 +228,9 @@ namespace BS_Utils.Gameplay
             eventSubscribed = false;
             Plugin.LevelFinished -= LevelData_didFinishEvent;
             Plugin.MultiplayerDidDisconnect -= Plugin_MultiplayerDidDisconnect;
+
+            RemovedSoloFive = null;
+            RemovedMultiFive = null;
         }
 
         // Used for debugging purposes
