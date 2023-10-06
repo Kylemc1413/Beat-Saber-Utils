@@ -17,7 +17,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
             var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
-            Plugin.LevelData.GameplayCoreSceneSetupData = Accessors.SceneSetupDataGetter(ref setupDataBase);
+            Plugin.LevelData.GameplayCoreSceneSetupData = setupDataBase.gameplayCoreSceneSetupData;
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Standard;
             Logger.log.Debug("Level Data set");
@@ -44,7 +44,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
             var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
-            Plugin.LevelData.GameplayCoreSceneSetupData = Accessors.SceneSetupDataGetter(ref setupDataBase);
+            Plugin.LevelData.GameplayCoreSceneSetupData = setupDataBase.gameplayCoreSceneSetupData;
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Multiplayer;
             Logger.log.Debug("Level Data set");
@@ -79,7 +79,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
             var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
-            Plugin.LevelData.GameplayCoreSceneSetupData = Accessors.SceneSetupDataGetter(ref setupDataBase);
+            Plugin.LevelData.GameplayCoreSceneSetupData = setupDataBase.gameplayCoreSceneSetupData;
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Mission;
             Logger.log.Debug("Level Data set");

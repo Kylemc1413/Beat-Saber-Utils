@@ -4,7 +4,7 @@ using UnityEngine;
 using Logger = BS_Utils.Utilities.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
 using System.Linq;
-using IPA.Utilities;
+using System.Threading;
 using System.Threading.Tasks;
 using BS_Utils.Utilities;
 
@@ -12,7 +12,6 @@ namespace BS_Utils.Gameplay
 {
     public static class GetUserInfo
     {
-        private static readonly FieldAccessor<PlatformLeaderboardsModel, IPlatformUserModel>.Accessor AccessPlatformUserModel;
         private static readonly TaskCompletionSource<bool> shouldBeReadyTask = new TaskCompletionSource<bool>();
         private static readonly object getUserLock = new object();
 
@@ -23,19 +22,6 @@ namespace BS_Utils.Gameplay
         private static Task<UserInfo> getUserTask;
         private static bool isReady => shouldBeReadyTask.Task.IsCompleted;
         private static IPlatformUserModel _platformUserModel;
-
-        static GetUserInfo()
-        {
-            try
-            {
-                AccessPlatformUserModel = FieldAccessor<PlatformLeaderboardsModel, IPlatformUserModel>.GetAccessor("_platformUserModel");
-            }
-            catch (Exception ex)
-            {
-                Logger.log.Error($"Error getting PlatformUserModel, GetUserInfo is unavailable: {ex.Message}");
-                Logger.log.Debug(ex);
-            }
-        }
 
         internal static void TriggerReady()
         {
@@ -54,21 +40,14 @@ namespace BS_Utils.Gameplay
             try
             {
                 // Need to check for null because there's multiple PlatformLeaderboardsModels (at least sometimes), and one has a null IPlatformUserModel with 'vrmode oculus'
-                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().Where(p => AccessPlatformUserModel(ref p) != null).LastOrDefault();
-                IPlatformUserModel platformUserModel = null;
+                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().LastOrDefault(p => p._platformUserModel != null);
                 if (leaderboardsModel == null)
                 {
                     Logger.log.Error("Could not find a 'PlatformLeaderboardsModel', GetUserInfo unavailable.");
                     return null;
                 }
-                if (AccessPlatformUserModel == null)
-                {
-                    Logger.log.Error("Accessor for 'PlatformLeaderboardsModel._platformUserModel' is null, GetUserInfo unavailable.");
-                    return null;
-                }
 
-                platformUserModel = AccessPlatformUserModel(ref leaderboardsModel);
-                _platformUserModel = platformUserModel;
+                _platformUserModel = leaderboardsModel._platformUserModel;
             }
             catch (Exception ex)
             {
@@ -127,7 +106,7 @@ namespace BS_Utils.Gameplay
 
         private static async Task<UserInfo> InternalGetUserAsync()
         {
-            UserInfo userInfo = await _platformUserModel.GetUserInfo();
+            UserInfo userInfo = await _platformUserModel.GetUserInfo(CancellationToken.None);
             if (userInfo != null)
             {
                 Logger.log.Debug($"UserInfo found: {userInfo.platformUserId}: {userInfo.userName} on {userInfo.platform}");
@@ -146,7 +125,8 @@ namespace BS_Utils.Gameplay
 
         private static void GetSteamAvatar()
         {
-            if (SteamManager.Initialized)
+            var steamPlatformUserModel = (SteamPlatformUserModel)_platformUserModel;
+            if (steamPlatformUserModel._platformInit.IsInitialized)
             {
                 var steamUser = SteamUser.GetSteamID();
                 userAvatar = GetAvatar(steamUser);
