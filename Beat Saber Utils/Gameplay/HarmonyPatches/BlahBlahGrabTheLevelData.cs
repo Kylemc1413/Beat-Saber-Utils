@@ -6,13 +6,11 @@ using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {
-    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Init))]
+    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.InitAndSetupScenes))]
     class BlahBlahGrabTheLevelData
     {
         static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
-            //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Init: Postfix");
-
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
@@ -33,13 +31,11 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.Init))]
+    [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.InitAndSetupScenes))]
     class BlahBlahGrabTheMultiLevelData
     {
         static void Postfix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
         {
-            //Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Init: Postfix");
-
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
@@ -70,7 +66,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Init))]
+    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), MethodType.Constructor)]
     class BlahBlahGrabTheMissionLevelData
     {
         static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance)

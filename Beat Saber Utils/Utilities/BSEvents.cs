@@ -30,10 +30,10 @@ namespace BS_Utils.Utilities
         public static event Action gameSceneLoaded;
 
         // Menu Events
-        public static event Action<StandardLevelDetailViewController, IDifficultyBeatmap> difficultySelected;
+        public static event Action<StandardLevelDetailViewController, BeatmapKey> difficultySelected;
         public static event Action<BeatmapCharacteristicSegmentedControlController, BeatmapCharacteristicSO> characteristicSelected;
-        public static event Action<LevelSelectionNavigationController, IBeatmapLevelPack> levelPackSelected;
-        public static event Action<LevelCollectionViewController, IPreviewBeatmapLevel> levelSelected;
+        public static event Action<LevelSelectionNavigationController, BeatmapLevelPack> levelPackSelected;
+        public static event Action<LevelCollectionViewController, BeatmapLevel> levelSelected;
 
         // Game Events
         public static event Action songPaused;
@@ -144,15 +144,16 @@ namespace BS_Utils.Utilities
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
 
             var levelDetailViewController = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().FirstOrDefault();
-            levelDetailViewController.didChangeDifficultyBeatmapEvent += delegate (StandardLevelDetailViewController vc, IDifficultyBeatmap beatmap) { InvokeAll(difficultySelected, vc, beatmap); };
+            levelDetailViewController.didChangeDifficultyBeatmapEvent += delegate (StandardLevelDetailViewController vc) { InvokeAll(difficultySelected, vc, vc.beatmapKey); };
 
             var characteristicSelect = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().FirstOrDefault();
             characteristicSelect.didSelectBeatmapCharacteristicEvent += delegate (BeatmapCharacteristicSegmentedControlController controller, BeatmapCharacteristicSO characteristic) { InvokeAll(characteristicSelected, controller, characteristic); };
 
             var packSelectViewController = Resources.FindObjectsOfTypeAll<LevelSelectionNavigationController>().FirstOrDefault();
-            packSelectViewController.didSelectLevelPackEvent += delegate (LevelSelectionNavigationController controller, IBeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
+            packSelectViewController.didSelectLevelPackEvent += delegate (LevelSelectionNavigationController controller, BeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
+            
             var levelSelectViewController = Resources.FindObjectsOfTypeAll<LevelCollectionViewController>().FirstOrDefault();
-            levelSelectViewController.didSelectLevelEvent += delegate (LevelCollectionViewController controller, IPreviewBeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
+            levelSelectViewController.didSelectLevelEvent += delegate (LevelCollectionViewController controller, BeatmapLevel level) { InvokeAll(levelSelected, controller, level); };
 
             InvokeAll(earlyMenuSceneLoadedFresh, transitionSetupData);
             InvokeAll(menuSceneLoadedFresh);
