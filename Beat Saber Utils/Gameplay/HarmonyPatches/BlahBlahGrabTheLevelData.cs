@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using BS_Utils.Utilities;
 using HarmonyLib;
 //using UnityEngine;
@@ -6,20 +8,12 @@ using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {  
-    [HarmonyPatch(
-        typeof(StandardLevelScenesTransitionSetupDataSO),
-        nameof(StandardLevelScenesTransitionSetupDataSO.Init),
-        new Type[] { typeof(string), typeof(IBeatmapLevelData), typeof(BeatmapKey), typeof(BeatmapLevel), typeof(OverrideEnvironmentSettings), typeof(ColorScheme), typeof(ColorScheme), typeof(GameplayModifiers), typeof(PlayerSpecificSettings), typeof(PracticeSettings), typeof(EnvironmentsListModel), typeof(AudioClipAsyncLoader), typeof(BeatmapDataLoader), typeof(string), typeof(bool), typeof(bool), typeof(RecordingToolManager.SetupData?) },
-        new ArgumentType[] { ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal }
-        )]
-    [HarmonyPatch(
-        typeof(StandardLevelScenesTransitionSetupDataSO),
-        nameof(StandardLevelScenesTransitionSetupDataSO.Init),
-        new Type[] { typeof(string), typeof(BeatmapKey), typeof(BeatmapLevel), typeof(OverrideEnvironmentSettings), typeof(ColorScheme), typeof(ColorScheme), typeof(GameplayModifiers), typeof(PlayerSpecificSettings), typeof(PracticeSettings), typeof(EnvironmentsListModel), typeof(AudioClipAsyncLoader), typeof(BeatmapDataLoader), typeof(string), typeof(BeatmapLevelsModel), typeof(bool), typeof(bool), typeof(RecordingToolManager.SetupData?) },
-        new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal }
-        )]
     class BlahBlahGrabTheLevelData
     {
+        static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(StandardLevelScenesTransitionSetupDataSO),
+            m => m.Name == nameof(StandardLevelScenesTransitionSetupDataSO.Init) &&
+                 m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
+
         static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
             //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Init: Postfix");
@@ -81,20 +75,12 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(
-        typeof(MissionLevelScenesTransitionSetupDataSO), 
-        nameof(MissionLevelScenesTransitionSetupDataSO.Init),
-        new Type[] { typeof(string), typeof(IBeatmapLevelData), typeof(BeatmapKey), typeof(BeatmapLevel), typeof(MissionObjective[]), typeof(ColorScheme), typeof(GameplayModifiers), typeof(PlayerSpecificSettings), typeof(EnvironmentsListModel), typeof(AudioClipAsyncLoader), typeof(BeatmapDataLoader), typeof(string) },
-        new ArgumentType[] { ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal }
-        )]
-    [HarmonyPatch(
-        typeof(MissionLevelScenesTransitionSetupDataSO), 
-        nameof(MissionLevelScenesTransitionSetupDataSO.Init),
-        new Type[] { typeof(string), typeof(BeatmapKey), typeof(BeatmapLevel), typeof(MissionObjective[]), typeof(ColorScheme), typeof(GameplayModifiers), typeof(PlayerSpecificSettings), typeof(EnvironmentsListModel), typeof(BeatmapLevelsModel), typeof(AudioClipAsyncLoader), typeof(BeatmapDataLoader), typeof(string) },
-        new ArgumentType[] { ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal }
-        )]
     class BlahBlahGrabTheMissionLevelData
     {
+        static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(MissionLevelScenesTransitionSetupDataSO),
+            m => m.Name == nameof(MissionLevelScenesTransitionSetupDataSO.Init) &&
+                 m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
+
         static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance)
         {
             ScoreSubmission._wasDisabled = false;
