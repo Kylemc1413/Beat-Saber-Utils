@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using BS_Utils.Utilities;
 using HarmonyLib;
 //using UnityEngine;
 using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
-{
-    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Init))]
+{  
+    [HarmonyPatch]
     class BlahBlahGrabTheLevelData
     {
+        static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(StandardLevelScenesTransitionSetupDataSO),
+            m => m.Name == nameof(StandardLevelScenesTransitionSetupDataSO.Init) &&
+                 m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
+
         static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
             //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Init: Postfix");
@@ -16,7 +22,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
             ScoreSubmission._wasDisabled = false;
             ScoreSubmission.LastDisablers = Array.Empty<string>();
             Plugin.scenesTransitionSetupData = __instance;
-            var setupDataBase = (LevelScenesTransitionSetupDataSO) __instance;
+            var setupDataBase = (LevelScenesTransitionSetupDataSO)__instance;
             Plugin.LevelData.GameplayCoreSceneSetupData = setupDataBase.gameplayCoreSceneSetupData;
             Plugin.LevelData.IsSet = true;
             Plugin.LevelData.Mode = Mode.Standard;
@@ -70,9 +76,13 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Init))]
+    [HarmonyPatch]
     class BlahBlahGrabTheMissionLevelData
     {
+        static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(MissionLevelScenesTransitionSetupDataSO),
+            m => m.Name == nameof(MissionLevelScenesTransitionSetupDataSO.Init) &&
+                 m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
+
         static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance)
         {
             ScoreSubmission._wasDisabled = false;

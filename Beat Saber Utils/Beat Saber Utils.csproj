@@ -51,9 +51,14 @@
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.UnityExtension.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="BGNet">
-            <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGNet.dll</HintPath>
+        <Reference Include="BGNetCore">
+            <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGNetCore.dll</HintPath>
             <Private>False</Private>
+        </Reference>
+        <Reference Include="DataModels">
+            <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
+            <Private>False</Private>
+            <Publicize>True</Publicize>
         </Reference>
         <Reference Include="GamePlayCore">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GamePlayCore.dll</HintPath>
@@ -122,13 +127,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BeatSaberModdingTools.Tasks" Version="2.0.0-beta4">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="BeatSaberModdingTools.Tasks" Version="2.0.0-beta7" PrivateAssets="all" />
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
     </ItemGroup>
 </Project>
