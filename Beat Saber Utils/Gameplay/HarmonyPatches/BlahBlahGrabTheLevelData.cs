@@ -8,6 +8,7 @@ using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {  
+    [HarmonyPatch]
     class BlahBlahGrabTheLevelData
     {
         static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(StandardLevelScenesTransitionSetupDataSO),
@@ -75,6 +76,7 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
     }
 
+    [HarmonyPatch]
     class BlahBlahGrabTheMissionLevelData
     {
         static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(MissionLevelScenesTransitionSetupDataSO),

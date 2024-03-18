@@ -30,7 +30,7 @@ namespace BS_Utils.Utilities
         public static event Action gameSceneLoaded;
 
         // Menu Events
-        public static event Action<StandardLevelDetailViewController, BeatmapKey> difficultySelected;
+        public static event Action<StandardLevelDetailViewController> difficultySelected;
         public static event Action<BeatmapCharacteristicSegmentedControlController, BeatmapCharacteristicSO> characteristicSelected;
         public static event Action<LevelSelectionNavigationController, BeatmapLevelPack> levelPackSelected;
         public static event Action<LevelCollectionViewController, BeatmapLevel> levelSelected;
@@ -144,7 +144,7 @@ namespace BS_Utils.Utilities
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
 
             var levelDetailViewController = Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().FirstOrDefault();
-            levelDetailViewController.didChangeDifficultyBeatmapEvent += delegate (StandardLevelDetailViewController vc) { InvokeAll(difficultySelected, vc, vc.beatmapKey); };
+            levelDetailViewController.didChangeDifficultyBeatmapEvent += delegate (StandardLevelDetailViewController vc) { InvokeAll(difficultySelected, vc); };
 
             var characteristicSelect = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().FirstOrDefault();
             characteristicSelect.didSelectBeatmapCharacteristicEvent += delegate (BeatmapCharacteristicSegmentedControlController controller, BeatmapCharacteristicSO characteristic) { InvokeAll(characteristicSelected, controller, characteristic); };
