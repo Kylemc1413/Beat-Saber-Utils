@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using System.Collections.Generic;
 using BS_Utils.Utilities.Events;
+using static GameScenesManager;
 
 namespace BS_Utils.Utilities
 {
@@ -133,13 +134,13 @@ namespace BS_Utils.Utilities
             }
         }
 
-        private void OnMenuSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void OnMenuSceneWasLoaded(SceneTransitionType sceneTransitionType, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoaded;
             InvokeAll(menuSceneLoaded);
         }
 
-        private void OnMenuSceneWasLoadedFresh(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void OnMenuSceneWasLoadedFresh(SceneTransitionType sceneTransitionType, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
 
@@ -159,7 +160,7 @@ namespace BS_Utils.Utilities
             InvokeAll(lateMenuSceneLoadedFresh, transitionSetupData);
         }
 
-        private void GameSceneLoadedCallback(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void GameSceneLoadedCallback(SceneTransitionType sceneTransitionType, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
         {
             // Prevent firing this event when returning to menu
             var gameScenesManager = Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault();
