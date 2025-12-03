@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using BS_Utils.Utilities;
 using HarmonyLib;
 //using UnityEngine;
@@ -8,13 +6,9 @@ using Logger = BS_Utils.Utilities.Logger;
 
 namespace BS_Utils.Gameplay.HarmonyPatches
 {  
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheLevelData
     {
-        static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(StandardLevelScenesTransitionSetupDataSO),
-            m => m.Name == nameof(StandardLevelScenesTransitionSetupDataSO.Init) &&
-                 m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
-
         static void Postfix(StandardLevelScenesTransitionSetupDataSO __instance)
         {
             //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Init: Postfix");
@@ -77,12 +71,9 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     }
 
     [HarmonyPatch]
+    [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Init))]
     class BlahBlahGrabTheMissionLevelData
     {
-        static MethodInfo TargetMethod() => AccessTools.FirstMethod(typeof(MissionLevelScenesTransitionSetupDataSO),
-            m => m.Name == nameof(MissionLevelScenesTransitionSetupDataSO.Init) &&
-                 m.GetParameters().All(p => p.ParameterType != typeof(IBeatmapLevelData)));
-
         static void Postfix(MissionLevelScenesTransitionSetupDataSO __instance)
         {
             ScoreSubmission._wasDisabled = false;
