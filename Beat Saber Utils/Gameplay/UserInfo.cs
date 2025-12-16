@@ -2,11 +2,11 @@ using Steamworks;
 using System;
 using UnityEngine;
 using Logger = BS_Utils.Utilities.Logger;
-using LogLevel = IPA.Logging.Logger.Level;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using BS_Utils.Utilities;
+using OculusStudios.Platform.Core;
+using OculusStudios.Platform.Steam;
 
 namespace BS_Utils.Gameplay
 {
@@ -21,33 +21,33 @@ namespace BS_Utils.Gameplay
         static Texture2D userAvatar = null;
         private static Task<UserInfo> getUserTask;
         private static bool isReady => shouldBeReadyTask.Task.IsCompleted;
-        private static IPlatformUserModel _platformUserModel;
+        private static IPlatform _platformUserModel;
 
         internal static void TriggerReady()
         {
             shouldBeReadyTask.TrySetResult(true);
         }
 
-        public static IPlatformUserModel GetPlatformUserModel()
+        public static IPlatform GetPlatformUserModel()
         {
             return _platformUserModel ?? SetPlatformUserModel();
         }
 
-        internal static IPlatformUserModel SetPlatformUserModel()
+        internal static IPlatform SetPlatformUserModel()
         {
             if (_platformUserModel != null)
                 return _platformUserModel;
             try
             {
                 // Need to check for null because there's multiple PlatformLeaderboardsModels (at least sometimes), and one has a null IPlatformUserModel with 'vrmode oculus'
-                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().LastOrDefault(p => p._platformUserModel != null);
+                var leaderboardsModel = Resources.FindObjectsOfTypeAll<PlatformLeaderboardsModel>().LastOrDefault(p => p._platform != null);
                 if (leaderboardsModel == null)
                 {
                     Logger.log.Error("Could not find a 'PlatformLeaderboardsModel', GetUserInfo unavailable.");
                     return null;
                 }
 
-                _platformUserModel = leaderboardsModel._platformUserModel;
+                _platformUserModel = leaderboardsModel._platform;
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace BS_Utils.Gameplay
                 lock (getUserLock)
                 {
 
-                    IPlatformUserModel platformUserModel = GetPlatformUserModel();
+                    IPlatform platformUserModel = GetPlatformUserModel();
                     if (platformUserModel == null)
                     {
                         Logger.log.Error("IPlatformUserModel not found, cannot update user info.");
@@ -106,7 +106,16 @@ namespace BS_Utils.Gameplay
 
         private static async Task<UserInfo> InternalGetUserAsync()
         {
-            UserInfo userInfo = await _platformUserModel.GetUserInfo(CancellationToken.None);
+            // taken from NetworkPlayerModel<T>.InitAuthenticationTokenProvider()
+            UserInfo userInfo = new UserInfo(_platformUserModel.key switch
+            {
+                "steam" => UserInfo.Platform.Steam,
+                "oculus" => UserInfo.Platform.Oculus,
+                "oculus-mock" => UserInfo.Platform.Oculus,
+                "mock" => UserInfo.Platform.Test,
+                _ => throw new NotImplementedException(),
+            }, _platformUserModel.user.userId.ToString(), _platformUserModel.user.displayName);
+
             if (userInfo != null)
             {
                 Logger.log.Debug($"UserInfo found: {userInfo.platformUserId}: {userInfo.userName} on {userInfo.platform}");
@@ -125,8 +134,8 @@ namespace BS_Utils.Gameplay
 
         private static void GetSteamAvatar()
         {
-            var steamPlatformUserModel = (SteamPlatformUserModel)_platformUserModel;
-            if (steamPlatformUserModel._platformInit.IsInitialized)
+            var steamPlatformUserModel = (SteamPlatform)_platformUserModel;
+            if (steamPlatformUserModel.isInitialized)
             {
                 var steamUser = SteamUser.GetSteamID();
                 userAvatar = GetAvatar(steamUser);

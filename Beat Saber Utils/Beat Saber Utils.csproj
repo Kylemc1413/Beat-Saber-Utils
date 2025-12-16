@@ -46,6 +46,9 @@
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="BeatSaber.Multiplayer.Core">
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.Multiplayer.Core.dll</HintPath>
+        </Reference>
         <Reference Include="BeatSaber.ViewSystem">
           <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.ViewSystem.dll</HintPath>
         </Reference>
@@ -61,6 +64,9 @@
         <Reference Include="BGNetCore">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGNetCore.dll</HintPath>
             <Private>False</Private>
+        </Reference>
+        <Reference Include="com.rlabrecque.steamworks.net">
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
         </Reference>
         <Reference Include="DataModels">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
@@ -92,14 +98,16 @@
             <Private>False</Private>
             <Publicize>True</Publicize>
         </Reference>
+        <Reference Include="OculusStudios.Platform.Core">
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\OculusStudios.Platform.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="OculusStudios.Platform.Steam">
+          <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\OculusStudios.Platform.Steam.dll</HintPath>
+        </Reference>
         <Reference Include="PlatformUserModel">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\PlatformUserModel.dll</HintPath>
             <Private>false</Private>
             <Publicize>true</Publicize>
-        </Reference>
-        <Reference Include="Steamworks.NET">
-            <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Steamworks.NET.dll</HintPath>
-            <Private>False</Private>
         </Reference>
         <Reference Include="Unity.TextMeshPro">
             <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
