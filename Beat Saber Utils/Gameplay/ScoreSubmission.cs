@@ -99,7 +99,7 @@ namespace BS_Utils.Gameplay
             }
         }
 
-        internal static void DisableScoreSaberScoreSubmission(LevelScenesTransitionSetupDataSO setupDataSO)
+        internal static void DisableScoreSaberScoreSubmission(LevelScenesTransitionSetupData setupData)
         {
             //Debug.Log("DisableScoreSaberScoreSubmission(): " + setupDataSO.ToString()); ;
 
@@ -109,7 +109,7 @@ namespace BS_Utils.Gameplay
             }
             else
             {
-                DisableEvent(setupDataSO, "didFinishEvent", "Five");
+                DisableEvent(setupData, "didFinishEvent", "Five");
             }
         }
 
@@ -128,19 +128,19 @@ namespace BS_Utils.Gameplay
 
             switch (args.ScenesTransitionSetupDataSO)
             {
-                case StandardLevelScenesTransitionSetupDataSO standardLevelScenesTransitionSetupDataSO:
+                case StandardLevelScenesTransitionSetupData standardLevelScenesTransitionSetupData:
                     if (RemovedSoloFive != null)
                     {
-                        standardLevelScenesTransitionSetupDataSO.didFinishEvent -= RemovedSoloFive;
-                        standardLevelScenesTransitionSetupDataSO.didFinishEvent += RemovedSoloFive;
+                        standardLevelScenesTransitionSetupData.didFinishEvent -= RemovedSoloFive;
+                        standardLevelScenesTransitionSetupData.didFinishEvent += RemovedSoloFive;
                         RemovedSoloFive = null;
                     }
                     break;
-                case MultiplayerLevelScenesTransitionSetupDataSO multiplayerLevelScenesTransitionSetupDataSO:
+                case MultiplayerLevelScenesTransitionSetupData multiplayerLevelScenesTransitionSetupData:
                     if (RemovedMultiFive != null)
                     {
-                        multiplayerLevelScenesTransitionSetupDataSO.didFinishEvent -= RemovedMultiFive;
-                        multiplayerLevelScenesTransitionSetupDataSO.didFinishEvent += RemovedMultiFive;
+                        multiplayerLevelScenesTransitionSetupData.didFinishEvent -= RemovedMultiFive;
+                        multiplayerLevelScenesTransitionSetupData.didFinishEvent += RemovedMultiFive;
                         RemovedMultiFive = null;
                     }
                     break;
@@ -149,9 +149,9 @@ namespace BS_Utils.Gameplay
             eventSubscribed = false;
         }
 
-        private static void Plugin_MultiplayerDidDisconnect(object sender, (MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason) eventDetails)
+        private static void Plugin_MultiplayerDidDisconnect(object sender, (MultiplayerLevelScenesTransitionSetupData levelScenesTransitionSetupData, DisconnectedReason) eventDetails)
         {
-            LevelData_didFinishEvent(sender, new MultiplayerLevelFinishedEventArgs(eventDetails.levelScenesTransitionSetupDataSO, null, null));
+            LevelData_didFinishEvent(sender, new MultiplayerLevelFinishedEventArgs(eventDetails.levelScenesTransitionSetupData, null, null));
         }
 
         public static void ProlongedDisableSubmission(string mod)
@@ -177,8 +177,8 @@ namespace BS_Utils.Gameplay
 
         }
 
-        private static Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> RemovedSoloFive;
-        private static Action<MultiplayerLevelScenesTransitionSetupDataSO, MultiplayerResultsData> RemovedMultiFive;
+        private static Action<StandardLevelScenesTransitionSetupData, LevelCompletionResults> RemovedSoloFive;
+        private static Action<MultiplayerLevelScenesTransitionSetupData, MultiplayerResultsData> RemovedMultiFive;
         private static bool DisableEvent(object target, string eventName, string delegateName)
         {
             FieldInfo fieldInfo = target.GetType().GetField(eventName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
@@ -194,11 +194,11 @@ namespace BS_Utils.Gameplay
                     {
                         switch (target)
                         {
-                            case StandardLevelScenesTransitionSetupDataSO _:
-                                RemovedSoloFive = (Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults>)item;
+                            case StandardLevelScenesTransitionSetupData _:
+                                RemovedSoloFive = (Action<StandardLevelScenesTransitionSetupData, LevelCompletionResults>)item;
                                 break;
-                            case MultiplayerLevelScenesTransitionSetupDataSO _:
-                                RemovedMultiFive = (Action<MultiplayerLevelScenesTransitionSetupDataSO, MultiplayerResultsData>)item;
+                            case MultiplayerLevelScenesTransitionSetupData _:
+                                RemovedMultiFive = (Action<MultiplayerLevelScenesTransitionSetupData, MultiplayerResultsData>)item;
                                 break;
                             default:
                                 throw new NotImplementedException();
@@ -241,7 +241,7 @@ namespace BS_Utils.Gameplay
             var eventDelegate = fieldInfo.GetValue(target) as MulticastDelegate;
             if (eventDelegate == null)
             {
-                Logger.Log("ScoreSubmission: Unable to get eventDelegate from StandardLevelScenesTransitionSetupDataSO - exiting...", LogLevel.Debug);
+                Logger.Log("ScoreSubmission: Unable to get eventDelegate from StandardLevelScenesTransitionSetupData - exiting...", LogLevel.Debug);
             }
 
             var delegates = eventDelegate.GetInvocationList();

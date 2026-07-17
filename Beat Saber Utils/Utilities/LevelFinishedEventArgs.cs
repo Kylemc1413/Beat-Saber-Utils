@@ -11,12 +11,12 @@ namespace BS_Utils.Utilities
         /// </summary>
         public readonly LevelType LevelType;
 
-        public readonly ScenesTransitionSetupDataSO ScenesTransitionSetupDataSO;
+        public readonly ScenesTransitionSetupData ScenesTransitionSetupDataSO;
 
-        protected LevelFinishedEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO)
+        protected LevelFinishedEventArgs(LevelType levelType, ScenesTransitionSetupData scenesTransitionSetupData)
         {
             LevelType = levelType;
-            ScenesTransitionSetupDataSO = scenesTransitionSetupDataSO;
+            ScenesTransitionSetupDataSO = scenesTransitionSetupData;
         }
     }
 
@@ -27,8 +27,8 @@ namespace BS_Utils.Utilities
     {
         public readonly LevelCompletionResults CompletionResults;
 
-        protected LevelFinishedWithResultsEventArgs(LevelType levelType, ScenesTransitionSetupDataSO scenesTransitionSetupDataSO, LevelCompletionResults completionResults)
-            : base(levelType, scenesTransitionSetupDataSO)
+        protected LevelFinishedWithResultsEventArgs(LevelType levelType, ScenesTransitionSetupData scenesTransitionSetupData, LevelCompletionResults completionResults)
+            : base(levelType, scenesTransitionSetupData)
         {
             CompletionResults = completionResults;
         }
@@ -36,8 +36,8 @@ namespace BS_Utils.Utilities
 
     public class SoloLevelFinishedEventArgs : LevelFinishedWithResultsEventArgs
     {
-        public SoloLevelFinishedEventArgs(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
-            : base(LevelType.SoloParty, levelScenesTransitionSetupDataSO, levelCompletionResults)
+        public SoloLevelFinishedEventArgs(StandardLevelScenesTransitionSetupData levelScenesTransitionSetupData, LevelCompletionResults levelCompletionResults)
+            : base(LevelType.SoloParty, levelScenesTransitionSetupData, levelCompletionResults)
         {
         }
     }
@@ -47,7 +47,7 @@ namespace BS_Utils.Utilities
         private IReadOnlyList<MultiplayerPlayerResultsData> playersCompletionResults;
 
         /// <summary>
-        /// Gets the <see cref="LevelCompletionResults"/> for the specified player ID. 
+        /// Gets the <see cref="LevelCompletionResults"/> for the specified player ID.
         /// Returns null if there is no matching player ID.
         /// </summary>
         /// <param name="playerId"></param>
@@ -63,8 +63,8 @@ namespace BS_Utils.Utilities
             return playersCompletionResults.GetEnumerator();
         }
 
-        public MultiplayerLevelFinishedEventArgs(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
-            : base(LevelType.Multiplayer, levelScenesTransitionSetupDataSO, levelCompletionResults)
+        public MultiplayerLevelFinishedEventArgs(MultiplayerLevelScenesTransitionSetupData levelScenesTransitionSetupData, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
+            : base(LevelType.Multiplayer, levelScenesTransitionSetupData, levelCompletionResults)
         {
             playersCompletionResults = otherPlayersLevelCompletionResults;
         }
@@ -74,8 +74,8 @@ namespace BS_Utils.Utilities
     {
         public readonly MissionCompletionResults MissionCompletionResults;
 
-        public CampaignLevelFinishedEventArgs(MissionLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
-            : base(LevelType.Campaign, levelScenesTransitionSetupDataSO, missionCompletionResults?.levelCompletionResults)
+        public CampaignLevelFinishedEventArgs(MissionLevelScenesTransitionSetupData levelScenesTransitionSetupData, MissionCompletionResults missionCompletionResults)
+            : base(LevelType.Campaign, levelScenesTransitionSetupData, missionCompletionResults?.levelCompletionResults)
         {
             MissionCompletionResults = missionCompletionResults;
         }
@@ -83,10 +83,10 @@ namespace BS_Utils.Utilities
 
     public class TutorialLevelFinishedEventArgs : LevelFinishedEventArgs
     {
-        public readonly TutorialScenesTransitionSetupDataSO.TutorialEndStateType EndState;
+        public readonly TutorialScenesTransitionSetupData.TutorialEndStateType EndState;
 
-        public TutorialLevelFinishedEventArgs(TutorialScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
-            : base(LevelType.Tutorial, levelScenesTransitionSetupDataSO)
+        public TutorialLevelFinishedEventArgs(TutorialScenesTransitionSetupData levelScenesTransitionSetupData, TutorialScenesTransitionSetupData.TutorialEndStateType endState)
+            : base(LevelType.Tutorial, levelScenesTransitionSetupData)
         {
             EndState = endState;
         }
