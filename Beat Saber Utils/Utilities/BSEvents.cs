@@ -19,14 +19,14 @@ namespace BS_Utils.Utilities
         /// <summary>
         /// Raised after the game's menu is loaded fresh. This event should be used for cloning game objects. Do NOT modify base game objects during this event.
         /// </summary>
-        public static event Action<ScenesTransitionSetupDataSO> earlyMenuSceneLoadedFresh;
+        public static event Action<ScenesTransitionSetupData> earlyMenuSceneLoadedFresh;
         [Obsolete("Use earlyMenuSceneLoadedFresh or lateMenuSceneLoadedFresh.")]
         public static event Action menuSceneLoadedFresh;
         /// <summary>
         /// Raised after the game's menu is loaded fresh and <see cref="earlyMenuSceneLoadedFresh"/> and <see cref="menuSceneLoadedFresh"/> have run.
         /// Base game objects are not guaranteed to be unmodified during this event.
         /// </summary>
-        public static event Action<ScenesTransitionSetupDataSO> lateMenuSceneLoadedFresh;
+        public static event Action<ScenesTransitionSetupData> lateMenuSceneLoadedFresh;
         public static event Action gameSceneActive;
         public static event Action gameSceneLoaded;
 
@@ -40,10 +40,10 @@ namespace BS_Utils.Utilities
         public static event Action songPaused;
         public static event Action songUnpaused;
         public static event EventHandler<LevelFinishedEventArgs> LevelFinished;
-        public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelCleared;
-        public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelQuit;
-        public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelFailed;
-        public static event Action<StandardLevelScenesTransitionSetupDataSO, LevelCompletionResults> levelRestarted;
+        public static event Action<StandardLevelScenesTransitionSetupData, LevelCompletionResults> levelCleared;
+        public static event Action<StandardLevelScenesTransitionSetupData, LevelCompletionResults> levelQuit;
+        public static event Action<StandardLevelScenesTransitionSetupData, LevelCompletionResults> levelFailed;
+        public static event Action<StandardLevelScenesTransitionSetupData, LevelCompletionResults> levelRestarted;
 
         public static event Action<NoteController, NoteCutInfo> noteWasCut;
         public static event Action<NoteController> noteWasMissed;
@@ -60,7 +60,7 @@ namespace BS_Utils.Utilities
         public static event Action<SaberType> sabersStartCollide;
         public static event Action<SaberType> sabersEndCollide;
 
-        public static event EventHandler<(MultiplayerLevelScenesTransitionSetupDataSO, DisconnectedReason)> MultiplayerDidDisconnect;
+        public static event EventHandler<(MultiplayerLevelScenesTransitionSetupData, DisconnectedReason)> MultiplayerDidDisconnect;
 
         readonly string[] MainSceneNames = { SceneNames.Game, SceneNames.Credits, SceneNames.BeatmapEditor };
         private bool lastMainSceneWasNotMenu = false;
@@ -134,13 +134,13 @@ namespace BS_Utils.Utilities
             }
         }
 
-        private void OnMenuSceneWasLoaded(SceneTransitionType sceneTransitionType, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void OnMenuSceneWasLoaded(SceneTransitionType sceneTransitionType, ScenesTransitionSetupData transitionSetupData, DiContainer diContainer)
         {
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoaded;
             InvokeAll(menuSceneLoaded);
         }
 
-        private void OnMenuSceneWasLoadedFresh(SceneTransitionType sceneTransitionType, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void OnMenuSceneWasLoadedFresh(SceneTransitionType sceneTransitionType, ScenesTransitionSetupData transitionSetupData, DiContainer diContainer)
         {
             gameScenesManager.transitionDidFinishEvent -= OnMenuSceneWasLoadedFresh;
 
@@ -148,7 +148,7 @@ namespace BS_Utils.Utilities
             levelDetailViewController.didChangeDifficultyBeatmapEvent += delegate (StandardLevelDetailViewController vc) { InvokeAll(difficultySelected, vc); };
 
             var characteristicSelect = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSegmentedControlController>().FirstOrDefault();
-            characteristicSelect.didSelectBeatmapCharacteristicEvent += delegate (BeatmapCharacteristicSegmentedControlController controller, BeatmapCharacteristicSO characteristic) { InvokeAll(characteristicSelected, controller, characteristic); };
+            characteristicSelect.didSelectBeatmapCharacteristicEvent += delegate (BeatmapCharacteristicSegmentedControlController controller, BeatmapCharacteristic characteristic) { InvokeAll(characteristicSelected, controller, characteristic); };
 
             var packSelectViewController = Resources.FindObjectsOfTypeAll<LevelSelectionNavigationController>().FirstOrDefault();
             packSelectViewController.didSelectLevelPackEvent += delegate (LevelSelectionNavigationController controller, BeatmapLevelPack pack) { InvokeAll(levelPackSelected, controller, pack); };
@@ -160,7 +160,7 @@ namespace BS_Utils.Utilities
             InvokeAll(lateMenuSceneLoadedFresh, transitionSetupData);
         }
 
-        private void GameSceneLoadedCallback(SceneTransitionType sceneTransitionType, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer)
+        private void GameSceneLoadedCallback(SceneTransitionType sceneTransitionType, ScenesTransitionSetupData transitionSetupData, DiContainer diContainer)
         {
             // Prevent firing this event when returning to menu
             var gameScenesManager = Resources.FindObjectsOfTypeAll<GameScenesManager>().FirstOrDefault();
@@ -179,7 +179,7 @@ namespace BS_Utils.Utilities
             }
         }
 
-        private void MultiControllerStateChanged(MultiplayerController.State newState, ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
+        private void MultiControllerStateChanged(MultiplayerController.State newState, ScenesTransitionSetupData transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
         {
             if (newState == MultiplayerController.State.Gameplay)
             {
@@ -188,7 +188,7 @@ namespace BS_Utils.Utilities
             }
         }
 
-        private void GameSceneSceneWasLoaded(ScenesTransitionSetupDataSO transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
+        private void GameSceneSceneWasLoaded(ScenesTransitionSetupData transitionSetupData, DiContainer diContainer, MultiplayerController sync = null)
         {
             //Debug.Log("GameSceneSceneWasLoaded()");
 
@@ -239,8 +239,8 @@ namespace BS_Utils.Utilities
             var beatmapCallbacksController = diContainer.TryResolve<BeatmapCallbacksController>();
             beatmapCallbacksController?.AddBeatmapCallback(new BeatmapDataCallback<BeatmapEventData>(songEvent => InvokeAll(beatmapEvent, songEvent)));
 
-            var transitionSetup = Resources.FindObjectsOfTypeAll<StandardLevelScenesTransitionSetupDataSO>().FirstOrDefault();
-            if (transitionSetup)
+            var transitionSetup = diContainer.TryResolve<StandardLevelScenesTransitionSetupData>();
+            if (transitionSetup != null)
             {
                 transitionSetup.didFinishEvent -= OnTransitionSetupOnDidFinishEvent;
                 transitionSetup.didFinishEvent += OnTransitionSetupOnDidFinishEvent;
@@ -249,7 +249,7 @@ namespace BS_Utils.Utilities
             InvokeAll(gameSceneLoaded);
         }
 
-        private void OnTransitionSetupOnDidFinishEvent(StandardLevelScenesTransitionSetupDataSO data, LevelCompletionResults results)
+        private void OnTransitionSetupOnDidFinishEvent(StandardLevelScenesTransitionSetupData data, LevelCompletionResults results)
         {
             switch (results.levelEndStateType)
             {
@@ -351,40 +351,40 @@ namespace BS_Utils.Utilities
         }
 
         #region LevelFinishedInvokers
-        internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
+        internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupData levelScenesTransitionSetupData, LevelCompletionResults levelCompletionResults)
         {
             Logger.log.Debug("Solo/Party mode level finished.");
-            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
-                new SoloLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults),
+            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupData,
+                new SoloLevelFinishedEventArgs(levelScenesTransitionSetupData, levelCompletionResults),
                 nameof(LevelFinished));
         }
 
-        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
+        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupData levelScenesTransitionSetupData, LevelCompletionResults levelCompletionResults, IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
         {
             Logger.log.Debug("Multiplayer level finished.");
-            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
-                new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults),
+            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupData,
+                new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupData, levelCompletionResults, otherPlayersLevelCompletionResults),
                 nameof(LevelFinished));
         }
-        internal static void TriggerMissionFinishEvent(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
+        internal static void TriggerMissionFinishEvent(MissionLevelScenesTransitionSetupData missionLevelScenesTransitionSetupData, MissionCompletionResults missionCompletionResults)
         {
             Logger.log.Debug("Campaign level finished.");
-            LevelFinished?.RaiseEventSafe(missionLevelScenesTransitionSetupDataSO,
-                new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupDataSO, missionCompletionResults),
+            LevelFinished?.RaiseEventSafe(missionLevelScenesTransitionSetupData,
+                new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupData, missionCompletionResults),
                 nameof(LevelFinished));
         }
-        internal static void TriggerTutorialFinishEvent(TutorialScenesTransitionSetupDataSO tutorialLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+        internal static void TriggerTutorialFinishEvent(TutorialScenesTransitionSetupData tutorialLevelScenesTransitionSetupData, TutorialScenesTransitionSetupData.TutorialEndStateType endState)
         {
             Logger.log.Debug("Tutorial level finished.");
-            LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupDataSO, 
-                new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupDataSO, endState), 
+            LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupData,
+                new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupData, endState),
                 nameof(LevelFinished));
         }
-        internal static void TriggerMultiplayerDidDisconnect(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason disconnectedReason)
+        internal static void TriggerMultiplayerDidDisconnect(MultiplayerLevelScenesTransitionSetupData levelScenesTransitionSetupData, DisconnectedReason disconnectedReason)
         {
             Logger.log.Debug("Multiplayer did disconnect.");
-            MultiplayerDidDisconnect?.RaiseEventSafe(levelScenesTransitionSetupDataSO,
-                (levelScenesTransitionSetupDataSO, disconnectedReason),
+            MultiplayerDidDisconnect?.RaiseEventSafe(levelScenesTransitionSetupData,
+                (levelScenesTransitionSetupData, disconnectedReason),
                 nameof(MultiplayerDidDisconnect));
         }
         #endregion

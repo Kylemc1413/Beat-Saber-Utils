@@ -7,10 +7,10 @@ namespace BS_Utils.Gameplay.HarmonyPatches
     internal class ScenesTransitionSetupDataSoFinishPatch
     {
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupDataSO), nameof(StandardLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
-        static void Prefix(StandardLevelScenesTransitionSetupDataSO __instance)
+        [HarmonyPatch(typeof(StandardLevelScenesTransitionSetupData), nameof(StandardLevelScenesTransitionSetupData.Finish), MethodType.Normal)]
+        static void Prefix(StandardLevelScenesTransitionSetupData __instance)
         {
-            //Debug.Log("StandardLevelScenesTransitionSetupDataSO.Finish: Prefix");
+            //Debug.Log("StandardLevelScenesTransitionSetupData.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
@@ -19,10 +19,10 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
         
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupDataSO), nameof(MultiplayerLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
-        static void Prefix(MultiplayerLevelScenesTransitionSetupDataSO __instance)
+        [HarmonyPatch(typeof(MultiplayerLevelScenesTransitionSetupData), nameof(MultiplayerLevelScenesTransitionSetupData.Finish), MethodType.Normal)]
+        static void Prefix(MultiplayerLevelScenesTransitionSetupData __instance)
         {
-            //Debug.Log("MultiplayerLevelScenesTransitionSetupDataSO.Finish: Prefix");
+            //Debug.Log("MultiplayerLevelScenesTransitionSetupData.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {
@@ -31,10 +31,10 @@ namespace BS_Utils.Gameplay.HarmonyPatches
         }
 
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupDataSO), nameof(MissionLevelScenesTransitionSetupDataSO.Finish), MethodType.Normal)]
-        static void Prefix(MissionLevelScenesTransitionSetupDataSO __instance)
+        [HarmonyPatch(typeof(MissionLevelScenesTransitionSetupData), nameof(MissionLevelScenesTransitionSetupData.Finish), MethodType.Normal)]
+        static void Prefix(MissionLevelScenesTransitionSetupData __instance)
         {
-            //Debug.Log("MissionLevelScenesTransitionSetupDataSO.Finish: Prefix");
+            //Debug.Log("MissionLevelScenesTransitionSetupData.Finish: Prefix");
 
             if (ScoreSubmission.disabled || ScoreSubmission.prolongedDisable)
             {

@@ -9,11 +9,9 @@ using IPALogger = IPA.Logging.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
 using IPA.Loader;
 using System.Threading.Tasks;
-using UnityEngine;
-using System.Linq;
 using Logger = BS_Utils.Utilities.Logger;
-using IPA.Utilities.Async;
 using BS_Utils.Utilities.Events;
+using Object = UnityEngine.Object;
 
 namespace BS_Utils
 {
@@ -22,12 +20,12 @@ namespace BS_Utils
     {
         internal static bool patched = false;
         internal static Harmony harmony;
-        internal static ScenesTransitionSetupDataSO scenesTransitionSetupData;
+        internal static ScenesTransitionSetupData scenesTransitionSetupData;
 
         public static LevelData LevelData = new LevelData();
 
         internal static event EventHandler<LevelFinishedEventArgs> LevelFinished; // Raised before the BSEvents version.
-        internal static event EventHandler<(MultiplayerLevelScenesTransitionSetupDataSO, DisconnectedReason)> MultiplayerDidDisconnect;
+        internal static event EventHandler<(MultiplayerLevelScenesTransitionSetupData, DisconnectedReason)> MultiplayerDidDisconnect;
 
         [OnStart]
         public void OnApplicationStart()
@@ -42,10 +40,17 @@ namespace BS_Utils
 
         private void PluginManager_OnPluginsStateChanged(Task task)
         {
-            var transitionHelper = Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().FirstOrDefault();
-            var fadeOutHelper = Resources.FindObjectsOfTypeAll<FadeInOutController>().FirstOrDefault();
-            fadeOutHelper?.FadeOut();
-            task.ContinueWith(t => transitionHelper?.RestartGame(), UnityMainThreadTaskScheduler.Default);
+            var fadeOutHelper = Object.FindAnyObjectByType<FadeInOutController>();
+            if (fadeOutHelper != null)
+            {
+                fadeOutHelper.FadeOut();
+            }
+
+            var mainFlowCoordinator = Object.FindAnyObjectByType<MainFlowCoordinator>();
+            if (mainFlowCoordinator != null)
+            {
+                task.ContinueWith(_ => mainFlowCoordinator._menuTransitionsHelper.RestartGame(), TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
 
         [Init]
@@ -78,35 +83,35 @@ namespace BS_Utils
             }
         }
 
-        internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults)
+        internal static void TriggerLevelFinishEvent(StandardLevelScenesTransitionSetupData levelScenesTransitionSetupData, LevelCompletionResults levelCompletionResults)
         {
             Logger.log.Debug("Solo/Party mode level finished.");
-            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO, new SoloLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults), nameof(LevelFinished));
+            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupData, new SoloLevelFinishedEventArgs(levelScenesTransitionSetupData, levelCompletionResults), nameof(LevelFinished));
         }
 
-        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, LevelCompletionResults levelCompletionResults,
+        internal static void TriggerMultiplayerLevelDidFinish(MultiplayerLevelScenesTransitionSetupData levelScenesTransitionSetupData, LevelCompletionResults levelCompletionResults,
             IReadOnlyList<MultiplayerPlayerResultsData> otherPlayersLevelCompletionResults)
         {
             Logger.log.Debug("Multiplayer level finished.");
-            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupDataSO, new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupDataSO, levelCompletionResults, otherPlayersLevelCompletionResults), nameof(LevelFinished));
+            LevelFinished?.RaiseEventSafe(levelScenesTransitionSetupData, new MultiplayerLevelFinishedEventArgs(levelScenesTransitionSetupData, levelCompletionResults, otherPlayersLevelCompletionResults), nameof(LevelFinished));
         }
 
-        internal static void TriggerMissionFinishEvent(MissionLevelScenesTransitionSetupDataSO missionLevelScenesTransitionSetupDataSO, MissionCompletionResults missionCompletionResults)
+        internal static void TriggerMissionFinishEvent(MissionLevelScenesTransitionSetupData missionLevelScenesTransitionSetupData, MissionCompletionResults missionCompletionResults)
         {
             Logger.log.Debug("Campaign level finished.");
-            LevelFinished?.RaiseEventSafe(missionLevelScenesTransitionSetupDataSO, new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupDataSO, missionCompletionResults), nameof(LevelFinished));
+            LevelFinished?.RaiseEventSafe(missionLevelScenesTransitionSetupData, new CampaignLevelFinishedEventArgs(missionLevelScenesTransitionSetupData, missionCompletionResults), nameof(LevelFinished));
         }
 
-        internal static void TriggerTutorialFinishEvent(TutorialScenesTransitionSetupDataSO tutorialLevelScenesTransitionSetupDataSO, TutorialScenesTransitionSetupDataSO.TutorialEndStateType endState)
+        internal static void TriggerTutorialFinishEvent(TutorialScenesTransitionSetupData tutorialLevelScenesTransitionSetupData, TutorialScenesTransitionSetupData.TutorialEndStateType endState)
         {
             Logger.log.Debug("Tutorial level finished.");
-            LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupDataSO, new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupDataSO, endState), nameof(LevelFinished));
+            LevelFinished?.RaiseEventSafe(tutorialLevelScenesTransitionSetupData, new TutorialLevelFinishedEventArgs(tutorialLevelScenesTransitionSetupData, endState), nameof(LevelFinished));
         }
 
-        internal static void TriggerMultiplayerDidDisconnect(MultiplayerLevelScenesTransitionSetupDataSO levelScenesTransitionSetupDataSO, DisconnectedReason resultsData)
+        internal static void TriggerMultiplayerDidDisconnect(MultiplayerLevelScenesTransitionSetupData levelScenesTransitionSetupData, DisconnectedReason resultsData)
         {
             Logger.log.Debug("Multiplayer did disconnect.");
-            MultiplayerDidDisconnect?.RaiseEventSafe(levelScenesTransitionSetupDataSO, (levelScenesTransitionSetupDataSO, resultsData), nameof(MultiplayerDidDisconnect));
+            MultiplayerDidDisconnect?.RaiseEventSafe(levelScenesTransitionSetupData, (levelScenesTransitionSetupData, resultsData), nameof(MultiplayerDidDisconnect));
         }
 
         internal static void ApplyHarmonyPatches()
